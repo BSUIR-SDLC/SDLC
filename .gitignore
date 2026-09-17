@@ -1,0 +1,36 @@
+# Скомпилированные объектные файлы
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.so
+*.dll
+*.pdb
+
+# Папки сборки
+build/
+Build/
+Debug/
+Release/
+x64/
+x86/
+out/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# IDE / редакторы
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Временные файлы
+*.log
+*.tmp
