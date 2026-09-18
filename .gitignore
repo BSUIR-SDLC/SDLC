@@ -1,0 +1,22 @@
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# === Временные файлы ===
+*.tmp
+*.log
+*.cache
+
+# === Папки сборки ===
+target/
+build/
+dist/
+bin/
+obj/
+
+# === OS ===
+.DS_Store
+Thumbs.db
