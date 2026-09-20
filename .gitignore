@@ -1,0 +1,16 @@
+build/
+debug/
+release/
+*.o
+*.obj
+*.exe
+Makefile
+Makefile.Debug
+Makefile.Release
+*.pro.user
+*.pro.user.*
+moc_*.cpp
+moc_*.h
+ui_*.h
+qrc_*.cpp
+*.qm
