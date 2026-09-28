@@ -1,0 +1,15 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven build output
+Project/target/
+
+# Build and temporary files
+out/
+build/
+dist/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
