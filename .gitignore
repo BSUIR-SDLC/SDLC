@@ -1,0 +1,31 @@
+
+# Компиляция и сборка Java
+target/
+out/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Другие IDE
+.project
+.classpath
+.settings/
+.vscode/
+
+# Логи
+*.log
+logs/
+
+# Временные файлы
+*.tmp
+*.temp
+*~
+
+# Файлы операционной системы
+.DS_Store
+Thumbs.db
+
+# Локальные настройки
+.env
