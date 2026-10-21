@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a0e2e"/>
+      <stop offset="100%" stop-color="#721c47"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window Frame -->
+  <rect x="10" y="10" width="980" height="620" rx="10" fill="#f8f9fa" stroke="#dcdcdc" stroke-width="1" filter="url(#shadow)"/>
+
+  <!-- Window Titlebar -->
+  <path d="M 10 10 L 990 10 A 10 10 0 0 1 990 48 L 10 48 A 0 0 0 0 1 10 10 Z" fill="#2b121d"/>
+  <circle cx="32" cy="29" r="6" fill="#ff5f56"/>
+  <circle cx="52" cy="29" r="6" fill="#ffbd2e"/>
+  <circle cx="72" cy="29" r="6" fill="#27c93f"/>
+  <text x="500" y="33" fill="#f5e6ec" font-size="13" font-weight="600" text-anchor="middle">WineVault v1.0 [Java / JavaFX] — Управление винной коллекцией</text>
+
+  <!-- Navigation Bar -->
+  <rect x="10" y="48" width="980" height="44" fill="#3d1425"/>
+  <rect x="25" y="55" width="130" height="30" rx="5" fill="#8b2252"/>
+  <text x="90" y="75" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Каталог вин</text>
+  <rect x="165" y="55" width="160" height="30" rx="5" fill="transparent"/>
+  <text x="245" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Календарь выдержки</text>
+  <rect x="335" y="55" width="170" height="30" rx="5" fill="transparent"/>
+  <text x="420" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Виртуальный сомелье</text>
+  <rect x="515" y="55" width="140" height="30" rx="5" fill="transparent"/>
+  <text x="585" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Экспорт данных</text>
+
+  <!-- Left Column: Catalog & Search -->
+  <rect x="25" y="105" width="420" height="485" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Search and Quick Filters -->
+  <rect x="40" y="120" width="390" height="34" rx="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="55" y="142" fill="#94a3b8" font-size="13">Поиск по названию, сорту, году...</text>
+
+  <rect x="40" y="164" width="45" height="24" rx="12" fill="#8b2252"/>
+  <text x="62" y="180" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">Все</text>
+  <rect x="92" y="164" width="75" height="24" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="129" y="180" fill="#475569" font-size="11" text-anchor="middle">Красные</text>
+  <rect x="174" y="164" width="65" height="24" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="206" y="180" fill="#475569" font-size="11" text-anchor="middle">Белые</text>
+  <rect x="246" y="164" width="75" height="24" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="283" y="180" fill="#475569" font-size="11" text-anchor="middle">Игристые</text>
+  <rect x="328" y="164" width="102" height="24" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="379" y="180" fill="#166534" font-size="11" font-weight="600" text-anchor="middle">На пике (5)</text>
+
+  <!-- Wine Table Header -->
+  <rect x="40" y="200" width="390" height="28" fill="#f8fafc"/>
+  <text x="50" y="218" fill="#64748b" font-size="11" font-weight="bold">НАЗВАНИЕ И СОРТ</text>
+  <text x="240" y="218" fill="#64748b" font-size="11" font-weight="bold">ГОД</text>
+  <text x="285" y="218" fill="#64748b" font-size="11" font-weight="bold">ПОЛКА</text>
+  <text x="350" y="218" fill="#64748b" font-size="11" font-weight="bold">СТАТУС</text>
+  <line x1="40" y1="228" x2="430" y2="228" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Row 1: Selected -->
+  <rect x="40" y="230" width="390" height="52" fill="#fdf2f8" stroke="#f472b6" stroke-width="1" rx="4"/>
+  <text x="50" y="251" fill="#831843" font-size="13" font-weight="bold">Пино Нуар Домашнее</text>
+  <text x="50" y="269" fill="#64748b" font-size="11">Pinot Noir 100% • Сухое</text>
+  <text x="240" y="260" fill="#334155" font-size="12" font-weight="bold">2021</text>
+  <text x="285" y="260" fill="#475569" font-size="12">B-2-14</text>
+  <rect x="345" y="246" width="75" height="20" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1"/>
+  <text x="382" y="260" fill="#166534" font-size="10" font-weight="bold" text-anchor="middle">НА ПИКЕ</text>
+
+  <!-- Row 2 -->
+  <rect x="40" y="285" width="390" height="48" fill="#ffffff"/>
+  <text x="50" y="305" fill="#0f172a" font-size="13" font-weight="600">Каберне Совиньон Резерв</text>
+  <text x="50" y="321" fill="#64748b" font-size="11">Cabernet Sauvignon • Сухое</text>
+  <text x="240" y="313" fill="#334155" font-size="12">2018</text>
+  <text x="285" y="313" fill="#475569" font-size="12">A-1-04</text>
+  <rect x="345" y="301" width="75" height="20" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1"/>
+  <text x="382" y="315" fill="#854d0e" font-size="10" font-weight="bold" text-anchor="middle">СОЗРЕВАЕТ</text>
+  <line x1="40" y1="335" x2="430" y2="335" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- Row 3 -->
+  <rect x="40" y="338" width="390" height="48" fill="#ffffff"/>
+  <text x="50" y="358" fill="#0f172a" font-size="13" font-weight="600">Шардоне Выдержанное</text>
+  <text x="50" y="374" fill="#64748b" font-size="11">Chardonnay • Белое сухое</text>
+  <text x="240" y="366" fill="#334155" font-size="12">2022</text>
+  <text x="285" y="366" fill="#475569" font-size="12">C-3-01</text>
+  <rect x="345" y="354" width="75" height="20" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1"/>
+  <text x="382" y="368" fill="#166534" font-size="10" font-weight="bold" text-anchor="middle">НА ПИКЕ</text>
+  <line x1="40" y1="388" x2="430" y2="388" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- Row 4 -->
+  <rect x="40" y="391" width="390" height="48" fill="#ffffff"/>
+  <text x="50" y="411" fill="#0f172a" font-size="13" font-weight="600">Рислинг Долинный</text>
+  <text x="50" y="427" fill="#64748b" font-size="11">Riesling • Полусухое</text>
+  <text x="240" y="419" fill="#334155" font-size="12">2019</text>
+  <text x="285" y="419" fill="#475569" font-size="12">A-2-08</text>
+  <rect x="345" y="407" width="75" height="20" rx="10" fill="#fee2e2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="382" y="421" fill="#991b1b" font-size="10" font-weight="bold" text-anchor="middle">ОТКРЫТЬ!</text>
+  <line x1="40" y1="441" x2="430" y2="441" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- Row 5 -->
+  <rect x="40" y="444" width="390" height="48" fill="#ffffff"/>
+  <text x="50" y="464" fill="#0f172a" font-size="13" font-weight="600">Саперави Кахетинское</text>
+  <text x="50" y="480" fill="#64748b" font-size="11">Saperavi 100% • Сухое</text>
+  <text x="240" y="472" fill="#334155" font-size="12">2020</text>
+  <text x="285" y="472" fill="#475569" font-size="12">B-1-03</text>
+  <rect x="345" y="460" width="75" height="20" rx="10" fill="#fef9c3" stroke="#fde047" stroke-width="1"/>
+  <text x="382" y="474" fill="#854d0e" font-size="10" font-weight="bold" text-anchor="middle">СОЗРЕВАЕТ</text>
+
+  <!-- Left Bottom Buttons -->
+  <rect x="40" y="540" width="185" height="36" rx="6" fill="#8b2252"/>
+  <text x="132" y="563" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">+ Добавить вино</text>
+  <rect x="240" y="540" width="190" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="335" y="563" fill="#475569" font-size="13" font-weight="600" text-anchor="middle">Списать бутылку</text>
+
+  <!-- Right Column: Card Details -->
+  <rect x="465" y="105" width="510" height="485" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Card Header -->
+  <rect x="465" y="105" width="510" height="60" fill="url(#headerGrad)" rx="6 6 0 0"/>
+  <text x="490" y="133" fill="#ffffff" font-size="18" font-weight="bold">Пино Нуар Домашнее (Винтаж 2021)</text>
+  <text x="490" y="152" fill="#fbcfe8" font-size="12">Сухое красное вино • Ручной сбор • Выдержка в дубовом бочонке 12 мес.</text>
+  <rect x="880" y="120" width="80" height="30" rx="4" fill="#ffffff"/>
+  <text x="920" y="140" fill="#8b2252" font-size="12" font-weight="bold" text-anchor="middle">ИЗМЕНИТЬ</text>
+
+  <!-- Grid Properties -->
+  <rect x="485" y="180" width="230" height="80" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="500" y="202" fill="#64748b" font-size="11" font-weight="bold">ОСНОВНЫЕ ПАРАМЕТРЫ</text>
+  <text x="500" y="222" fill="#1e293b" font-size="12">Крепость: <tspan font-weight="bold">13.2% об.</tspan></text>
+  <text x="500" y="242" fill="#1e293b" font-size="12">Объем: <tspan font-weight="bold">0.75 л</tspan> | В наличии: <tspan font-weight="bold" fill="#8b2252">4 бут.</tspan></text>
+
+  <rect x="730" y="180" width="225" height="80" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="745" y="202" fill="#64748b" font-size="11" font-weight="bold">ТОПОЛОГИЯ ПОГРЕБА</text>
+  <text x="745" y="222" fill="#1e293b" font-size="12">Сектор: <tspan font-weight="bold">B (Красные сухие)</tspan></text>
+  <text x="745" y="242" fill="#1e293b" font-size="12">Стеллаж 2 • Полка 3 • Ячейки 12-15</text>
+
+  <!-- Aging Status Box -->
+  <rect x="485" y="275" width="470" height="120" rx="6" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="505" y="300" fill="#166534" font-size="13" font-weight="bold">Статус зрелости: НА ПИКЕ ВКУСА (Оптимально к открытию)</text>
+  <text x="505" y="322" fill="#15803d" font-size="12">Дата закладки: 15.10.2021 | Расчетное окно дегустации: Октябрь 2026 – Апрель 2027</text>
+  
+  <!-- Aging Progress Bar -->
+  <text x="505" y="348" fill="#475569" font-size="11">Шкала созревания:</text>
+  <rect x="505" y="356" width="430" height="14" rx="7" fill="#e2e8f0"/>
+  <rect x="505" y="356" width="360" height="14" rx="7" fill="#22c55e"/>
+  <text x="515" y="367" fill="#ffffff" font-size="10" font-weight="bold">84% жизненного цикла (Идеальная зрелость)</text>
+
+  <!-- Tasting Notes -->
+  <rect x="485" y="410" width="470" height="110" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="505" y="432" fill="#64748b" font-size="11" font-weight="bold">ГАСТРОНОМИЧЕСКИЙ ПРОФИЛЬ И ЗАМЕТКИ СОМЕЛЬЕ</text>
+  <text x="505" y="455" fill="#334155" font-size="12">• Аромат: Спелая вишня, малина, легкий оттенок подлеска и ванили.</text>
+  <text x="505" y="475" fill="#334155" font-size="12">• Вкус: Шелковистые танины, сбалансированная кислотность, мягкое послевкусие.</text>
+  <text x="505" y="495" fill="#334155" font-size="12">• Идеальные пары: Утка с ягодным соусом, тушеный кролик, зрелые сыры Бри/Камамбер.</text>
+
+  <!-- Actions -->
+  <rect x="485" y="540" width="220" height="36" rx="6" fill="#16a34a"/>
+  <text x="595" y="563" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Открыть бутылку (дегустация)</text>
+  <rect x="720" y="540" width="235" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="837" y="563" fill="#475569" font-size="13" font-weight="600" text-anchor="middle">Печать винной этикетки</text>
+
+  <!-- Bottom Window Statusbar -->
+  <rect x="10" y="600" width="980" height="30" rx="0 0 10 10" fill="#e2e8f0"/>
+  <text x="25" y="620" fill="#475569" font-size="11">Статус: База данных wine_cellar.json загружена (всего: 42 бут., на пике: 5 бут., созревает: 36 бут.). 100% Offline-хранилище.</text>
+</svg>
