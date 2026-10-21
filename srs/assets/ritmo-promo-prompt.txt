@@ -1,0 +1,20 @@
+Режим: встроенный image_gen. Формат результата: PNG.
+Назначение: рекламный концепт проекта «Ритмо», не снимок готового приложения.
+
+Use case: ads-marketing
+Asset type: polished Russian-language promotional PNG for a habit tracker web project.
+Brand: «Ритмо» (Ritmo), a habit tracker that helps build regular behavior with streaks and friendly gamification.
+Create a premium landscape advertising composition, approximately 1536x1024. Deep midnight navy background, vivid mint and warm coral accents, refined clean typography, generous whitespace. Left side: large brand name and clear Russian headline, compact supporting copy, mint call-to-action pill. Right side: elegant floating browser dashboard mockup, simple readable habit cards, a row of seven mint completion checkmarks, coral flame badge, tasteful small trophy. Subtle soft lighting, high-end editorial product marketing, crisp polished UI, no photography.
+Exact visible main text:
+"Ритмо"
+"Маленькие шаги."
+"Твой большой ритм."
+"Привычки • Серии дней • Награды"
+"Начни свою серию"
+Dashboard text only:
+"Сегодня"
+"Читать 20 минут"
+"Зарядка"
+"7 дней подряд"
+"Твой прогресс"
+Make all Cyrillic accurate and fully legible. Communicate approachable daily progress and motivation. Do not include pricing, fake testimonials, download-store badges, health claims, technical stack, watermarks or other brands. The mockup is a concept, not an existing app screenshot. Opaque background.
