@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="shadow2" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Window Frame -->
+  <rect x="10" y="10" width="980" height="620" rx="10" fill="#f8f9fa" stroke="#dcdcdc" stroke-width="1" filter="url(#shadow2)"/>
+
+  <!-- Window Titlebar -->
+  <path d="M 10 10 L 990 10 A 10 10 0 0 1 990 48 L 10 48 A 0 0 0 0 1 10 10 Z" fill="#2b121d"/>
+  <circle cx="32" cy="29" r="6" fill="#ff5f56"/>
+  <circle cx="52" cy="29" r="6" fill="#ffbd2e"/>
+  <circle cx="72" cy="29" r="6" fill="#27c93f"/>
+  <text x="500" y="33" fill="#f5e6ec" font-size="13" font-weight="600" text-anchor="middle">WineVault v1.0 [Java / JavaFX] — Календарь созревания и график выдержки</text>
+
+  <!-- Navigation Bar -->
+  <rect x="10" y="48" width="980" height="44" fill="#3d1425"/>
+  <rect x="25" y="55" width="130" height="30" rx="5" fill="transparent"/>
+  <text x="90" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Каталог вин</text>
+  <rect x="165" y="55" width="170" height="30" rx="5" fill="#8b2252"/>
+  <text x="250" y="75" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Календарь выдержки</text>
+  <rect x="345" y="55" width="170" height="30" rx="5" fill="transparent"/>
+  <text x="430" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Виртуальный сомелье</text>
+  <rect x="525" y="55" width="140" height="30" rx="5" fill="transparent"/>
+  <text x="595" y="75" fill="#e0b0c5" font-size="13" text-anchor="middle">Экспорт данных</text>
+
+  <!-- Controls Header -->
+  <rect x="25" y="105" width="950" height="55" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="45" y="137" fill="#0f172a" font-size="15" font-weight="bold">График оптимальной зрелости: IV квартал 2026 – I квартал 2027</text>
+  
+  <rect x="620" y="117" width="160" height="30" rx="15" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <circle cx="635" cy="132" r="5" fill="#16a34a"/>
+  <text x="705" y="137" fill="#166534" font-size="11" font-weight="bold" text-anchor="middle">Готовы к открытию: 5</text>
+
+  <rect x="790" y="117" width="170" height="30" rx="15" fill="#fee2e2" stroke="#fca5a5" stroke-width="1"/>
+  <circle cx="805" cy="132" r="5" fill="#dc2626"/>
+  <text x="880" y="137" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">Срочно открыть: 1</text>
+
+  <!-- Timeline Grid: 4 Month Columns -->
+  <!-- Col 1: Октябрь 2026 (Текущий) -->
+  <rect x="25" y="175" width="225" height="415" rx="6" fill="#ffffff" stroke="#8b2252" stroke-width="2"/>
+  <rect x="25" y="175" width="225" height="38" rx="4 4 0 0" fill="#fdf2f8"/>
+  <text x="137" y="200" fill="#831843" font-size="14" font-weight="bold" text-anchor="middle">Октябрь 2026 (Сейчас)</text>
+
+  <!-- Card in Oct 1 -->
+  <rect x="35" y="225" width="205" height="105" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <rect x="45" y="235" width="65" height="18" rx="9" fill="#22c55e"/>
+  <text x="77" y="248" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">НА ПИКЕ</text>
+  <text x="45" y="270" fill="#0f172a" font-size="12" font-weight="bold">Пино Нуар 2021</text>
+  <text x="45" y="287" fill="#475569" font-size="11">Погреб: Стеллаж 2 (B-2-14)</text>
+  <text x="45" y="304" fill="#16a34a" font-size="11" font-weight="600">Осталось: 4 бут. | Пик до апр.</text>
+  <rect x="45" y="312" width="185" height="12" rx="6" fill="#bbf7d0"/>
+  <rect x="45" y="312" width="155" height="12" rx="6" fill="#16a34a"/>
+
+  <!-- Card in Oct 2 - RISK -->
+  <rect x="35" y="340" width="205" height="105" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <rect x="45" y="350" width="110" height="18" rx="9" fill="#dc2626"/>
+  <text x="100" y="363" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">СРОЧНО ОТКРЫТЬ</text>
+  <text x="45" y="385" fill="#7f1d1d" font-size="12" font-weight="bold">Рислинг Долинный 2019</text>
+  <text x="45" y="402" fill="#475569" font-size="11">Погреб: Стеллаж 1 (A-2-08)</text>
+  <text x="45" y="419" fill="#b91c1c" font-size="11" font-weight="600">Риск передержки кислотности!</text>
+  <rect x="45" y="427" width="185" height="12" rx="6" fill="#fecaca"/>
+  <rect x="45" y="427" width="180" height="12" rx="6" fill="#ef4444"/>
+
+  <!-- Col 2: Ноябрь 2026 -->
+  <rect x="265" y="175" width="225" height="415" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="265" y="175" width="225" height="38" rx="5 5 0 0" fill="#f8fafc"/>
+  <text x="377" y="200" fill="#334155" font-size="14" font-weight="bold" text-anchor="middle">Ноябрь 2026</text>
+
+  <rect x="275" y="225" width="205" height="105" rx="6" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <rect x="285" y="235" width="65" height="18" rx="9" fill="#22c55e"/>
+  <text x="317" y="248" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">НА ПИКЕ</text>
+  <text x="285" y="270" fill="#0f172a" font-size="12" font-weight="bold">Мерло Домашнее 2020</text>
+  <text x="285" y="287" fill="#475569" font-size="11">Погреб: Стеллаж 2 (B-1-09)</text>
+  <text x="285" y="304" fill="#16a34a" font-size="11" font-weight="600">Осталось: 6 бут. | Окно 12 мес.</text>
+  <rect x="285" y="312" width="185" height="12" rx="6" fill="#bbf7d0"/>
+  <rect x="285" y="312" width="145" height="12" rx="6" fill="#16a34a"/>
+
+  <!-- Col 3: Декабрь 2026 -->
+  <rect x="505" y="175" width="225" height="415" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="505" y="175" width="225" height="38" rx="5 5 0 0" fill="#f8fafc"/>
+  <text x="617" y="200" fill="#334155" font-size="14" font-weight="bold" text-anchor="middle">Декабрь 2026 (Праздники)</text>
+
+  <rect x="515" y="225" width="205" height="105" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <rect x="525" y="235" width="85" height="18" rx="9" fill="#3b82f6"/>
+  <text x="567" y="248" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">ГОТОВО К ПРАЗДН.</text>
+  <text x="525" y="270" fill="#1e3a8a" font-size="12" font-weight="bold">Игристое Брют 2022</text>
+  <text x="525" y="287" fill="#475569" font-size="11">Погреб: Стеллаж 4 (D-1-01)</text>
+  <text x="525" y="304" fill="#2563eb" font-size="11" font-weight="600">Выдержка на осадке 24 мес.</text>
+  <rect x="525" y="312" width="185" height="12" rx="6" fill="#bfdbfe"/>
+  <rect x="525" y="312" width="170" height="12" rx="6" fill="#3b82f6"/>
+
+  <!-- Col 4: 2027 год -->
+  <rect x="745" y="175" width="230" height="415" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="745" y="175" width="230" height="38" rx="5 5 0 0" fill="#f8fafc"/>
+  <text x="860" y="200" fill="#334155" font-size="14" font-weight="bold" text-anchor="middle">2027 и далее (Созревание)</text>
+
+  <rect x="755" y="225" width="210" height="105" rx="6" fill="#fefce8" stroke="#fef08a" stroke-width="1"/>
+  <rect x="765" y="235" width="80" height="18" rx="9" fill="#eab308"/>
+  <text x="805" y="248" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">СОЗРЕВАЕТ</text>
+  <text x="765" y="270" fill="#854d0e" font-size="12" font-weight="bold">Каберне Фран 2023</text>
+  <text x="765" y="287" fill="#475569" font-size="11">Погреб: Стеллаж 3 (C-2-05)</text>
+  <text x="765" y="304" fill="#ca8a04" font-size="11" font-weight="600">Пик: Сентябрь 2028 (не трогать)</text>
+  <rect x="765" y="312" width="190" height="12" rx="6" fill="#fef08a"/>
+  <rect x="765" y="312" width="60" height="12" rx="6" fill="#eab308"/>
+
+  <!-- Bottom Window Statusbar -->
+  <rect x="10" y="600" width="980" height="30" rx="0 0 10 10" fill="#e2e8f0"/>
+  <text x="25" y="620" fill="#475569" font-size="11">Календарный алгоритм: автоматический пересчет фаз созревания по формуле винтажа и типа выдержки.</text>
+</svg>
