@@ -1,0 +1,84 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+title Диаграмма классов Калькулятора Жизни (MVC с активной моделью)
+
+' Интерфейс Наблюдателя
+interface ModelObserver {
+    + onModelChanged()
+}
+
+' МОДЕЛЬ (Active Model)
+class LifeModel {
+    - m_observers: QList<ModelObserver*>
+    - m_lastDay: int
+    - m_lastMonth: int
+    - m_lastYear: int
+    - m_sleepHours: double
+    - m_blinks: long long
+    - m_heartBeats: long long
+    - m_bloodLiters: double
+    - m_waterLiters: double
+    - m_laughs: long long
+    
+    + addObserver(observer: ModelObserver*)
+    + removeObserver(observer: ModelObserver*)
+    + setLastInput(day: int, month: int, year: int)
+    + calculate(birthDate: QDate, error: QString&): bool
+    + notifyObservers()
+    
+    + sleepHours(): double
+    + blinks(): long long
+    + heartBeats(): long long
+    + bloodLiters(): double
+    + waterLiters(): double
+    + laughs(): long long
+}
+
+' ПРЕДСТАВЛЕНИЕ (View)
+class MainWindow {
+    - m_model: LifeModel*
+    - m_sleepLabel: QLabel*
+    - m_blinksLabel: QLabel*
+    - m_heartLabel: QLabel*
+    - m_bloodLabel: QLabel*
+    - m_waterLabel: QLabel*
+    - m_laughsLabel: QLabel*
+    - m_inputButton: QPushButton*
+    
+    + setModel(model: LifeModel*)
+    + onModelChanged()
+    + updateResults()
+    + showSuccessMessage(msg: QString)
+}
+
+class InputDialog {
+    - m_daySpin: QSpinBox*
+    - m_monthSpin: QSpinBox*
+    - m_yearSpin: QSpinBox*
+    
+    + setInitialValues(day: int, month: int, year: int)
+    + day(): int
+    + month(): int
+    + year(): int
+}
+
+' КОНТРОЛЛЕР
+class LifeController {
+    - m_model: LifeModel*
+    - m_view: MainWindow*
+    
+    + onOpenInputDialog()
+    + onInputConfirmed(day: int, month: int, year: int)
+}
+
+' Отношения
+MainWindow ..|> ModelObserver : implements
+LifeModel --> ModelObserver : notifies
+MainWindow --> LifeModel : observes
+LifeController --> LifeModel : uses
+LifeController --> MainWindow : controls
+MainWindow --> InputDialog : creates
+
+@enduml
