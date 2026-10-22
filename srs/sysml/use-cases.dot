@@ -1,0 +1,6 @@
+digraph G{rankdir=LR;fontname="DejaVu Sans";node[fontname="DejaVu Sans",fontsize=11];edge[fontname="DejaVu Sans",fontsize=9]
+subgraph cluster_s{label="StudyShare";style=rounded;color="#667085";fontsize=13
+ uc1[shape=ellipse,label="Зарегистрироваться\nи войти"];uc2[shape=ellipse,label="Загрузить материал"];uc3[shape=ellipse,label="Искать и фильтровать\nматериалы"];uc3b[shape=ellipse,label="Искать по содержимому"];uc4[shape=ellipse,label="Скачать материал"];uc5[shape=ellipse,label="Оценить материал"];uc6[shape=ellipse,label="Комментировать\nи задавать вопросы"];uc7[shape=ellipse,label="Просмотреть личный кабинет\n(история)"];uc8[shape=ellipse,label="Пожаловаться"];uc9[shape=ellipse,label="Модерировать материалы"];uc10[shape=ellipse,label="Обработать жалобу"];uc11[shape=ellipse,label="Управлять справочниками\nи пользователями"];uc12[shape=ellipse,label="Отправить уведомление"]
+ uc3b->uc3[label="«extend»",style=dashed];uc12->uc9[label="«include»",style=dashed,dir=back];uc10->uc9[style=invis]}
+S[shape=plaintext,label="Студент\n(актёр)"];M[shape=plaintext,label="Модератор\n(актёр)"];A[shape=plaintext,label="Администратор\n(актёр)"];SM[shape=box,label="Почтовый\nSMTP-сервер"]
+S->uc1;S->uc2;S->uc3;S->uc4;S->uc5;S->uc6;S->uc7;S->uc8;M->uc9;M->uc10;A->uc11;uc12->SM[dir=none]}

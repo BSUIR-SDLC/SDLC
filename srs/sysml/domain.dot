@@ -1,0 +1,11 @@
+digraph G{rankdir=LR;node[shape=record,fontname="DejaVu Sans",fontsize=11,style=filled,fillcolor="#eef3f8"];edge[fontname="DejaVu Sans",fontsize=9,arrowhead=none]
+User[label="{User|id, email, passwordHash\lfullName, role, createdAt\l}"]
+Material[label="{Material|id, title, description, type\lstatus, createdAt, downloadsCount\l}"]
+MaterialFile[label="{MaterialFile|id, fileName, mimeType\lsize, textContent\l}"]
+Subject[label="{Subject|id, name\l}"];Teacher[label="{Teacher|id, fullName\l}"];Semester[label="{Semester|id, number\l}"];Tag[label="{Tag|id, name\l}"]
+Rating[label="{Rating|id, value, createdAt\l}"];Comment[label="{Comment|id, text, isQuestion\lcreatedAt\l}"];Download[label="{Download|id, downloadedAt\l}"]
+Complaint[label="{Complaint|id, reason, status\lcreatedAt\l}"];Decision[label="{ModerationDecision|id, fromStatus, toStatus\lreason, decidedAt\l}"]
+User->Material[taillabel="1",headlabel="0..*",labeldistance=2];Material->MaterialFile[taillabel="1",headlabel="1",labeldistance=2]
+Subject->Material[taillabel="1",headlabel="0..*"];Teacher->Material[taillabel="1",headlabel="0..*"];Semester->Material[taillabel="1",headlabel="0..*"]
+Material->Tag[taillabel="0..*",headlabel="0..*"];Material->Rating[taillabel="1",headlabel="0..*"];Material->Comment[taillabel="1",headlabel="0..*"];Material->Download[taillabel="1",headlabel="0..*"];Material->Complaint[taillabel="1",headlabel="0..*"];Material->Decision[taillabel="1",headlabel="0..*"]
+User->Rating[headlabel="0..*"];User->Comment[headlabel="0..*"];User->Download[headlabel="0..*"]}

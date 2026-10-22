@@ -1,0 +1,8 @@
+digraph G{rankdir=LR;node[shape=box,fontname="DejaVu Sans",fontsize=11,style=filled,fillcolor=white];edge[arrowhead=none]
+root[label="«requirement»\nStudyShareSpec\nНефункциональные требования",fillcolor="#dbe7f3"]
+a[label="Внешние интерфейсы",fillcolor="#dbe7f3"];b[label="Качество обслуживания",fillcolor="#dbe7f3"];c[label="Соответствие стандартам",fillcolor="#dbe7f3"];d[label="Проектирование и реализация",fillcolor="#dbe7f3"]
+root->a;root->b;root->c;root->d
+a->"REQ-INT-001 · Веб-интерфейс на русском";a->"REQ-INT-002 · PostgreSQL";a->"REQ-INT-003 · Почта по SMTP"
+b->"REQ-PERF-001 · Время отклика";b->"REQ-PERF-002 · Поиск по содержимому";b->"REQ-PERF-003 · Загрузка файла";b->"REQ-SEC-001 · Пароли";b->"REQ-SEC-002 · Проверка файлов";b->"REQ-SEC-003 · Защита приложения";b->"REQ-SEC-004 · Сеансы и блокировка";b->"REQ-REL-001 · Резервные копии";b->"REQ-AVAIL-001 · Доступность"
+c->"REQ-COMP-001 · Персональные данные";c->"REQ-COMP-002 · Авторские права"
+d->"REQ-MAINT-001 · Покрытие тестами";d->"REQ-COST-001 · Стоимость хостинга"}

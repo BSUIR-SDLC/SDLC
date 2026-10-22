@@ -1,0 +1,10 @@
+digraph G{rankdir=LR;node[shape=box,fontname="DejaVu Sans",fontsize=11,style=filled,fillcolor=white];edge[arrowhead=none]
+root[label="«requirement»\nStudyShareSpec\nФункциональные требования",fillcolor="#dbe7f3"]
+g1[label="Доступ и роли",fillcolor="#dbe7f3"];g2[label="Материалы и каталог",fillcolor="#dbe7f3"];g3[label="Оценки и обсуждение",fillcolor="#dbe7f3"];g4[label="Поиск и личный кабинет",fillcolor="#dbe7f3"];g5[label="Модерация",fillcolor="#dbe7f3"]
+root->g1;root->g2;root->g3;root->g4;root->g5
+g1->"REQ-FUNC-001 · Регистрация и вход";g1->"REQ-FUNC-002 · Роли и права"
+g2->"REQ-FUNC-003 · Загрузка материала";g2->"REQ-FUNC-004 · Каталог и теги";g2->"REQ-FUNC-005 · Фильтры";g2->"REQ-FUNC-006 · Скачивание";g2->"REQ-FUNC-007 · Справочники"
+g3->"REQ-FUNC-009 · Оценки";g3->"REQ-FUNC-010 · Рейтинг";g3->"REQ-FUNC-011 · Комментарии и вопросы"
+g4->"REQ-FUNC-012 · Поиск по метаданным";g4->"REQ-FUNC-013 · Поиск по содержимому";g4->"REQ-FUNC-014 · Личный кабинет"
+g5->"REQ-FUNC-008 · Модерация";g5->"REQ-FUNC-015 · Жалобы" [color=black];g5->"REQ-FUNC-016 · E-mail уведомления"
+"REQ-FUNC-015 · Жалобы"[fillcolor="#fff3c4"];"REQ-FUNC-016 · E-mail уведомления"[fillcolor="#fff3c4"]}
