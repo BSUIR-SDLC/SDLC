@@ -1,0 +1,22 @@
+text
+# Файлы CLion
+.idea/
+cmake-build-*/
+*.iml
+
+# Файлы сборки
+*.exe
+*.o
+*.a
+*.so
+*.dll
+*.out
+
+# Папки сборки
+build/
+Debug/
+Release/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
