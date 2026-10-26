@@ -1,0 +1,73 @@
+# Скомпилированные классы и артефакты сборки
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Каталоги вывода компиляции / сборки
+out/
+build/
+bin/
+target/
+classes/
+generated/
+generated-sources/
+
+# Временные и служебные файлы Java / JVM
+*.tmp
+*.temp
+*.swp
+*~
+*.log
+*.ctxt
+.attach_pid*
+
+# IntelliJ IDEA — пользовательские и кэш-файлы (на сборку не влияют)
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/httpRequests/
+.idea/caches/
+.idea/libraries/
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/dbnavigator.xml
+.idea/sonarlint/
+.idea/checkstyle-idea.xml
+*.iws
+*.ipr
+
+# Локальные настройки IDE / ОС
+*.iml.bak
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Maven / Gradle (если появятся локально)
+.gradle/
+**/build/
+!src/**/build/
+.mvn/wrapper/maven-wrapper.jar
+
+# Тестовые и покрытие
+*.exec
+test-output/
+coverage/
+.nyc_output/
+
+# Резервные и временные копии редакторов
+*.bak
+*.orig
+*.rej
+*.save
+*.autosave
