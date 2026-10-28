@@ -1,0 +1,28 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Java compiled files
+*.class
+
+# Other build output
+out/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# macOS
+.DS_Store
