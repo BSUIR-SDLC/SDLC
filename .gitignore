@@ -1,0 +1,12 @@
+﻿*.exe
+*.o
+*.obj
+*.out
+*.a
+*.pdb
+*.ilk
+*.log
+*.tmp
+~$*
+.vscode/
+build/
