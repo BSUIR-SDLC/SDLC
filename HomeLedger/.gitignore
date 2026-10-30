@@ -1,0 +1,6 @@
+build/
+build-*/
+data/
+*.user
+.vs/
+out/
