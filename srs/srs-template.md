@@ -741,5 +741,3 @@ Foodie](images/foodie_main_window.png)
     (PNG)](images/foodie-main-window.png)
 2.  [Дополнительные прототипы окон (при наличии)](images/)
 
-
-**Конец документа.**
