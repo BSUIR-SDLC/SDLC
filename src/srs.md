@@ -2,7 +2,7 @@
 
 Для веб-приложения для планирования мероприятий «Evently»
 
-Версия 0.2
+Версия 0.1
 
 Подготовила: Тукайло Мария Алексеевна
 
@@ -809,7 +809,7 @@
 
 ## 5. Приложения {#5-appendixes}
 
-* **Структурная диаграмма главной страницы:** [srs/images/](srs/images/)
-* **Структурная диаграмма «комнаты» мероприятия:** [srs/images/](srs/images/)
-* **Репозиторий:** [https://github.com/ваш-логин/ваш-репозиторий](https://github.com/ваш-логин/ваш-репозиторий)
+* **Структурная диаграмма главной страницы:** [srs/images/](https://github.com/MariaTukailo/SDLC/blob/lab3_business-requirements/src/%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/%D0%A1%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%BD%D0%B0%D1%8F%20%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0%20%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%BE%D0%B9%20%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B.png)
+* **Структурная диаграмма «комнаты» мероприятия:** [srs/images/](https://github.com/MariaTukailo/SDLC/blob/lab3_business-requirements/src/%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F/%D0%A1%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D0%BD%D0%B0%D1%8F%20%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0%20%C2%AB%D0%BA%D0%BE%D0%BC%D0%BD%D0%B0%D1%82%D1%8B%C2%BB%20%D0%BC%D0%B5%D1%80%D0%BE%D0%BF%D1%80%D0%B8%D1%8F%D1%82%D0%B8%D1%8F.png)
+* **Репозиторий:** [репозиторий](https://github.com/MariaTukailo/SDLC)
 
