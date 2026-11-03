@@ -2,7 +2,6 @@ package TourReviewUseCase {
     part def Tourist;
     part def Landlord;
     part def Moderator;
-    part def Administrator;
 
     use case LeaveReview { actor tourist : Tourist; }
     use case RatePlace { actor tourist : Tourist; }
@@ -13,6 +12,4 @@ package TourReviewUseCase {
 
     use case ReviewComplaints { actor moderator : Moderator; }
     use case HideContent { actor moderator : Moderator; }
-
-    use case ManageUsers { actor admin : Administrator; }
 }
