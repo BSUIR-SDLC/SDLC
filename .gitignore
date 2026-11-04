@@ -1,0 +1,28 @@
+# Java
+*.class
+*.jar
+*.war
+
+# Сборка
+target/
+build/
+out/
+bin/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# Временные и системные
+*.tmp
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
