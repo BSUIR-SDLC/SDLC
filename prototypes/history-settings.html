@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoxPilot — история и настройки</title>
+  <style>
+    :root { color-scheme: dark; font: 15px system-ui, sans-serif; } body { margin: 0; background: #10131a; color: #eef2ff; }
+    main { width: min(900px, calc(100% - 32px)); margin: 30px auto; } h1 { font-size: 1.4rem; }
+    .tabs, .settings { display: flex; gap: 8px; flex-wrap: wrap; } button, select, input { padding: 10px; border: 1px solid #3c465c; border-radius: 7px; background: #202838; color: inherit; }
+    button.active { background: #3e73de; } table { width: 100%; margin-top: 16px; border-collapse: collapse; background: #171c27; } th, td { padding: 12px; text-align: left; border-bottom: 1px solid #30394c; }
+    .settings { margin-top: 16px; padding: 18px; background: #171c27; border-radius: 12px; } label { display: grid; gap: 5px; min-width: 220px; } .ok { color: #73e6a4; }
+  </style>
+</head>
+<body><main>
+  <h1>VoxPilot</h1>
+  <div class="tabs"><button class="active">История</button><button>Настройки</button></div>
+  <table><thead><tr><th>Время</th><th>Распознанный текст</th><th>Действие</th><th>Результат</th></tr></thead>
+    <tbody><tr><td>12:41</td><td>Открой календарь</td><td>Запуск приложения</td><td class="ok">Выполнено</td></tr>
+    <tr><td>12:35</td><td>Поставь таймер на 10 минут</td><td>Создание таймера</td><td class="ok">Выполнено</td></tr>
+    <tr><td>12:20</td><td>Выключи компьютер</td><td>Опасная команда</td><td>Отменено</td></tr></tbody>
+  </table>
+  <section class="settings" aria-label="Настройки">
+    <label>Микрофон<select><option>Default microphone</option></select></label>
+    <label>Слово-триггер<input value="Вокс"></label>
+    <label>Язык<select><option>Русский и English</option></select></label>
+    <label>Озвучивать ответы<input type="checkbox" checked></label>
+    <button>Сохранить</button>
+  </section>
+</main></body>
+</html>

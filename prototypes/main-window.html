@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoxPilot — главное окно</title>
+  <style>
+    :root { color-scheme: dark; font: 16px system-ui, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #10131a; color: #eef2ff; }
+    main { width: min(680px, calc(100% - 32px)); padding: 28px; border: 1px solid #30394c; border-radius: 20px; background: #171c27; }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    h1 { margin: 0; font-size: 1.35rem; } .state { color: #73e6a4; }
+    .mic { margin: 36px auto 24px; width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; background: #263d75; border: 8px solid #4f80e8; font-size: 3.5rem; }
+    .panel { padding: 16px; border-radius: 12px; background: #202838; margin-top: 12px; }
+    .muted { color: #9da8bd; } button { border: 0; border-radius: 8px; padding: 10px 14px; color: white; background: #3e73de; cursor: pointer; }
+    nav { display: flex; gap: 10px; margin-top: 20px; } nav button { background: #2c3548; }
+  </style>
+</head>
+<body>
+  <main>
+    <header><h1>VoxPilot</h1><span class="state">● Готов</span></header>
+    <div class="mic" aria-label="Активировать ассистента">🎙</div>
+    <section class="panel"><div class="muted">Распознанная команда</div><strong>«Открой календарь»</strong></section>
+    <section class="panel"><div class="muted">Результат</div><span>Команда выполнена</span></section>
+    <nav><button>Активировать (Ctrl+Space)</button><button>История</button><button>Настройки</button></nav>
+  </main>
+</body>
+</html>
