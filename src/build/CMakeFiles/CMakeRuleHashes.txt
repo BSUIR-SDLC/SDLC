@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+a981cb95bc4fc120e1062dca1e0c2270 SinCalculator_autogen/timestamp

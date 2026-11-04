@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_SinCalculator_FILE /home/ofrode/vs_code/JCRPO/lab_1/build/SinCalculator)
+set(__QT_DEPLOY_TARGET_SinCalculator_TYPE EXECUTABLE)

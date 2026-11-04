@@ -1,0 +1,5 @@
+/home/ofrode/vs_code/JCRPO/lab_1/build/CMakeFiles/SinCalculator.dir
+/home/ofrode/vs_code/JCRPO/lab_1/build/CMakeFiles/edit_cache.dir
+/home/ofrode/vs_code/JCRPO/lab_1/build/CMakeFiles/rebuild_cache.dir
+/home/ofrode/vs_code/JCRPO/lab_1/build/CMakeFiles/SinCalculator_autogen_timestamp_deps.dir
+/home/ofrode/vs_code/JCRPO/lab_1/build/CMakeFiles/SinCalculator_autogen.dir
