@@ -1,0 +1,55 @@
+@startuml state-pass-lifecycle
+' Диаграмма состояний: жизненный цикл пропуска (UC-04, UC-10, UC-13)
+' Связи: статусы = PassStatus в глоссарии; переходы = операции UC-04 и правила BR-03, BR-05, BR-07, BR-09;
+' вложенные состояния «Снаружи / Внутри» = присутствие для anti-passback (BR-04)
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+
+title Жизненный цикл пропуска
+
+[*] --> pending : выпуск [valid_from > now]\n/ version = 1
+[*] --> active : выпуск [valid_from ≤ now]\n/ version = 1
+
+state "Ожидает начала действия" as pending
+pending : проверка → DENY_EXPIRED
+
+state "Активен" as active {
+  state "Снаружи" as outside
+  state "Внутри" as inside
+  inside : entry / счётчик + 1
+  inside : exit / счётчик − 1
+
+  [*] --> outside
+  outside --> inside : ALLOW (IN)
+  inside --> outside : ALLOW (OUT)
+  inside --> outside : сброс 04:00 или ручной\n/ запись в журнал (BR-07)
+  outside --> outside : DENY_NOT_INSIDE (OUT)
+  inside --> inside : DENY_ALREADY_INSIDE (IN)
+}
+
+state "Просрочен" as expired
+expired : проверка → DENY_EXPIRED
+
+state "Отозван" as revoked
+revoked : проверка → DENY_REVOKED
+
+state "Удалён" as deleted
+deleted : персональные данные и фото удалены
+
+pending --> active : наступил valid_from
+active --> active : перевыпуск / version + 1 (BR-05)
+active --> expired : наступил valid_to
+expired --> active : продление [новый valid_to > now]
+active --> revoked : отзыв / version + 1
+pending --> revoked : отзыв
+expired --> revoked : отзыв
+revoked --> deleted : запрос владельца\nили > 12 мес. (BR-09)
+expired --> deleted : запрос владельца\nили > 12 мес. (BR-09)
+deleted --> [*]
+@enduml

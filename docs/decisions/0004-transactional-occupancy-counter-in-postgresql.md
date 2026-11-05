@@ -60,3 +60,5 @@ informed: преподаватель С. С. Силич
 ## Дополнительная информация
 
 Затрагивает представления SDD 004-information, 006-validate-interaction, 008-algorithm и 010-concurrency.
+
+UML (ЛР 5): транзакция с блокировкой показана узлами BEGIN … COMMIT и параллельной ветвью публикации «после COMMIT» на диаграмме активности [`activity-validate-pass.puml`](../../uml/models/activity-validate-pass.puml) и фрагментами `opt`/`par` диаграммы последовательности [`sequence-validate-pass.puml`](../../uml/models/sequence-validate-pass.puml); entry/exit-действия «счётчик ± 1» состояния «Внутри» — на диаграмме [`state-pass-lifecycle.puml`](../../uml/models/state-pass-lifecycle.puml).

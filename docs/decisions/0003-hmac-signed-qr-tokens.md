@@ -62,3 +62,5 @@ QR-код пропуска может быть сфотографирован, �
 ## Дополнительная информация
 
 Затрагивает представления SDD 003-structure, 005-interface и 008-algorithm. Пересмотреть при появлении офлайн-режима сканера (релиз 3).
+
+Реализовано в ЛР 5: пакет [`packages/qr-token`](../../packages/qr-token/src/index.ts), 7 тестов в `packages/qr-token/test`. В UML решение отражено шагом «Подпись HMAC верна?» диаграммы активности [`activity-validate-pass.puml`](../../uml/models/activity-validate-pass.puml) и сообщением `verify(token, secret)` диаграммы последовательности [`sequence-validate-pass.puml`](../../uml/models/sequence-validate-pass.puml); переходы «перевыпуск / version + 1» — на диаграмме [`state-pass-lifecycle.puml`](../../uml/models/state-pass-lifecycle.puml).

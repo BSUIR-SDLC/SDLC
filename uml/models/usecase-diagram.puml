@@ -1,0 +1,80 @@
+@startuml usecase-diagram
+' Модель вариантов использования QRGate (uml/use-cases.md, SDD 013-use-cases)
+' Описание актёров и прецедентов (предусловия, потоки, постусловия) — uml/use-cases.md
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam note {
+  BackgroundColor #FFFBE6
+  BorderColor #B59B2A
+}
+left to right direction
+
+actor "Пользователь" as User
+actor "Контролёр" as Controller
+actor "Администратор" as Admin
+actor "Владелец\nпропуска" as Holder
+actor "Планировщик\n(время)" as Timer <<время>>
+
+Controller -up-|> User
+Admin -up-|> User
+
+rectangle "QRGate" {
+  usecase "UC-01\nВойти в систему" as UC01
+  usecase "UC-02\nПроверить пропуск по QR" as UC02
+  usecase "UC-03\nВвести номер пропуска вручную" as UC03
+  usecase "UC-10\nВыполнить валидацию пропуска" as UC10
+  usecase "UC-08\nПолучить список\nнаходящихся внутри" as UC08
+  usecase "UC-04\nУправлять пропусками" as UC04
+  usecase "UC-11\nИмпортировать\nпропуска из CSV" as UC11
+  usecase "UC-12\nЗагрузить фото владельца" as UC12
+  usecase "UC-05\nСледить за заполняемостью" as UC05
+  usecase "UC-06\nПросмотреть журнал проходов" as UC06
+  usecase "UC-07\nНастроить объект" as UC07
+  usecase "UC-09\nСбросить счётчик присутствия" as UC09
+  usecase "UC-13\nУдалить устаревшие данные" as UC13
+}
+
+User --> UC01
+Controller --> UC02
+Controller --> UC08
+Admin --> UC04
+Admin --> UC05
+Admin --> UC06
+Admin --> UC07
+Admin --> UC08
+Admin --> UC09
+Timer --> UC09
+Timer --> UC13
+UC02 -- Holder
+
+UC02 ..> UC10 : <<include>>
+UC03 ..> UC10 : <<include>>
+UC03 ..> UC02 : <<extend>>\n(QR не читается)
+UC11 ..> UC04 : <<extend>>\n(массовый выпуск)
+UC12 ..> UC04 : <<extend>>\n(есть согласие)
+
+note right of Controller
+  Сотрудник охраны на посту:
+  сканирует пропуска на своей точке прохода
+end note
+note right of Admin
+  Администрация объекта: пропуска,
+  настройки, журнал, заполняемость
+end note
+note bottom of Holder
+  Только предъявляет QR,
+  с системой не работает
+end note
+note bottom of Timer
+  Запуск по расписанию:
+  04:00 — сброс, 03:00 — очистка
+end note
+@enduml
