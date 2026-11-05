@@ -1,0 +1,9 @@
+digraph G {
+  graph [label="Ambient Reader — макет главного экрана", labelloc=t, rankdir=LR, bgcolor="white"];
+  node [shape=box, style="rounded,filled", fillcolor="#eef4ff", color="#486581", fontname="Arial"];
+  library [label="Библиотека\n\n+ Добавить книгу\n\nДюна — 42%\nЛесная песнь — 18%"];
+  reader [label="ЧТЕНИЕ\n\nГлава 3. Ночной лес\n\nТекст книги...\n\n← Предыдущая     Следующая →\n\n🔖 Закладка"];
+  player [label="ЭМБИЕНТ\n\n▶  ⏸   ────────  02:14\nЗвуки ночного леса\nГромкость  ─────  🔊"];
+  library -> reader [label=" открыть книгу"];
+  reader -> player [label=" часть книги"];
+}
