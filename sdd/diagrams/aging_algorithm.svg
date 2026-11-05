@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 800" width="700" height="800" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="farrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e293b"/>
+    </marker>
+  </defs>
+
+  <rect width="700" height="800" fill="#ffffff"/>
+
+  <!-- Заголовок схемы -->
+  <text x="350" y="30" fill="#0f172a" font-size="15" font-weight="bold" text-anchor="middle">Схема алгоритма оценки фазы созревания вина (ГОСТ 19.701–90)</text>
+
+  <!-- Пуск -->
+  <rect x="260" y="60" width="180" height="40" rx="20" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="350" y="85" fill="#0f172a" font-size="13" font-weight="600" text-anchor="middle">Начало</text>
+  <line x1="350" y1="100" x2="350" y2="130" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+
+  <!-- Ввод данных -->
+  <polygon points="230,130 450,130 430,180 210,180" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="152" fill="#0f172a" font-size="12" text-anchor="middle">Вход: WineItem (тип, винтаж),</text>
+  <text x="330" y="170" fill="#0f172a" font-size="12" text-anchor="middle">T_cur = текущая дата</text>
+  <line x1="330" y1="180" x2="330" y2="210" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+
+  <!-- Процесс: определение нормативного срока -->
+  <rect x="200" y="210" width="260" height="50" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="232" fill="#0f172a" font-size="12" text-anchor="middle">M_opt = getStandardMonths(type)</text>
+  <text x="330" y="248" fill="#0f172a" font-size="12" text-anchor="middle">T_peak = Vintage + M_opt</text>
+  <line x1="330" y1="260" x2="330" y2="290" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+
+  <!-- Процесс: расчет прогресса -->
+  <rect x="180" y="290" width="300" height="50" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="312" fill="#0f172a" font-size="12" text-anchor="middle">P = ((T_cur - Vintage) /</text>
+  <text x="330" y="328" fill="#0f172a" font-size="12" text-anchor="middle">(T_peak - Vintage)) * 100%</text>
+  <line x1="330" y1="340" x2="330" y2="370" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+
+  <!-- Условие 1: P < 85% -->
+  <polygon points="330,370 450,420 330,470 210,420" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="425" fill="#0f172a" font-size="12" text-anchor="middle">P &lt; 85% ?</text>
+
+  <!-- Ветка Да: статус AGING -->
+  <line x1="450" y1="420" x2="550" y2="420" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="480" y="412" fill="#0f172a" font-size="11">Да</text>
+  <line x1="550" y1="420" x2="550" y2="460" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+  <rect x="470" y="460" width="160" height="40" fill="#e0f2fe" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="550" y="485" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Статус = AGING</text>
+
+  <!-- Ветка Нет: идем к Условию 2 -->
+  <line x1="330" y1="470" x2="330" y2="510" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+  <text x="345" y="490" fill="#0f172a" font-size="11">Нет</text>
+
+  <!-- Условие 2: P <= 115% -->
+  <polygon points="330,510 450,560 330,610 210,560" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="565" fill="#0f172a" font-size="12" text-anchor="middle">P &lt;= 115% ?</text>
+
+  <!-- Ветка Да: статус AT_PEAK -->
+  <line x1="450" y1="560" x2="550" y2="560" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="480" y="552" fill="#0f172a" font-size="11">Да</text>
+  <line x1="550" y1="560" x2="550" y2="600" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+  <rect x="470" y="600" width="160" height="40" fill="#dcfce7" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="550" y="625" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Статус = AT_PEAK</text>
+
+  <!-- Ветка Нет: статус OVERDUE -->
+  <line x1="330" y1="610" x2="330" y2="650" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+  <text x="345" y="630" fill="#0f172a" font-size="11">Нет</text>
+  <rect x="250" y="650" width="160" height="40" fill="#fee2e2" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="675" fill="#0f172a" font-size="12" font-weight="600" text-anchor="middle">Статус = OVERDUE</text>
+
+  <!-- Слияние потоков -->
+  <line x1="550" y1="500" x2="550" y2="720" stroke="#0f172a" stroke-width="1.5"/>
+  <line x1="550" y1="640" x2="550" y2="720" stroke="#0f172a" stroke-width="1.5"/>
+  <line x1="330" y1="690" x2="330" y2="720" stroke="#0f172a" stroke-width="1.5"/>
+  <line x1="550" y1="720" x2="330" y2="720" stroke="#0f172a" stroke-width="1.5"/>
+  <line x1="330" y1="720" x2="330" y2="745" stroke="#0f172a" stroke-width="1.5" marker-end="url(#farrow)"/>
+
+  <!-- Останов -->
+  <rect x="260" y="745" width="140" height="40" rx="20" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="330" y="770" fill="#0f172a" font-size="13" font-weight="600" text-anchor="middle">Конец</text>
+</svg>
