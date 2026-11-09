@@ -1,8 +1,11 @@
-status: accepted
+---
+status: "accepted"
 date: 2026-11-08
 decision-makers: Соломенников К.И.
 consulted: Преподаватель (Внук О.М.)
-informed: Заказчик (напарник)
+informed: Заказчик Кошель Ксения
+---
+
 
 # Выбор Java Spring Boot для Backend
 
