@@ -16,3 +16,5 @@
 - [Отчёт по лабораторной работе № 3](lab3/individual-report.md)
 - [Авторский макет интерфейса PNG](lab3/ui-prototype-user.png)
 - [Модель интерфейса SysML v2](lab3/ui-prototype.sysml)
+- [Компонентная схема приложения PNG](lab3/system-architecture.png)
+- [Компонентная модель SysML v2](lab3/system-architecture.sysml)
