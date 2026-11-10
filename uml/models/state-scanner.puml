@@ -1,0 +1,72 @@
+@startuml state-scanner
+' Диаграмма состояний сканера (SDD 007; UML-версия модели sdd/models/qrgate-scanner-states.sysml)
+' Формат переходов «источник --> цель : СОБЫТИЕ / действие» читается тестом
+' apps/scanner/src/state/scannerMachine.test.ts: таблица переходов в коде должна совпадать с диаграммой (ADR-0010).
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam state<<ok>> {
+  BackgroundColor #D9F7E1
+}
+skinparam state<<deny>> {
+  BackgroundColor #FDE0E0
+}
+
+title Состояния сканера QRGate
+
+[*] --> login
+
+state "Вход" as login
+login : entry / показать форму входа
+login : do / POST /auth/login
+
+state "Сеанс контролёра" as session {
+  state "Выбор точки и направления" as selectCheckpoint
+  state "Сканирование" as scanning
+  scanning : entry / включить камеру
+  scanning : exit / выключить камеру
+  state "Ручной ввод" as manual
+  state "Проверка" as validating
+  validating : entry / запустить таймер 5 с
+  validating : do / ждать ответа /validate
+  state "Проход разрешён" as allowed <<ok>>
+  allowed : entry / зелёная карточка, звук
+  state "Отказ в проходе" as denied <<deny>>
+  denied : entry / красная карточка, вибрация
+  state "Нет связи" as offline <<deny>>
+  offline : entry / «проверка невозможна»
+  state "Кто внутри" as evacuation
+  evacuation : do / GET /sites/{id}/inside
+
+  [*] --> selectCheckpoint
+  selectCheckpoint --> scanning : CHECKPOINT_SELECTED
+  scanning --> validating : QR_DECODED / отправить токен
+  scanning --> manual : MANUAL_REQUESTED
+  manual --> validating : CODE_ENTERED [формат P-/G-NNNNNN] / отправить номер
+  manual --> scanning : CANCEL
+  validating --> allowed : ALLOW
+  validating --> denied : DENY
+  validating --> offline : TIMEOUT [> 5 с или ошибка сети]
+  allowed --> scanning : AUTO_RETURN [через 3 с]
+  denied --> scanning : NEXT
+  offline --> scanning : RETRY
+  scanning --> selectCheckpoint : CHANGE_CHECKPOINT
+  scanning --> evacuation : EVACUATION_OPENED
+  evacuation --> scanning : BACK
+}
+
+login --> session : LOGIN_OK
+session --> login : UNAUTHORIZED / 401, сессия истекла
+session --> login : LOGOUT / удалить сессию
+
+note right of offline
+  Fail-closed (ADR-0006):
+  из «Нет связи» нет перехода
+  в «Проход разрешён»
+end note
+@enduml

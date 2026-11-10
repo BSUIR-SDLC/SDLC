@@ -1,0 +1,100 @@
+@startuml activity-validate-pass
+' Диаграмма активности: проверка пропуска (UC-02 + включаемый UC-10, расширение UC-03)
+' Связи: шаги = основной поток UC-02 (uml/use-cases.md); проверки = BR-01;
+' узлы «Проверка» / «Нет связи» = состояния validating / offline (state-scanner.puml)
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F8FC
+skinparam ActivityBorderColor #2F5D8A
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityDiamondBorderColor #2F5D8A
+skinparam SwimlaneTitleFontStyle bold
+skinparam note {
+  BackgroundColor #FFFBE6
+  BorderColor #B59B2A
+}
+
+title Проверка пропуска на точке прохода (UC-02, UC-10)
+
+|Контролёр|
+start
+:Навести камеру на QR-код\nпосетителя;
+
+|Сканер|
+:Анализировать видеопоток\n(≥ 10 кадров/с);
+if (QR распознан за отведённое время?) then (да)
+  if (Тот же токен за последние 3 с?) then (да)
+    :Игнорировать повтор (BR-06);
+    detach
+  else (нет)
+  endif
+else (нет — QR повреждён)
+  |Контролёр|
+  :Нажать «Ввести код» и ввести\nномер P-/G-NNNNNN (UC-03);
+  |Сканер|
+  if (Формат номера верен?) then (нет)
+    :Подсветить поле ошибки;
+    detach
+  else (да)
+  endif
+endif
+:Отправить POST /api/v1/validate\n{token | code, checkpointId, direction};
+:Перейти в состояние «Проверка»,\nзапустить таймер 5 с;
+
+|Сервер|
+if (Сессия действительна?) then (нет)
+  :Ответ 401;
+  |Сканер|
+  :Перейти на экран входа (UC-01);
+  stop
+else (да)
+endif
+|Сервер|
+if (Подпись HMAC верна?) then (нет)
+  :reason = DENY_BAD_SIGNATURE\n(без обращения к БД);
+else (да)
+  :BEGIN; заблокировать строку\nсчётчика объекта (FOR UPDATE);
+  :Загрузить пропуск, зоны, присутствие;
+  :Выполнить цепочку проверок BR-01:\nсуществует → не отозван, версия →\nсрок → зона → anti-passback → вместимость;
+  :reason = первая нарушенная проверка\nили OK;
+endif
+:Записать событие в журнал\n(decision, reason, manual, latency);
+if (reason = OK?) then (да)
+  :Обновить присутствие\nи счётчик (±1);
+else (нет)
+endif
+:COMMIT;
+note right
+  Бюджет времени: сервер ≤ 500 мс p95
+  (REQ-PERF-001), от скана до карточки
+  ≤ 1,5 с (REQ-PERF-002)
+end note
+fork
+  :Ответ 200\n{decision, reason, pass, occupancy};
+fork again
+  :Опубликовать occupancy и event\nв WebSocket (после COMMIT);
+  |Панель администратора|
+  :Обновить live-график\nи ленту событий;
+  detach
+end fork
+
+|Сканер|
+if (Ответ получен за 5 с?) then (нет)
+  :Показать «Нет связи с сервером —\nпроверка невозможна» (fail-closed);
+  |Контролёр|
+  :Нажать «Повторить»;
+  stop
+else (да)
+endif
+|Сканер|
+if (decision = ALLOW?) then (да)
+  :Зелёная карточка, ФИО, тип, срок,\nфото; звук «успех»;
+  :Через 3 с вернуться к сканированию;
+else (нет)
+  :Красная карточка с причиной отказа,\nзвук «отказ», вибрация 200 мс;
+  |Контролёр|
+  :Нажать «Следующий»;
+endif
+stop
+@enduml
