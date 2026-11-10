@@ -5,6 +5,7 @@
 skinparam defaultFontName "DejaVu Sans"
 skinparam defaultFontSize 12
 skinparam shadowing false
+skinparam linetype polyline
 skinparam state {
   BackgroundColor #F4F8FC
   BorderColor #2F5D8A
