@@ -469,12 +469,12 @@ DreamCart является самостоятельным программным
 
 ## Приложение А. Архитектура системы
 
-![Концептуальная диаграмма архитектуры DreamCart](images/sysml_diagramm.png)
+![Концептуальная диаграмма архитектуры DreamCart](images/Sysml_diagramm1.png)
 
 ## Приложение Б. Макет пользовательского интерфейса
 
-![Главный экран DreamCart](images/mainwin.png)
+![Главный экран DreamCart](images/Mainwin1.png)
 
 # Приложение В.  Макет пользовательского интерфейса
 
-![Окно парсинга ссылок DreamCart](images/parser.png)
+![Окно парсинга ссылок DreamCart](images/Parser1.png)
