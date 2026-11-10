@@ -14,5 +14,5 @@
 
 - [Спецификация требований SRS](srs/animal-volunteer-aid-srs.md)
 - [Отчёт по лабораторной работе № 3](lab3/individual-report.md)
-- [Макет интерфейса PNG](lab3/ui-prototype.png)
+- [Авторский макет интерфейса PNG](lab3/ui-prototype-user.png)
 - [Модель интерфейса SysML v2](lab3/ui-prototype.sysml)
