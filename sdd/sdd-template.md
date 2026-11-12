@@ -129,3 +129,17 @@ RESTful JSON API для обмена данными между SPA и серве
   WHERE event_id = $1 AND tier_type = $2 FOR UPDATE;
   -- Проверка: IF sold_count + requested <= quota THEN UPDATE ... ELSE ROLLBACK;
   COMMIT;
+### VIEW-04: Модели динамического поведения системы (UML 2.5)
+* **ID:** [VIEW-004]-DynamicBehaviorUML
+* **Title:** Диаграммы вариантов использования, активности, состояний и последовательности
+* **Viewpoint:** Динамическое поведение и взаимодействие компонентов (Behavior & Interaction)
+* **Representation:**
+  1. **Диаграмма вариантов использования (Use Case):** определяет границы системы EventPulse, роли (`Организатор`, `Администратор`, `Платежный шлюз`) и связи между прецедентами (`<<include>>`, `<<extend>>`).
+     ![Use Case Diagram](../docs/uml/use-case.png)
+  2. **Диаграмма активности (Activity):** описывает параллельную конфигурацию квот и цен категорий «VIP» и «Стандарт» через узлы синхронизации `Fork/Join` с циклом проверки валидности данных.
+     ![Activity Diagram](../docs/uml/activity.png)
+  3. **Диаграмма состояний (State Machine):** моделирует конечный автомат жизненного цикла сущности «Мероприятие» (`Draft` → `Active` → `Sold Out` / `Cancelled` → `Completed`).
+     ![State Machine Diagram](../docs/uml/state-machine.png)
+  4. **Диаграмма последовательности (Sequence):** детализирует синхронное и транзакционное взаимодействие между `:EventCrudModal`, `:EventController` и `:TicketQuotaManager` при сохранении события в PostgreSQL.
+     ![Sequence Diagram](../docs/uml/sequence.png)
+* **More Information:** Текстовые описания актёров и потоки событий вынесены в `docs/additional-specs.md`, глоссарий — в `docs/glossary.md`.
