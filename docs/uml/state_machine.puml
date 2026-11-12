@@ -1,0 +1,24 @@
+@startuml
+[*] --> Stopped
+
+state Stopped : Эмулятор остановлен,\nпорт не прослушивается
+state Initializing : Парсинг CLI-аргументов,\nинициализация event loop
+state Running {
+  [*] --> Normal
+  state Normal : Штатная генерация телеметрии\n(mode = "NORMAL", базовая температура)
+  state Alert : Режим симуляции аварии\n(mode = "ALERT", повышенная температура)
+
+  Normal --> Alert : POST /command [mode=ALERT]\n/ применить temp_offset
+  Alert --> Normal : POST /command [mode=NORMAL]\n/ сбросить temp_offset
+  Normal --> Normal : Тik таймера (N сек)\n/ отправить телеметрию
+  Alert --> Alert : Тик таймера (N сек)\n/ отправить тревожную телеметрию
+}
+state AuthError : Отказ в доступе (HTTP 401),\nсостояние не изменено
+
+Stopped --> Initializing : Запуск процесса (CLI)
+Initializing --> Running : Конфигурация валидна
+Running --> AuthError : POST /command [неверный Bearer token]
+AuthError --> Running : Возврат ответа 401
+Running --> Stopped : Сигнал остановки (SIGINT / SIGTERM)
+Stopped --> [*]
+@enduml

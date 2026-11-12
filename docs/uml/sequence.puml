@@ -1,0 +1,41 @@
+@startuml
+actor "Rule Engine" as RE
+participant "FastAPI Router\n(/command)" as API
+participant "Auth Middleware\n(Bearer Check)" as Auth
+participant "DeviceState\n(asyncio.Lock)" as State
+participant "Logger" as Log
+
+RE -> API : POST /command (Authorization: Bearer <token>, JSON)
+activate API
+
+API -> Auth : validate_token(header)
+activate Auth
+alt Токен валиден
+    Auth --> API : OK (200)
+    deactivate Auth
+
+    API -> State : acquire_lock()
+    activate State
+    State -> State : update_params(interval_sec, mode, temp_offset)
+    State --> API : updated_state
+    deactivate State
+
+    API -> Log : info("Command applied", payload)
+    activate Log
+    Log --> API : logged
+    deactivate Log
+
+    API --> RE : 200 OK {"status": "updated"}
+else Токен отсутствует или неверен
+    Auth --> API : UnauthorizedError
+    deactivate Auth
+
+    API -> Log : warning("Unauthorized /command attempt")
+    activate Log
+    Log --> API : logged
+    deactivate Log
+
+    API --> RE : 401 Unauthorized {"detail": "Invalid token"}
+end
+deactivate API
+@enduml
