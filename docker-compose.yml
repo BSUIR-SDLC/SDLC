@@ -1,0 +1,28 @@
+# Запуск: SECRET_KEY=... ADMIN_PASSWORD=... docker compose up --build
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://easyticket:easyticket@db:5432/easyticket
+      SECRET_KEY: ${SECRET_KEY:?задайте SECRET_KEY}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?задайте ADMIN_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: easyticket
+      POSTGRES_PASSWORD: easyticket
+      POSTGRES_DB: easyticket
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U easyticket"]
+      interval: 5s
+      retries: 10
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor C as Контролёр
+    participant UI as WebUI (смартфон)
+    participant API as RestApi
+    participant O as OrderService
+    participant DB as PostgreSQL
+    C->>UI: сканировать QR-код
+    UI->>API: POST /api/tickets/verify
+    activate API
+    API->>O: verify(qr_payload)
+    activate O
+    O->>O: проверить подпись HMAC
+    alt подпись неверна
+        O-->>API: invalid
+        API-->>UI: «Недействителен»
+    else подпись верна
+        O->>DB: UPDATE tickets SET used_at = now() WHERE id = ? AND used_at IS NULL
+        DB-->>O: затронуто строк: 0 или 1
+        alt 1 строка
+            O-->>API: valid
+            API-->>UI: «Действителен»
+        else 0 строк
+            O-->>API: already used / refunded
+            API-->>UI: «Уже использован» / «Возвращён»
+        end
+    end
+    deactivate O
+    deactivate API
+    UI-->>C: результат проверки

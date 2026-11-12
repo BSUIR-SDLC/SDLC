@@ -1,0 +1,11 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Issued : PaymentConfirmed / создать QR
+    Issued --> Used : ScanValid [подпись верна, не использован]
+    Issued --> Refunded : Refund [не позднее чем за 24 ч до начала]
+    Issued --> Issued : ScanInvalid / отказ «Недействителен»
+    Used --> Used : Scan / отказ «Уже использован»
+    Refunded --> Refunded : Scan / отказ «Возвращён»
+    state "Issued (Выдан)" as Issued
+    state "Used (Использован)" as Used
+    state "Refunded (Возвращён)" as Refunded

@@ -1,0 +1,33 @@
+digraph G { graph [fontname="DejaVu Sans", fontsize=14, pad=0.3, bgcolor="white"]; node [fontname="DejaVu Sans", fontsize=11, shape=plain]; edge [fontname="DejaVu Sans", fontsize=10, color="#A80036"];
+rankdir=TB; nodesep=0.3; ranksep=0.8; 
+buyer [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part def»</I></FONT><BR/><B>Buyer — Покупатель</B></TD></TR></TABLE>>];
+adm [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part def»</I></FONT><BR/><B>Administrator — Администратор</B></TD></TR></TABLE>>];
+ctl [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part def»</I></FONT><BR/><B>Controller — Контролёр</B></TD></TR></TABLE>>];
+subgraph cluster_sys { label=<<I>«part def»</I> <B>EasyTicketSystem</B>>; style="rounded"; color="#A80036"; fontsize=12; bgcolor="#FFFFF0";
+web [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>webUI : WebUI</B></TD></TR></TABLE>>];
+api [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>api : RestApi</B></TD></TR></TABLE>>];
+cat [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>catalog : CatalogService</B></TD></TR></TABLE>>];
+res [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>reservations : ReservationService</B></TD></TR></TABLE>>];
+ord [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>orders : OrderService</B></TD></TR></TABLE>>];
+qr [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>qr : QrService</B></TD></TR></TABLE>>];
+mail [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>mail : MailService</B></TD></TR></TABLE>>];
+adms [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#FEFECE"><FONT POINT-SIZE="10"><I>«part»</I></FONT><BR/><B>admin : AdminService</B></TD></TR></TABLE>>];
+}
+db [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#E8E8E8"><FONT POINT-SIZE="10"><I>«external part»</I></FONT><BR/><B>db : PostgreSQL</B></TD></TR></TABLE>>];
+qrl [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#E8E8E8"><FONT POINT-SIZE="10"><I>«external part»</I></FONT><BR/><B>qrlib : QrLibrary (qrcode)</B></TD></TR></TABLE>>];
+smtp [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="5" COLOR="#A80036"><TR><TD ALIGN="CENTER" BGCOLOR="#E8E8E8"><FONT POINT-SIZE="10"><I>«external part»</I></FONT><BR/><B>smtp : MockSmtp (порт 1025)</B></TD></TR></TABLE>>];
+buyer -> web [arrowhead=none, style=dashed, label="HTTPS" ];
+adm -> web [arrowhead=none, style=dashed];
+ctl -> web [arrowhead=none, style=dashed];
+web -> api [arrowhead=none, label="JSON/REST"];
+api -> cat [arrowhead=none];
+api -> res [arrowhead=none];
+api -> ord [arrowhead=none];
+api -> adms [arrowhead=none];
+ord -> qr [arrowhead=none, label="билет"]; ord -> mail [arrowhead=none, label="письмо"];
+cat -> db [arrowhead=none];
+res -> db [arrowhead=none];
+ord -> db [arrowhead=none];
+adms -> db [arrowhead=none];
+qr -> qrl [arrowhead=none]; mail -> smtp [arrowhead=none];
+}

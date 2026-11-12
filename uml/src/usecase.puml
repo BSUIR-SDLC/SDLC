@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+actor "Покупатель" as Buyer
+actor "Администратор" as Admin
+actor "Контролёр" as Ctl
+actor "Время (таймер)" as Timer
+actor "SMTP-сервер" as Smtp <<external>>
+
+rectangle EasyTicket {
+  usecase "UC-01 Просмотреть афишу" as UC01
+  usecase "UC-02 Просмотреть мероприятие\nи схему зала" as UC02
+  usecase "UC-03 Забронировать места" as UC03
+  usecase "UC-04 Оформить заказ" as UC04
+  usecase "UC-05 Выдать и отправить билет" as UC05
+  usecase "UC-06 Найти билеты по заказу" as UC06
+  usecase "UC-07 Вернуть билет" as UC07
+  usecase "UC-08 Проверить билет на входе" as UC08
+  usecase "UC-09 Управлять мероприятиями" as UC09
+  usecase "UC-10 Просмотреть статистику" as UC10
+  usecase "UC-11 Войти в систему" as UC11
+  usecase "UC-12 Отменить бронь" as UC12
+  usecase "UC-13 Освободить просроченные брони" as UC13
+}
+
+Buyer --> UC01
+Buyer --> UC02
+Buyer --> UC03
+Buyer --> UC04
+Buyer --> UC06
+Buyer --> UC07
+UC05 --> Smtp
+Ctl --> UC08
+Admin --> UC09
+Admin --> UC10
+Admin --> UC12
+Timer --> UC13
+
+UC04 ..> UC05 : <<include>>
+UC07 ..> UC06 : <<extend>>
+UC08 ..> UC11 : <<include>>
+UC09 ..> UC11 : <<include>>
+UC10 ..> UC11 : <<include>>
+UC12 ..> UC11 : <<include>>
+@enduml
