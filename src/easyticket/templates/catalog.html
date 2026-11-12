@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Афиша — EasyTicket{% endblock %}
+{% block content %}
+<h1>Предстоящие мероприятия</h1>
+<form class="filters" method="get" action="/">
+  <label>Дата с <input type="date" name="date_from" value="{{ q.get('date_from', '') }}"></label>
+  <label>Дата по <input type="date" name="date_to" value="{{ q.get('date_to', '') }}"></label>
+  <label>Жанр
+    <select name="genre">
+      <option value="">Все жанры</option>
+      {% for g in genres %}<option value="{{ g }}" {% if q.get('genre') == g %}selected{% endif %}>{{ g }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Цена от <input type="number" min="0" step="1" name="price_min" value="{{ q.get('price_min', '') }}"></label>
+  <label>Цена до <input type="number" min="0" step="1" name="price_max" value="{{ q.get('price_max', '') }}"></label>
+  <button class="btn" type="submit">Применить</button>
+</form>
+
+{% if result.events %}
+<div class="grid">
+  {% for e in result.events %}
+  <article class="card">
+    <span class="tag">{{ e.genre }}</span>
+    <h2><a href="/events/{{ e.id }}">{{ e.title }}</a></h2>
+    <p>{{ e.starts_at | dt }}<br>{{ e.venue }}</p>
+    <p>от <strong>{{ e.min_price | price }}</strong></p>
+    <a class="btn" href="/events/{{ e.id }}">Выбрать места</a>
+  </article>
+  {% endfor %}
+</div>
+<nav class="pages" aria-label="Страницы">
+  Страница {{ result.page }} из {{ result.pages }}
+  {% if result.page > 1 %}<a href="/?page={{ result.page - 1 }}">Назад</a>{% endif %}
+  {% if result.page < result.pages %}<a href="/?page={{ result.page + 1 }}">Далее</a>{% endif %}
+</nav>
+{% else %}
+<p role="status">Мероприятия не найдены</p>
+{% endif %}
+{% endblock %}

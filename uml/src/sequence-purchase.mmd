@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+    actor B as Покупатель
+    participant UI as WebUI
+    participant API as RestApi
+    participant R as ReservationService
+    participant O as OrderService
+    participant Q as QrService
+    participant W as OutboxWorker
+    participant S as MailServer (mock SMTP)
+    B->>UI: выбрать места
+    UI->>API: POST /api/reservations
+    activate API
+    API->>R: reserve(event, seats)
+    activate R
+    R-->>API: reservation_id, expires_at (+10 мин)
+    deactivate R
+    API-->>UI: 201 Created
+    deactivate API
+    B->>UI: ввести email, нажать «Оплатить»
+    UI->>API: POST /api/orders, POST /api/orders/{id}/pay
+    activate API
+    API->>O: createOrder(reservation, email)
+    activate O
+    alt бронь истекла
+        O-->>API: ошибка
+        API-->>UI: 409 Conflict
+    else бронь действует
+        O->>R: confirm(seats) → «Продано»
+        O->>Q: generate(ticket)
+        activate Q
+        Q-->>O: PNG + подпись HMAC
+        deactivate Q
+        O->>W: поставить письмо в outbox
+        O-->>API: order_id, tickets
+        deactivate O
+        API-->>UI: 200 OK
+        deactivate API
+        UI-->>B: страница подтверждения с QR
+        W-)S: SMTP DATA (не позднее 60 с)
+        S--)W: 250 OK
+    end

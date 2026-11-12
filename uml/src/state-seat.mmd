@@ -1,0 +1,12 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Free
+    Free --> Reserved : AddToCart [место свободно] / запуск таймера 10 мин
+    Reserved --> Free : ReservationTimeout
+    Reserved --> Free : RemoveFromCart
+    Reserved --> Free : AdminCancel
+    Reserved --> Sold : PaymentConfirmed [бронь действует]
+    Sold --> Free : Refund [не позднее чем за 24 ч до начала]
+    state "Free (Свободно)" as Free
+    state "Reserved (Забронировано)" as Reserved
+    state "Sold (Продано)" as Sold

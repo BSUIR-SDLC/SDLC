@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ e.title }} — EasyTicket{% endblock %}
+{% block content %}
+<p><a href="/">← К афише</a></p>
+<h1>{{ e.title }}</h1>
+<p><span class="tag">{{ e.genre }}</span></p>
+<p>{{ e.starts_at | dt }}, {{ e.venue }}</p>
+<p>{{ e.description }}</p>
+<h2>Цены по категориям мест</h2>
+<ul>
+  {% for p in e.prices %}<li>{{ p.category }}: {{ p.price_byn | price }}</li>{% endfor %}
+</ul>
+<h2>Зал</h2>
+<ul>
+  {% for s in e.seat_counts %}<li>{{ s.category }}: {{ s.seats }} мест</li>{% endfor %}
+</ul>
+<p>Схема зала со статусами мест и выбор мест появятся в следующей итерации (REQ-FUNC-003).</p>
+{% endblock %}
