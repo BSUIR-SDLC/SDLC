@@ -1,0 +1,31 @@
+@startuml
+start
+:Чтение параметров CLI (host, port, interval N, token);
+:Инициализация состояния сенсора (mode = NORMAL);
+fork
+  repeat
+    :Считывание текущего состояния и смещения температуры;
+    :Формирование JSON-пакета телеметрии;
+    :Отправка телеметрии / вывод в структурированный лог;
+    :Ожидание N секунд (asyncio.sleep);
+  repeat while (Сервис активен?) is (да)
+fork again
+  repeat
+    :Ожидание входящего HTTP POST /command;
+    if (Заголовок Authorization: Bearer валиден?) then (да)
+      :Захват блокировки состояния (asyncio.Lock);
+      if (Тип команды?) then (SET_INTERVAL)
+        :Обновление интервала опроса N;
+      else (SET_STATE)
+        :Обновление mode (NORMAL/ALERT) и temp_offset;
+      endif
+      :Освобождение блокировки;
+      :Запись события в лог и возврат HTTP 200 OK;
+    else (нет)
+      :Запись предупреждения в лог;
+      :Возврат HTTP 401 Unauthorized;
+    endif
+  repeat while (Сервис активен?) is (да)
+end fork
+stop
+@enduml

@@ -1,0 +1,16 @@
+*.exe
+*.o
+*.obj
+*.out
+*.pdb
+*.ilk
+*.dll
+build/
+debug/
+release/
+.vscode/
+.vs/
+*.user
+*.tmp
+*.log
+*.bak
