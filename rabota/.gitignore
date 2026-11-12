@@ -1,0 +1,8 @@
+# Системные файлы Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Временные файлы текстовых редакторов
+*.tmp
+*.bak
