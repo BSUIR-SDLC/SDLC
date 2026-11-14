@@ -1,0 +1,54 @@
+{
+  "": {
+    "srs/images/model.sysml#Foodie_Requirements": {
+      "dx": -123,
+      "dy": -45
+    },
+    "srs/images/model.sysml#Foodie_GUI": {
+      "dx": -97,
+      "dy": -52
+    },
+    "srs/requirements.sysml#Foodie_Requirements": {
+      "dx": 776,
+      "dy": -1367
+    },
+    "srs/requirements.sysml#Foodie_GUI": {
+      "dx": 807,
+      "dy": -1347
+    }
+  },
+  "bdd|srs/requirements.sysml#Foodie_GUI": {
+    "srs/requirements.sysml#Foodie_GUI::MainWindow": {
+      "dx": 236,
+      "dy": -262
+    },
+    "srs/requirements.sysml#Foodie_GUI::TopBar": {
+      "dx": -164,
+      "dy": -457
+    },
+    "srs/requirements.sysml#Foodie_GUI::OrderPanel": {
+      "dx": 95,
+      "dy": -456
+    },
+    "srs/requirements.sysml#Foodie_GUI::DishGrid": {
+      "dx": 141,
+      "dy": -141
+    },
+    "srs/requirements.sysml#Foodie_GUI::CategoryList": {
+      "dx": 144,
+      "dy": -97
+    },
+    "srs/requirements.sysml#Foodie_GUI::OffersPanel": {
+      "dx": -164,
+      "dy": -602
+    },
+    "srs/requirements.sysml#Foodie_GUI::PromoBanner": {
+      "dx": 55,
+      "dy": -66
+    },
+    "srs/requirements.sysml#Foodie_GUI::Sidebar": {
+      "dx": 6,
+      "dy": 26
+    }
+  }
+}
