@@ -1,0 +1,42 @@
+// Представление 002-composition: модули приложения и их зависимости
+// Стрелка A -> B: модуль A вызывает публичный сервис модуля B. Циклические зависимости запрещены (ADR-0001).
+digraph components {
+  graph [rankdir=TB, fontname="Liberation Sans", nodesep=0.3, ranksep=0.5, pad=0.2, compound=true];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge  [fontname="Liberation Sans", fontsize=8, color="#666666", arrowsize=0.7];
+
+  browser [label="Браузер\nHTML (Thymeleaf), Chart.js", style="filled", fillcolor="#e8f0fb"];
+
+  subgraph cluster_app {
+    label="SubScope — Spring Boot 3, один исполняемый JAR; каждый модуль хранит данные через свои репозитории Spring Data JPA";
+    labelloc="b"; fontsize=10; color="#2f6db3"; style="rounded";
+    web       [label="web\nконтроллеры MVC, шаблоны,\nвалидация форм, Spring Security", fillcolor="#dbe8f7"];
+    { rank=same; admin; account; analytics; }
+    admin     [label="admin\nкатегории, каталог\nсервисов, блокировка"];
+    account   [label="account\nучётные записи, профиль,\nвосстановление пароля,\nпривязка Telegram"];
+    analytics [label="analytics\nпо категориям, месяцам,\nвлияние курса"];
+    reminder  [label="reminder\nReminderJob, RetryJob,\nLimitCheckJob", fillcolor="#fff6dd"];
+    dash      [label="dashboard\nсуммы, ближайшие\nсписания, лимит"];
+    usage     [label="usage\nотметки использования,\nкандидаты на отмену"];
+    subscr    [label="subscription\nподписки, статусы,\nсовместные, перенос дат"];
+    rates     [label="rates\nNbrbClient, RatesJob,\nMoneyConverter"];
+    notify    [label="notification\nNotificationService,\nEmailChannel, TelegramChannel"];
+  }
+  db   [label="PostgreSQL 15", shape=cylinder, fillcolor="#f3f3f3"];
+  nbrb [label="API НБ РБ", fillcolor="#eeeeee"];
+  smtp [label="SMTP-сервер", fillcolor="#eeeeee"];
+  tg   [label="Telegram Bot API", fillcolor="#eeeeee"];
+
+  browser -> web [label="HTTPS"];
+  web -> admin; web -> account; web -> analytics; web -> dash; web -> usage; web -> subscr;
+  admin -> account;
+  account -> notify [label="письмо сброса пароля"];
+  analytics -> subscr; analytics -> rates;
+  reminder -> subscr; reminder -> dash [label="лимит"]; reminder -> account; reminder -> notify;
+  dash -> usage; dash -> subscr; dash -> rates;
+  usage -> subscr;
+  subscr -> rates [label="пересчёт"];
+  rates -> nbrb [label="HTTPS"];
+  notify -> smtp [label="SMTP"]; notify -> tg [label="HTTPS"];
+  subscr -> db [label="JDBC", ltail=cluster_app];
+}

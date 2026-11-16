@@ -1,0 +1,21 @@
+// Представление 001-context: SubScope как «чёрный ящик» (C4, уровень 1)
+digraph context {
+  graph [rankdir=LR, fontname="Liberation Sans", nodesep=0.5, ranksep=1.0, pad=0.2];
+  node  [fontname="Liberation Sans", fontsize=11, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#555555"];
+
+  user   [label="Пользователь\n[человек]\nведёт учёт подписок", fillcolor="#e8f0fb"];
+  admin  [label="Администратор\n[человек]\nкатегории, каталог,\nпользователи", fillcolor="#e8f0fb"];
+  sys    [label="SubScope 1.0\n[веб-приложение]\nучёт подписок, пересчёт валют,\nнапоминания, лимит, аналитика", fillcolor="#2f6db3", fontcolor="white", color="#2f6db3", width=2.6, height=1.2];
+  nbrb   [label="API НБ РБ\n[внешняя система]\nофициальные курсы", fillcolor="#eeeeee"];
+  smtp   [label="Почтовый сервер\n[внешняя система]\nSMTP", fillcolor="#eeeeee"];
+  tg     [label="Telegram Bot API\n[внешняя система]\nсообщения бота", fillcolor="#eeeeee"];
+
+  user  -> sys  [label="HTTPS, браузер"];
+  admin -> sys  [label="HTTPS, браузер"];
+  sys   -> nbrb [label="HTTPS, JSON\nраз в сутки"];
+  sys   -> smtp [label="SMTP\nписьма"];
+  sys   -> tg   [label="HTTPS, JSON\nsendMessage, getUpdates"];
+  smtp  -> user [label="письмо", style=dashed];
+  tg    -> user [label="сообщение", style=dashed];
+}
