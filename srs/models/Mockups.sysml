@@ -70,7 +70,7 @@ package SubScopeMockups {
         }
     }
 
-    /** Экран 2. Обзор (REQ-FUNC-009, REQ-FUNC-010, REQ-FUNC-013, REQ-FUNC-015). */
+    /** Экран 2. Обзор (REQ-FUNC-009, REQ-FUNC-010, REQ-FUNC-013, REQ-FUNC-015, REQ-FUNC-022). */
     package DashboardMockup {
         private import UiKit::*;
 
@@ -99,7 +99,11 @@ package SubScopeMockups {
                 }
                 part unused : StatCard {
                     attribute :>> label = "Кандидаты на отмену";
-                    attribute :>> text = "2 · 19,90 BYN/мес";
+                    attribute :>> text = "2 · 19,90 BYN";
+                }
+                part limit : StatCard {
+                    attribute :>> label = "Лимит 100,00 BYN в месяц";
+                    attribute :>> text = "87 % занято";
                 }
             }
             part content : Row {
@@ -163,10 +167,6 @@ package SubScopeMockups {
                 }
                 part status : Select {
                     attribute :>> text = "Активные";
-                    attribute :>> weight = 2;
-                }
-                part export : Button {
-                    attribute :>> text = "Экспорт CSV";
                     attribute :>> weight = 2;
                 }
                 part add : Button {
@@ -343,7 +343,7 @@ package SubScopeMockups {
         }
     }
 
-    /** Экран 6. Настройки (REQ-FUNC-003, REQ-FUNC-011, REQ-FUNC-015, REQ-FUNC-016). */
+    /** Экран 6. Настройки (REQ-FUNC-003, REQ-FUNC-011, REQ-FUNC-015, REQ-FUNC-022, REQ-FUNC-023). */
     package SettingsMockup {
         private import UiKit::*;
 
@@ -378,9 +378,12 @@ package SubScopeMockups {
                 }
                 part notifications : Panel {
                     attribute :>> text = "Напоминания";
-                    part emailOn : Checkbox {
-                        attribute :>> text = "Присылать напоминания на e-mail";
-                        attribute :>> checked = true;
+                    part channel : Select {
+                        attribute :>> label = "Канал напоминаний";
+                        attribute :>> text = "Telegram (@student_by)";
+                    }
+                    part telegramLink : Link {
+                        attribute :>> text = "Отвязать Telegram";
                     }
                     part defaultDays : Select {
                         attribute :>> label = "Напоминать о списании за";
@@ -403,9 +406,13 @@ package SubScopeMockups {
                     }
                 }
                 part data : Panel {
-                    attribute :>> text = "Данные";
-                    part export : Button {
-                        attribute :>> text = "Экспорт подписок в CSV";
+                    attribute :>> text = "Лимит и данные";
+                    part monthlyLimit : TextField {
+                        attribute :>> label = "Месячный лимит, BYN (пусто — без лимита)";
+                        attribute :>> text = "100,00";
+                    }
+                    part saveLimit : Button {
+                        attribute :>> text = "Сохранить лимит";
                     }
                     part hint : Label {
                         attribute :>> text = "Удаление аккаунта необратимо.";
