@@ -33,6 +33,9 @@ package SubScopeContext {
         part mailServer : ExternalService {
             doc /* Почтовый сервер (SMTP) */
         }
+        part telegram : ExternalService {
+            doc /* Telegram Bot API (api.telegram.org) */
+        }
 
         connection userUi connect user to browser {
             doc /* ведёт учёт подписок */
@@ -54,6 +57,12 @@ package SubScopeContext {
         }
         connection inbox connect mailServer to user {
             doc /* письмо-напоминание */
+        }
+        connection bot connect subScope to telegram {
+            doc /* HTTPS, JSON: сообщения бота */
+        }
+        connection chat connect telegram to user {
+            doc /* сообщение-напоминание */
         }
     }
 

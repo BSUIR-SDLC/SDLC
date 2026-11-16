@@ -1,0 +1,24 @@
+// Представление 009-deployment: размещение на одном сервере
+digraph deployment {
+  graph [rankdir=LR, fontname="Liberation Sans", nodesep=0.4, ranksep=0.7, pad=0.2, compound=true];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#ffffff", color="#555555"];
+  edge  [fontname="Liberation Sans", fontsize=8, color="#555555"];
+
+  pc [label="Устройство пользователя\nсовременный браузер", shape=box3d, style="filled", fillcolor="#e8f0fb"];
+  subgraph cluster_vps {
+    label="Сервер: Linux (Ubuntu 24.04 LTS), 2 vCPU, 2 ГБ ОЗУ"; fontsize=10; color="#2f6db3"; style="rounded";
+    nginx [label="nginx\nTLS (Let's Encrypt), порт 443\nобратный прокси"];
+    app   [label="subscope.jar\nJDK 17, служба systemd\nпорт 8080 (localhost)\n-Xmx512m", fillcolor="#dbe8f7"];
+    pg    [label="PostgreSQL 15\nпорт 5432 (localhost)\nрезервная копия pg_dump\nежедневно в 03:00", shape=cylinder, fillcolor="#f3f3f3"];
+    env   [label="/etc/subscope/subscope.env\nDB_URL, SMTP_*, TELEGRAM_TOKEN", shape=note, fillcolor="#fffbe6"];
+  }
+  gh  [label="GitHub\nрепозиторий, Actions:\nmvn package + тесты", shape=box, fillcolor="#eeeeee"];
+  ext [label="api.nbrb.by\nSMTP-сервер\napi.telegram.org", fillcolor="#eeeeee"];
+
+  pc -> nginx [label="HTTPS 443"];
+  nginx -> app [label="HTTP 8080"];
+  app -> pg [label="JDBC"];
+  env -> app [style=dotted, arrowhead=none];
+  app -> ext [label="HTTPS / SMTP\n(исходящие)"];
+  gh -> app [label="JAR из релиза,\nscp + systemctl restart", style=dashed];
+}
