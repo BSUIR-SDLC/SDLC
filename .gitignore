@@ -1,0 +1,38 @@
+# ===== Результаты сборки Maven =====
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+.mvn/timing.properties
+
+# ===== Скомпилированные файлы и архивы =====
+out/
+build/
+*.class
+*.jar
+*.war
+
+# ===== Настройки IntelliJ IDEA =====
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ===== Настройки Eclipse / VS Code =====
+.classpath
+.project
+.settings/
+.vscode/
+
+# ===== Временные файлы Microsoft Office =====
+~$*
+
+# ===== Служебные файлы операционных систем =====
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ===== Логи =====
+*.log

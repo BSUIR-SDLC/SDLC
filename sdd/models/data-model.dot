@@ -1,0 +1,89 @@
+// Представление 004-information: логическая модель данных (PostgreSQL)
+digraph datamodel {
+  graph [rankdir=LR, fontname="Liberation Sans", nodesep=0.4, ranksep=0.8, pad=0.2];
+  node  [fontname="Liberation Sans", fontsize=9, shape=plain];
+  edge  [fontname="Liberation Sans", fontsize=8, color="#555555", arrowhead=crow, arrowtail=tee, dir=both];
+
+  users [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>app_user</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">email: varchar(254) UNIQUE</td></tr>
+    <tr><td align="left">password_hash: varchar(60)</td></tr>
+    <tr><td align="left">role: USER | ADMIN</td></tr>
+    <tr><td align="left">status: ACTIVE | BLOCKED</td></tr>
+    <tr><td align="left">base_currency: char(3)</td></tr>
+    <tr><td align="left">unused_threshold: smallint</td></tr>
+    <tr><td align="left">reminder_days: smallint</td></tr>
+    <tr><td align="left">channel: EMAIL | TELEGRAM</td></tr>
+    <tr><td align="left">telegram_chat_id: bigint NULL</td></tr>
+    <tr><td align="left">monthly_limit: numeric(12,2) NULL</td></tr>
+    <tr><td align="left">failed_logins, locked_until</td></tr>
+  </table>>];
+  tokens [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>one_time_token</b></font></td></tr>
+    <tr><td align="left">token_hash: varchar(64) PK</td></tr>
+    <tr><td align="left">user_id: FK</td></tr>
+    <tr><td align="left">purpose: PASSWORD_RESET | TELEGRAM_LINK</td></tr>
+    <tr><td align="left">expires_at, used_at</td></tr>
+  </table>>];
+  category [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>category</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">name: varchar(50) UNIQUE</td></tr>
+  </table>>];
+  catalog [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>catalog_service</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">name: varchar(100) UNIQUE</td></tr>
+    <tr><td align="left">category_id: FK</td></tr>
+  </table>>];
+  subscription [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>subscription</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">user_id: FK</td></tr>
+    <tr><td align="left">name: varchar(100)</td></tr>
+    <tr><td align="left">category_id: FK NULL</td></tr>
+    <tr><td align="left">price: numeric(12,2)</td></tr>
+    <tr><td align="left">currency: char(3)</td></tr>
+    <tr><td align="left">period: WEEK | MONTH | QUARTER | YEAR</td></tr>
+    <tr><td align="left">next_charge_date: date</td></tr>
+    <tr><td align="left">trial_end_date: date NULL</td></tr>
+    <tr><td align="left">participants: smallint (1..10)</td></tr>
+    <tr><td align="left">reminder_days: smallint NULL</td></tr>
+    <tr><td align="left">status: ACTIVE | PAUSED | CANCELLED</td></tr>
+    <tr><td align="left">note: varchar(500), created_at</td></tr>
+  </table>>];
+  usage [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>usage_mark</b></font></td></tr>
+    <tr><td align="left">subscription_id: FK, PK</td></tr>
+    <tr><td align="left">month: date (1-е число), PK</td></tr>
+    <tr><td align="left">used: boolean</td></tr>
+    <tr><td align="left">marked_at: timestamptz</td></tr>
+  </table>>];
+  notif [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>notification_log</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">user_id: FK; subscription_id: FK NULL</td></tr>
+    <tr><td align="left">kind: CHARGE | TRIAL_END | LIMIT</td></tr>
+    <tr><td align="left">due_date: date; channel</td></tr>
+    <tr><td align="left">status: SENT | FAILED; attempts</td></tr>
+    <tr><td align="left">UNIQUE (user_id, subscription_id,</td></tr>
+    <tr><td align="left">kind, due_date, channel)</td></tr>
+  </table>>];
+  rate [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#4f9a5c"><font color="white"><b>exchange_rate</b></font></td></tr>
+    <tr><td align="left">currency: char(3), PK</td></tr>
+    <tr><td align="left">rate_date: date, PK</td></tr>
+    <tr><td align="left">scale: integer</td></tr>
+    <tr><td align="left">official_rate: numeric(14,4)</td></tr>
+    <tr><td align="left">loaded_at: timestamptz</td></tr>
+  </table>>];
+
+  users -> subscription [label="1 : 0..*"];
+  users -> tokens [label="1 : 0..*"];
+  users -> notif [label="1 : 0..*"];
+  subscription -> usage [label="1 : 0..*"];
+  subscription -> notif [label="1 : 0..*"];
+  category -> subscription [label="1 : 0..*"];
+  category -> catalog [label="1 : 0..*"];
+}
