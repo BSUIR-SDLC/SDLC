@@ -1,39 +1,37 @@
 @startuml state-training
-' Диаграммы состояний: групповое занятие (Training) и элемент листа ожидания (WaitlistEntry)
+' Диаграммы состояний занятия и элемента листа ожидания (рисунки 3.5 и 3.6 отчёта ЛР5)
 ' SDD: представление 007-booking-states; REQ-FUNC-005, 006, 008, 023; REQ-REL-003
 
-skinparam defaultFontName "DejaVu Sans"
-skinparam defaultFontSize 12
-skinparam shadowing false
-skinparam dpi 150
 skinparam monochrome true
-skinparam StateBackgroundColor white
 
-state "state machine Занятие (Training)" as T {
-  [*] --> SCHEDULED : создать занятие\n[capacity > 0]
+state "stm Training [жизненный цикл группового занятия]" as T {
+  [*] --> SCHEDULED : create() [capacity > 0]
+  state SCHEDULED : entry / опубликовать в расписании
   state SCHEDULED {
+    state "Есть места" as Available : do / запись разрешена
+    state "Мест нет" as Full : do / предлагается лист ожидания
     [*] --> Available
-    state "Есть места" as Available
-    state "Мест нет" as Full
     Available --> Full : book() [free_places = 1]
-    Full --> Available : cancel() [очередь пуста\nили < 30 мин]
-    Available --> Available : изменить / notify()
+    Full --> Available : cancel() [очередь пуста или < 30 мин до начала]
   }
-  state IN_PROGRESS
-  state FINISHED
-  state "CANCELLED" as TCANCELLED : entry / все записи →\nCANCELLED_BY_CLUB;\nочередь → EXPIRED
+  SCHEDULED --> SCHEDULED : update() / уведомить участников (UC-19)
   SCHEDULED --> IN_PROGRESS : when(now ≥ startsAt)
   IN_PROGRESS --> FINISHED : when(now ≥ endsAt)
-  SCHEDULED --> TCANCELLED : отменить занятие\n(администратор)
+  SCHEDULED --> CANCELLED : cancelTraining()
+  state CANCELLED : entry / записи → CANCELLED_BY_CLUB; очередь → EXPIRED
   FINISHED --> [*]
-  TCANCELLED --> [*]
+  CANCELLED --> [*]
 }
 
-state "state machine Элемент листа ожидания (WaitlistEntry)" as W {
+state "stm WaitlistEntry [элемент листа ожидания]" as W {
   [*] --> WAITING : join() [мест нет]
-  WAITING --> PROMOTED : место освободилось\n[нет пересечений]
+  state WAITING : entry / позиция = последняя + 1
+  state WAITING : do / ждать освобождения места
+  state PROMOTED : entry / уведомить (WAITLIST_PROMOTED)
+  state EXPIRED : entry / позиция освобождается
+  WAITING --> PROMOTED : promoteFirst() [нет пересечений] / создать запись CONFIRMED
   WAITING --> LEFT : leave()
-  WAITING --> EXPIRED : занятие началось или отменено /\nпересечение у посетителя
+  WAITING --> EXPIRED : when(начало занятия) | cancelTraining() | promoteFirst() [пересечение у посетителя]
   PROMOTED --> [*]
   LEFT --> [*]
   EXPIRED --> [*]

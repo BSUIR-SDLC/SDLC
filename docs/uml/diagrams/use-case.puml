@@ -1,21 +1,11 @@
 @startuml use-case
-' Диаграмма вариантов использования FitSchedule 1.0
+' Диаграмма вариантов использования FitSchedule 1.0 (рисунок 3.1 отчёта ЛР5)
 ' Описание актёров и прецедентов — docs/uml/use-cases.md
 ' SDD: представление 012-use-cases; ADR-0007
 
-skinparam defaultFontName "DejaVu Sans"
-skinparam defaultFontSize 12
-skinparam shadowing false
-skinparam dpi 150
-skinparam monochrome true
-skinparam packageStyle rectangle
-skinparam nodesep 15
-skinparam ranksep 45
-skinparam usecase {
-  BackgroundColor white
-  BorderColor black
-}
 left to right direction
+skinparam monochrome true
+skinparam shadowing false
 
 actor "Пользователь" as User
 actor "Посетитель" as Visitor
@@ -23,65 +13,61 @@ actor "Тренер" as Trainer
 actor "Администратор" as Admin
 actor "Время\n(планировщик)" as Timer <<time>>
 
+' обобщение: роли — частные случаи Пользователя
 User <|-- Visitor
 User <|-- Trainer
 User <|-- Admin
 
-rectangle "FitSchedule 1.0" {
-  package "Учётная запись" {
-    usecase "UC-01 Зарегистрироваться" as UC01
-    usecase "UC-02 Войти в систему" as UC02
-  }
-  package "Расписание и запись" {
-    usecase "UC-03 Просмотреть\nрасписание" as UC03
-    usecase "UC-04 Отфильтровать\nрасписание" as UC04
-    usecase "UC-05 Записаться на занятие\n--\nточка расширения:\nнет свободных мест" as UC05
-    usecase "UC-06 Встать в лист\nожидания" as UC06
-    usecase "UC-07 Проверить доступность\n(места, пересечения)" as UC07
-    usecase "UC-08 Отменить запись" as UC08
-    usecase "UC-09 Продвинуть\nлист ожидания" as UC09
-    usecase "UC-10 Просмотреть\nмои записи" as UC10
-    usecase "UC-11 Экспортировать\nв календарь (.ics)" as UC11
-    usecase "UC-12 Забронировать\nслот тренера" as UC12
-  }
-  package "Активность и уведомления" {
-    usecase "UC-13 Вести историю\nактивности" as UC13
-    usecase "UC-14 Просмотреть\nуведомления" as UC14
-    usecase "UC-19 Уведомить\nучастников" as UC19
-    usecase "UC-20 Напомнить\nо занятии" as UC20
-    usecase "UC-21 Отметить\nпосещение" as UC21
-  }
-  package "Администрирование" {
-    usecase "UC-15 Управлять\nрасписанием" as UC15
-    usecase "UC-16 Отменить занятие" as UC16
-    usecase "UC-17 Задать слоты\nтренера" as UC17
-    usecase "UC-18 Отменить запись\nпосетителя" as UC18
-  }
+rectangle "FitSchedule" {
+  usecase "UC-02 Войти в систему" as UC02
+  usecase "UC-03 Просмотреть расписание\n--\nextension points:\nфильтр" as UC03
+  usecase "UC-01 Зарегистрироваться" as UC01
+  usecase "UC-05 Записаться на занятие\n--\nextension points:\nнет свободных мест" as UC05
+  usecase "UC-12 Забронировать слот тренера" as UC12
+  usecase "UC-08 Отменить запись" as UC08
+  usecase "UC-10 Просмотреть мои записи\n--\nextension points:\nэкспорт" as UC10
+  usecase "UC-13 Вести историю активности" as UC13
+  usecase "UC-14 Просмотреть уведомления" as UC14
+  usecase "UC-04 Отфильтровать расписание" as UC04
+  usecase "UC-06 Встать в лист ожидания" as UC06
+  usecase "UC-07 Проверить доступность" as UC07
+  usecase "UC-09 Продвинуть лист ожидания" as UC09
+  usecase "UC-11 Экспортировать в календарь (.ics)" as UC11
+  usecase "UC-19 Уведомить участников" as UC19
+  usecase "UC-15 Управлять расписанием\n--\nextension points:\nотмена занятия" as UC15
+  usecase "UC-16 Отменить занятие" as UC16
+  usecase "UC-18 Отменить запись посетителя" as UC18
+  usecase "UC-17 Задать слоты тренера" as UC17
+  usecase "UC-20 Напомнить о занятии" as UC20
+  usecase "UC-21 Отметить посещение" as UC21
 }
 
-Visitor --> UC01
 User --> UC02
 User --> UC03
+Visitor --> UC01
 Visitor --> UC05
+Visitor --> UC12
 Visitor --> UC08
 Visitor --> UC10
-Visitor --> UC12
 Visitor --> UC13
 Visitor --> UC14
 Admin --> UC15
-Admin --> UC17
 Admin --> UC18
+Admin --> UC17
 Timer --> UC20
 Timer --> UC21
 
 UC04 .> UC03 : <<extend>>
-UC06 .> UC05 : <<extend>>\n[нет мест]
+UC06 .> UC05 : <<extend>>
 UC05 .> UC07 : <<include>>
 UC12 .> UC07 : <<include>>
 UC08 .> UC09 : <<include>>
 UC18 .> UC09 : <<include>>
+UC09 .> UC19 : <<include>>
+UC16 .> UC19 : <<include>>
 UC11 .> UC10 : <<extend>>
 UC16 .> UC15 : <<extend>>
-UC16 .> UC19 : <<include>>
-UC09 .> UC19 : <<include>>
+
+note "condition (UC-06 → UC-05):\nу занятия нет свободных мест (REQ-FUNC-008);\nпосетитель согласен встать в очередь" as N1
+N1 .. UC06
 @enduml

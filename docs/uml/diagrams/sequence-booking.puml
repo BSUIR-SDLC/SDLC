@@ -1,69 +1,81 @@
 @startuml sequence-booking
-' Диаграмма последовательности: запись на групповое занятие (UC-05, UC-07)
-' SDD: представление 005-booking-flow; REQ-FUNC-007-009, REQ-PERF-002, REQ-REL-001; ADR-0004
+' Диаграмма последовательности «Записаться на занятие» (приложение В отчёта ЛР5, лист 1 формата А3)
+' Прецеденты UC-05, UC-07; REQ-FUNC-007-009, REQ-PERF-002, REQ-REL-001; ADR-0004
 
-skinparam defaultFontName "DejaVu Sans"
-skinparam defaultFontSize 12
-skinparam shadowing false
-skinparam dpi 150
 skinparam monochrome true
-skinparam sequenceMessageAlign center
-skinparam ParticipantBackgroundColor white
 autonumber
-
-title sd Записаться на занятие
+title sd Записаться на занятие (UC-05, UC-07)
 
 actor "Посетитель" as V
-boundary "SPA\n(браузер)" as SPA
-control "BookingController\n<<REST>>" as C
-control "BookingService" as S
-entity "BookingPolicy" as P
+boundary ":SPA" as SPA
+control ":BookingController" as C <<controller>>
+control ":BookingService" as S <<service>>
+entity ":BookingPolicy" as P <<policy>>
+participant ":BookingRepository" as R <<repository>>
 database "PostgreSQL" as DB
-queue "AuditLog" as LOG
 
-ref over V, SPA, C : sd Войти в систему (UC-02)
-
+activate V
 V -> SPA : нажать «Записаться»
 activate SPA
 SPA -> C : POST /api/trainings/{id}/bookings
 activate C
-note right of SPA : {≤ 2 с при 50 параллельных\nзапросах, REQ-PERF-002}
+note left of C : {≤ 2 с, REQ-PERF-002}
+C -> C : проверить сессию и CSRF
 C -> S : book(visitorId, trainingId)
 activate S
-S -> DB : SELECT … FROM training\nWHERE id = ? FOR UPDATE
+S -> R : findByIdForUpdate(trainingId)
+activate R
+R -> DB : SELECT … FOR UPDATE
 activate DB
-DB --> S : training (строка заблокирована)
-S -> DB : SELECT пересекающиеся записи посетителя
-DB --> S : conflicts
+DB --> R : training
+deactivate DB
+R --> S : training
+deactivate R
+S -> R : findOverlapping(visitorId, startsAt, endsAt)
+activate R
+R -> DB : SELECT записи посетителя
+activate DB
+DB --> R : conflicts
+deactivate DB
+R --> S : conflicts
+deactivate R
 S -> P : check(training, conflicts, now)
 activate P
-P --> S : Decision
+P --> S : decision
 deactivate P
 
-alt Decision = OK
-  create entity "booking :Booking" as B
-  S -> B : <<create>> (CONFIRMED)
-  S -> DB : INSERT booking;\nUPDATE training SET free_places = free_places − 1
-  S -> DB : COMMIT
-  DB --> S : ok
-  S ->> LOG : booking.created (async)
+alt decision = OK
+  create entity ":Booking" as B <<entity>>
+  S --> B : <<create>>
+  S -> R : save(booking)
+  activate R
+  R -> DB : INSERT booking; free_places − 1
+  activate DB
+  DB --> R : ok
+  deactivate DB
+  R --> S : booking
+  deactivate R
   S --> C : BookingDto
   C --> SPA : 201 Created {status, freePlaces}
-  SPA --> V : «Запись подтверждена»
-else Decision = NO_PLACES
-  S -> DB : ROLLBACK
-  S --> C : NoPlacesException
-  C --> SPA : 409 {reason: "мест нет", waitlist: true}
-  SPA --> V : предложить лист ожидания
-  ref over V, SPA, C, S : sd Встать в лист ожидания (UC-06)
-else Decision = CONFLICT
-  S -> DB : ROLLBACK
-  S --> C : ConflictException(booking)
-  C --> SPA : 409 {conflict}
-  SPA --> V : показать конфликтующую запись
+  SPA --> V : «Запись подтверждена», новое число мест
+else decision = NO_PLACES | CONFLICT | UNAVAILABLE
+  S --> C : BookingRejectedException(reason)
+  deactivate S
+  C --> SPA : 409 {reason, waitlist}
+  deactivate C
+  SPA --> V : показать причину и «Встать в очередь»
+  deactivate SPA
+  ref over V, SPA, C, S : Встать в лист ожидания (UC-06)
 end
-deactivate DB
-deactivate S
-deactivate C
-deactivate SPA
+deactivate V
+
+' уничтожение линий жизни в конце взаимодействия
+destroy V
+destroy SPA
+destroy C
+destroy S
+destroy P
+destroy R
+destroy DB
+destroy B
 @enduml

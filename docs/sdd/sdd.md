@@ -302,13 +302,14 @@ SDD — руководство для команды разработки (Ис�
   Детализация на UML (ЛР5) — линии жизни соответствуют модулям 002, сообщения — маршрутам 004:
 
   ![Последовательность записи](../uml/img/sequence-booking.png)
-  *Рисунок 5 — `sd Записаться на занятие`: блокировка, проверка UC-07, фрагмент `alt` (OK / нет мест / пересечение),
-  создание объекта `Booking`, асинхронная запись в журнал, ограничение {≤ 2 с}. Исходный текст:
+  *Рисунок 5 — `sd Записаться на занятие` (лист 1 формата А3): блокировка через `:BookingRepository`, проверка
+  `:BookingPolicy`, фрагмент `alt` (OK / отказ), создание объекта `:Booking`, `ref` на UC-06, ограничение {≤ 2 с},
+  уничтожение линий жизни в конце взаимодействия. Исходный текст:
   [`../uml/diagrams/sequence-booking.puml`](../uml/diagrams/sequence-booking.puml)*
 
   ![Последовательность отмены](../uml/img/sequence-cancel.png)
-  *Рисунок 6 — `sd Отменить запись`: вход через gate, создание и уничтожение `tx :Transaction`, фрагменты
-  `alt`/`opt`/`loop`/`break`, асинхронное уведомление, опрос раз в 60 с. Исходный текст:
+  *Рисунок 6 — `sd Отменить запись` (лист 2 формата А3): `BEGIN … COMMIT/ROLLBACK`, фрагменты
+  `alt`/`opt`/`loop`/`break`, асинхронное уведомление `:NotificationService`, уничтожение линий жизни. Исходный текст:
   [`../uml/diagrams/sequence-cancel.puml`](../uml/diagrams/sequence-cancel.puml)*
 - **More Information:** REQ-FUNC-007…011, REQ-FUNC-023, REQ-REL-001, REQ-PERF-002; ADR-0004, ADR-0006, ADR-0007;
   прецеденты UC-05…UC-09.
@@ -378,8 +379,8 @@ SDD — руководство для команды разработки (Ис�
   [`../uml/diagrams/state-booking.puml`](../uml/diagrams/state-booking.puml)*
 
   ![Автоматы занятия и листа ожидания](../uml/img/state-training.png)
-  *Рисунок 8 — `state machine Занятие` (подсостояния «Есть места» / «Мест нет») и `state machine Элемент листа
-  ожидания`. Исходный текст: [`../uml/diagrams/state-training.puml`](../uml/diagrams/state-training.puml)*
+  *Рисунок 8 — `stm Training` (подсостояния «Есть места» / «Мест нет», самопереход `update()`) и `stm WaitlistEntry`
+  (WAITING → PROMOTED | LEFT | EXPIRED). Исходный текст: [`../uml/diagrams/state-training.puml`](../uml/diagrams/state-training.puml)*
 - **More Information:** модель [`../srs/model.sysml`](../srs/model.sysml) (`BookingStatus`); REQ-FUNC-005, 006, 008,
   011, 023, REQ-REL-003; ADR-0007.
 
@@ -477,12 +478,12 @@ SDD — руководство для команды разработки (Ис�
 - **Title:** Диаграммы активности основных сценариев
 - **Viewpoint:** Algorithm (поток управления)
 - **Representation:** ![Активность записи](../uml/img/activity-booking.png)
-  *Рисунок 10 — запись на групповое занятие; дорожки «Посетитель», «Web-клиент (SPA)», «Сервер FitSchedule».
+  *Рисунок 10 — запись на групповое занятие; символы ГОСТ 19.701-90, действия посетителя слева, системы — правее.
   Исходный текст: [`../uml/diagrams/activity-booking.puml`](../uml/diagrams/activity-booking.puml)*
 
   ![Активность отмены](../uml/img/activity-cancel.png)
-  *Рисунок 11 — отмена записи с продвижением листа ожидания; дорожки «Посетитель», «Сервер FitSchedule»,
-  «Администратор». Исходный текст: [`../uml/diagrams/activity-cancel.puml`](../uml/diagrams/activity-cancel.puml)*
+  *Рисунок 11 — отмена записи с продвижением листа ожидания; слева посетитель, в центре администратор, справа
+  система. Исходный текст: [`../uml/diagrams/activity-cancel.puml`](../uml/diagrams/activity-cancel.puml)*
 
   Узлы решения диаграмм соответствуют альтернативным потокам прецедентов UC-05, UC-08, UC-09 и ветвям `alt`
   диаграмм последовательности (005); после фиксации транзакции журналирование и ответ клиенту выполняются

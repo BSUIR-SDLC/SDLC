@@ -1,68 +1,93 @@
 @startuml sequence-cancel
-' Диаграмма последовательности: отмена записи с продвижением листа ожидания (UC-08, UC-09, UC-19)
-' SDD: представление 005-booking-flow; REQ-FUNC-011, 021, 023; ADR-0004, ADR-0006
+' Диаграмма последовательности «Отменить запись» (приложение В отчёта ЛР5, лист 2 формата А3)
+' Прецеденты UC-08, UC-09, UC-19; REQ-FUNC-011, 021, 023; ADR-0004, ADR-0006
 
-skinparam defaultFontName "DejaVu Sans"
-skinparam defaultFontSize 12
-skinparam shadowing false
-skinparam dpi 150
 skinparam monochrome true
-skinparam sequenceMessageAlign center
-skinparam ParticipantBackgroundColor white
 autonumber
-
-title sd Отменить запись
+title sd Отменить запись (UC-08, UC-09, UC-19)
 
 actor "Посетитель" as V
-boundary "SPA\n(браузер)" as SPA
-control "BookingService" as S
-control "WaitlistService" as W
-control "NotificationService" as N
+boundary ":SPA" as SPA
+control ":BookingController" as C <<controller>>
+control ":BookingService" as S <<service>>
+control ":WaitlistService" as W <<service>>
 database "PostgreSQL" as DB
-actor "Посетитель из\nочереди" as V2
+control ":NotificationService" as N <<service>>
 
-[-> SPA : «Отменить» (из «Мои записи»)
+activate V
+V -> SPA : нажать «Отменить»
 activate SPA
-SPA -> S : DELETE /api/bookings/{id}
+SPA -> C : DELETE /api/bookings/{id}
+activate C
+C -> S : cancel(bookingId, visitorId)
 activate S
-create control "tx :Transaction" as TX
-S -> TX : <<create>> begin
-S -> DB : SELECT … FROM training FOR UPDATE
+S -> DB : BEGIN; SELECT training … FOR UPDATE
 activate DB
 DB --> S : training
+deactivate DB
+S -> S : canCancel(now)
+
 alt now > startsAt − cancelDeadline
-  S --> SPA : 409 «срок свободной отмены истёк»
-  TX -> DB : ROLLBACK
-  destroy TX
-else срок не истёк
-  S -> DB : UPDATE booking SET status = CANCELLED;\nfree_places + 1
+  S -> DB : ROLLBACK
+  activate DB
+  DB --> S : ok
+  deactivate DB
+  S --> C : CancellationDeadlineException
+  C --> SPA : 409 Conflict
+  SPA --> V : «Отмена недоступна»
+else срок свободной отмены не истёк
+  S -> DB : UPDATE booking → CANCELLED; free_places + 1
+  activate DB
+  DB --> S : ok
+  deactivate DB
   S -> W : promoteFirst(training, now)
   activate W
-  opt startsAt − now ≥ 30 мин
+  opt до начала ≥ 30 мин
     loop для элементов WAITING по позиции
       W -> DB : SELECT первый WAITING
+      activate DB
       DB --> W : entry
-      break нет пересечений у entry.visitor
-        W -> DB : INSERT booking (viaWaitlist);\nfree_places − 1; entry → PROMOTED
+      deactivate DB
+      break нет пересечений у посетителя
+        W -> DB : INSERT booking; entry → PROMOTED
+        activate DB
+        DB --> W : ok
+        deactivate DB
         W ->> N : notify(WAITLIST_PROMOTED)
         activate N
         N -> DB : INSERT notification
+        activate DB
+        DB --> N : ok
+        deactivate DB
         deactivate N
       end
-      W -> DB : entry → EXPIRED
+      W -> DB : UPDATE entry → EXPIRED
+      activate DB
+      DB --> W : ok
+      deactivate DB
     end
   end
-  W --> S
+  W --> S : result
   deactivate W
-  TX -> DB : COMMIT
-  destroy TX
-  S --> SPA : 200 {status: CANCELLED}
+  S -> DB : COMMIT
+  activate DB
+  DB --> S : ok
+  deactivate DB
+  S --> C : BookingDto
+  deactivate S
+  C --> SPA : 200 OK {status: CANCELLED}
+  deactivate C
+  SPA --> V : «Запись отменена»
+  deactivate SPA
 end
-deactivate DB
-deactivate S
-SPA --> V : «Запись отменена», место возвращено
-deactivate SPA
-...до 60 с (опрос уведомлений, ADR-0005)...
-V2 -> N : GET /api/me/notifications/unread-count
-N --> V2 : 1 (WAITLIST_PROMOTED)
+deactivate V
+
+' уничтожение линий жизни в конце взаимодействия
+destroy V
+destroy SPA
+destroy C
+destroy S
+destroy W
+destroy DB
+destroy N
 @enduml
