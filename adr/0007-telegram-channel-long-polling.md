@@ -62,4 +62,6 @@ informed: преподаватель О.М. Внук
 
 ## Дополнительная информация
 
-SRS v0.4: REQ-FUNC-011-3, REQ-FUNC-023, REQ-INT-004, CON-9-2, REQ-COMP-001-3. SDD: 001-context, 005-interface, 006-interaction (рисунок 3.7), 009-concurrency, 010-patterns. Переписка: письма 5–9 ([plan/correspondence.md](../plan/correspondence.md)).
+SRS v0.4: REQ-FUNC-011-3, REQ-FUNC-023, REQ-INT-004, CON-9-2, REQ-COMP-001-3. SDD: 001-context, 005-interface, 006-interaction (рисунки 3.10, 3.12), 009-concurrency, 010-patterns. Переписка: письма 5–9 ([plan/correspondence.md](../plan/correspondence.md)).
+
+UML-модель (ЛР5, ADR-0008): Telegram — второстепенный актёр прецедентов UC-14 и UC-25, обобщённый с почтовым сервером абстрактным актёром «Служба доставки сообщений» (рисунки 3.2 и 3.5 SDD). Длинный опрос показан фрагментом `loop` на диаграмме [sq-5-telegram-link](../uml/models/sq-5-telegram-link.mmd), стратегия каналов и переключение на e-mail при ответе 403 — на [sq-3-reminders](../uml/models/sq-3-reminders.mmd) и регионом «Канал напоминаний» диаграммы [sm-2-account](../uml/models/sm-2-account.dot).

@@ -61,4 +61,6 @@ informed: Заказчик
 
 ## Дополнительная информация
 
-SDD: SYS-NF-02, 005-interface, 008-state. Cookie сеанса: `Secure`, `HttpOnly`, `SameSite=Lax`.
+SDD: SYS-NF-02, 005-interface, 006-interaction (рисунок 3.8), 007-algorithm (рисунок 3.13), 008-state (рисунок 3.18). Cookie сеанса: `Secure`, `HttpOnly`, `SameSite=Lax`.
+
+UML-модель (ЛР5, ADR-0008): вход описан прецедентом UC-02 с альтернативными потоками блокировок; диаграмма активности [ad-1-login](../uml/models/ad-1-login.dot) задаёт порядок проверок (статус, затем пароль, единое сообщение об ошибке), диаграмма последовательности [sq-1-login](../uml/models/sq-1-login.mmd) — участие `SecurityFilterChain`, `BCryptPasswordEncoder` и `LoginAttemptService`, регион «Вход» диаграммы состояний [sm-2-account](../uml/models/sm-2-account.dot) — счётчик попыток и временную блокировку.

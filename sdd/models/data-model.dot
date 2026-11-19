@@ -14,10 +14,12 @@ digraph datamodel {
     <tr><td align="left">base_currency: char(3)</td></tr>
     <tr><td align="left">unused_threshold: smallint</td></tr>
     <tr><td align="left">reminder_days: smallint</td></tr>
+    <tr><td align="left">remind_charges, remind_trials: boolean</td></tr>
     <tr><td align="left">channel: EMAIL | TELEGRAM</td></tr>
     <tr><td align="left">telegram_chat_id: bigint NULL</td></tr>
     <tr><td align="left">monthly_limit: numeric(12,2) NULL</td></tr>
     <tr><td align="left">failed_logins, locked_until</td></tr>
+    <tr><td align="left">consent_at, created_at</td></tr>
   </table>>];
   tokens [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
     <tr><td bgcolor="#2f6db3"><font color="white"><b>one_time_token</b></font></td></tr>
@@ -47,6 +49,7 @@ digraph datamodel {
     <tr><td align="left">currency: char(3)</td></tr>
     <tr><td align="left">period: WEEK | MONTH | QUARTER | YEAR</td></tr>
     <tr><td align="left">next_charge_date: date</td></tr>
+    <tr><td align="left">charge_day: smallint (1..31)</td></tr>
     <tr><td align="left">trial_end_date: date NULL</td></tr>
     <tr><td align="left">participants: smallint (1..10)</td></tr>
     <tr><td align="left">reminder_days: smallint NULL</td></tr>
@@ -66,9 +69,19 @@ digraph datamodel {
     <tr><td align="left">user_id: FK; subscription_id: FK NULL</td></tr>
     <tr><td align="left">kind: CHARGE | TRIAL_END | LIMIT</td></tr>
     <tr><td align="left">due_date: date; channel</td></tr>
-    <tr><td align="left">status: SENT | FAILED; attempts</td></tr>
+    <tr><td align="left">status: PENDING | SENT | FAILED |</td></tr>
+    <tr><td align="left">UNDELIVERED; attempts</td></tr>
     <tr><td align="left">UNIQUE (user_id, subscription_id,</td></tr>
     <tr><td align="left">kind, due_date, channel)</td></tr>
+  </table>>];
+  charge [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+    <tr><td bgcolor="#2f6db3"><font color="white"><b>charge</b></font></td></tr>
+    <tr><td align="left">id: bigint PK</td></tr>
+    <tr><td align="left">subscription_id: FK</td></tr>
+    <tr><td align="left">charge_date: date</td></tr>
+    <tr><td align="left">amount: numeric(12,2) (доля)</td></tr>
+    <tr><td align="left">currency: char(3)</td></tr>
+    <tr><td align="left">category_id: FK NULL</td></tr>
   </table>>];
   rate [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="3">
     <tr><td bgcolor="#4f9a5c"><font color="white"><b>exchange_rate</b></font></td></tr>
@@ -84,6 +97,7 @@ digraph datamodel {
   users -> notif [label="1 : 0..*"];
   subscription -> usage [label="1 : 0..*"];
   subscription -> notif [label="1 : 0..*"];
+  subscription -> charge [label="1 : 0..*"];
   category -> subscription [label="1 : 0..*"];
   category -> catalog [label="1 : 0..*"];
 }

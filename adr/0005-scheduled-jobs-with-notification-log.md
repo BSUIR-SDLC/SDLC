@@ -61,4 +61,6 @@ informed: Заказчик
 
 ## Дополнительная информация
 
-SDD: 006-interaction (рисунок 3.5), 009-concurrency, 010-patterns (упрощённый transactional outbox). ADR-0007 добавляет канал Telegram к тому же журналу.
+SDD: 006-interaction (рисунок 3.10), 009-concurrency, 010-patterns (упрощённый transactional outbox). ADR-0007 добавляет канал Telegram к тому же журналу.
+
+UML-модель (ЛР5, ADR-0008): задачи `@Scheduled` — это прецеденты актёра «Время» UC-20…UC-23 (рисунок 3.5 SDD). Механизм журнала показан тремя связанными диаграммами: активность [ad-3-reminders](../uml/models/ad-3-reminders.dot) — порядок действий рассылки, последовательность [sq-3-reminders](../uml/models/sq-3-reminders.mmd) — вставка записи до отправки и обработка `DuplicateKeyException`, состояния [sm-3-notification](../uml/models/sm-3-notification.dot) — жизненный цикл записи `PENDING → SENT | FAILED → UNDELIVERED`. Статус `PENDING` (запись до отправки) добавлен в модель данных по результатам моделирования, SDD 0.4.
