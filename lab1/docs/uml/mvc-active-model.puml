@@ -1,0 +1,66 @@
+@startuml AstrologMVC
+title Приложение «Астролог» — MVC с активной моделью
+
+class Main {
+  + main(args)
+}
+
+class MainView {
+  - controller : AstrologController
+  - model : ZodiacModel
+  - lblDate : JLabel
+  - lblSign : JLabel
+  - txtInfo : JTextArea
+  + onModelChanged()
+}
+
+class InputDialog {
+  - txtDay : JTextField
+  - txtMonth : JTextField
+  - txtYear : JTextField
+  + setValues(day, month, year)
+}
+
+class AstrologController {
+  - model : ZodiacModel
+  - inputDialog : InputDialog
+  + openInputDialog(parent)
+  + processInput(day, month, year)
+}
+
+class ZodiacModel {
+  - day : int
+  - month : int
+  - year : int
+  - signName : String
+  - signInfo : String
+  - listeners : List
+  + setData(day, month, year)
+  + addListener(listener)
+  + notifyListeners()
+}
+
+interface ModelListener {
+  + onModelChanged()
+}
+
+enum ZodiacSign {
+  ARIES
+  TAURUS
+  ...
+  + fromDayAndMonth(d, m)
+}
+
+Main --> ZodiacModel
+Main --> AstrologController
+Main --> MainView
+MainView ..|> ModelListener
+MainView --> AstrologController
+MainView --> ZodiacModel
+AstrologController --> ZodiacModel
+AstrologController --> InputDialog
+ZodiacModel --> ModelListener : уведомляет
+ZodiacModel --> ZodiacSign : определяет знак
+ZodiacModel +-- ModelListener
+
+@enduml
