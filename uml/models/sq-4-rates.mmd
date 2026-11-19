@@ -1,0 +1,31 @@
+%% Диаграмма последовательности 4: загрузка курсов НБ РБ (UC-20; REQ-INT-002-2, REQ-REL-001; ADR-0004)
+sequenceDiagram
+  actor T as Время
+  participant J as :RatesJob
+  participant RS as :RateService
+  participant C as :NbrbClient
+  actor API as НБ РБ
+  participant DB as :ExchangeRateRepository
+
+  T->>+J: run() — 00:10 Europe/Minsk и при запуске
+  J->>+RS: refresh(today)
+  RS->>+DB: existsByRateDate(today)
+  DB-->>-RS: false
+  loop попытка 1..3, пауза 10 мин
+    RS->>+C: fetch(today)
+    C->>+API: GET /exrates/rates?periodicity=0 (тайм-аут 5 с)
+    alt ответ получен
+      API-->>C: 200 [{Cur_Abbreviation, Cur_Scale, Cur_OfficialRate, Date}]
+      C-->>RS: List<Rate>
+      RS->>DB: upsert(currency, rateDate, scale, officialRate)
+      Note right of RS: выход из цикла
+    else ошибка или тайм-аут
+      API-->>-C: ошибка
+      C-->>-RS: NbrbUnavailableException
+    end
+  end
+  opt все попытки неуспешны
+    Note over RS: записать ошибку в журнал,<br/>расчёты — по последнему курсу
+  end
+  RS-->>-J: результат загрузки
+  deactivate J

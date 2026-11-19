@@ -1,0 +1,39 @@
+// Диаграмма состояний 2: учётная запись (UC-01, UC-02, UC-13…UC-15, UC-19; REQ-SEC-001, REQ-FUNC-018-2, REQ-FUNC-023)
+digraph sm2 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.45, ranksep=0.7, pad=0.3, compound=true, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.5];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  init  [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.2, height=0.2];
+  final [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.13, height=0.13];
+
+  subgraph cluster_active {
+    label=<<b>Активна</b>>; style="rounded,filled"; fillcolor="#f3f7fc"; color="#2f6db3";
+    subgraph cluster_access {
+      label="регион «Вход»"; labeljust=l; style=dashed; color="#888888"; fontsize=9;
+      r1_init [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+      open    [label=<<b>Вход доступен</b><br/><font point-size="9">failed_logins &lt; 5</font>>];
+      locked  [label=<<b>Временно заблокирована</b><br/><font point-size="9">locked_until &gt; сейчас</font>>];
+      r1_init -> open;
+      open -> open [label="неудачный вход [попыток < 4] / попыток += 1\nуспешный вход / попыток := 0"];
+      open -> locked [label="5-й неудачный вход подряд /\nlocked_until := сейчас + 15 мин"];
+      locked -> open [label="after(15 мин) /\nпопыток := 0"];
+    }
+    subgraph cluster_channel {
+      label="регион «Канал напоминаний»"; labeljust=l; style=dashed; color="#888888"; fontsize=9;
+      r2_init [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+      email   [label=<<b>Канал «E-mail»</b>>];
+      tg      [label=<<b>Канал «Telegram»</b><br/><font point-size="9">telegram_chat_id задан</font>>];
+      r2_init -> email;
+      email -> tg [label="/start с действующим\nкодом (UC-14)"];
+      tg -> email [label="отвязать (UC-13) или\nбот заблокирован (UC-25)"];
+    }
+  }
+
+  blocked [label=<<b>Заблокирована администратором</b><br/><font point-size="9">вход запрещён,<br/>уведомления не отправляются</font>>];
+
+  init -> r1_init [lhead=cluster_active, label="зарегистрироваться\n(UC-01)"];
+  locked -> blocked [ltail=cluster_active, label="заблокировать (UC-19) /\nзавершить сеансы"];
+  blocked -> tg [lhead=cluster_active, label="разблокировать (UC-19)", constraint=false];
+  tg -> final [ltail=cluster_active, label="удалить учётную запись (UC-15) /\nкаскадно удалить данные"];
+}

@@ -1,0 +1,25 @@
+// Диаграмма состояний 3: запись журнала уведомлений notification_log (UC-03, UC-21, UC-23, UC-25; REQ-INT-003, REQ-INT-004, ADR-0005)
+digraph sm3 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.5, ranksep=0.9, pad=0.3, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.5];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  init    [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.2, height=0.2];
+  dup     [shape=diamond, style=filled, fillcolor=white, label="", width=0.28, height=0.28];
+  final   [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.13, height=0.13];
+  pending [label=<<b>Ожидает отправки</b><br/><font point-size="9">PENDING</font>>];
+  sent    [label=<<b>Отправлено</b><br/><font point-size="9">SENT</font>>];
+  failed  [label=<<b>Ошибка</b><br/><font point-size="9">FAILED</font>>];
+  undeliv [label=<<b>Не доставлено</b><br/><font point-size="9">UNDELIVERED</font>>];
+
+  init -> dup [label="событие уведомления\n(UC-03, UC-21, UC-23)"];
+  dup -> final [label="[запись с тем же ключом есть] /\nне отправлять"];
+  dup -> pending [label="[новое событие] /\nINSERT, attempts := 0"];
+  pending -> sent [label="служба доставки\nприняла сообщение"];
+  pending -> pending [label="Telegram 403 / отвязать чат, канал := EMAIL\nTelegram 429 / ждать retry_after"];
+  pending -> failed [label="ошибка доставки /\nattempts += 1"];
+  failed -> pending [label="RetryJob каждые 10 мин\n[attempts < 3]"];
+  failed -> undeliv [label="[attempts = 3] /\nзаписать в журнал событий"];
+  sent -> final; undeliv -> final;
+  {rank=same; sent; failed}
+}

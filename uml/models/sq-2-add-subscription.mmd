@@ -1,0 +1,35 @@
+%% Диаграмма последовательности 2: добавление подписки (UC-04, UC-24, UC-26, UC-27; REQ-FUNC-004-3, 013, 020, 022)
+sequenceDiagram
+  actor U as Пользователь
+  participant W as :SubscriptionController
+  participant C as :CatalogService
+  participant S as :SubscriptionService
+  participant M as :MoneyConverter
+  participant D as :DashboardService
+  participant DB as :SubscriptionRepository
+
+  U->>+W: GET /subscriptions/new
+  W-->>-U: форма подписки
+  opt введено ≥ 2 символов названия (UC-26)
+    U->>+W: GET /api/catalog?q=net
+    W->>+C: suggest("net", 10)
+    C-->>-W: [{name, category}]
+    W-->>-U: подсказки (JSON)
+  end
+  U->>+W: POST /subscriptions/new (форма, _csrf)
+  W->>W: проверить форму (Bean Validation)
+  alt есть ошибки ввода
+    W-->>U: 200 форма с сообщениями у полей
+  else данные корректны
+    W->>+S: create(userId, command)
+    S->>DB: save(subscription: ACTIVE)
+    S-->>-W: subscriptionId
+    W->>+D: limitStatus(userId)
+    D->>+M: convert(monthlyShare, currency, base, today)
+    M-->>-D: Converted(amount, rateDate)
+    D-->>-W: LimitStatus(used, limit)
+    opt лимит задан и превышен (UC-27)
+      W->>W: добавить предупреждение «Превышение на N»
+    end
+    W-->>-U: 302 /subscriptions «Подписка добавлена»
+  end

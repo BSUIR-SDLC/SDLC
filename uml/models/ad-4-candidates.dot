@@ -1,0 +1,56 @@
+// Диаграмма активности 4: расчёт кандидатов на отмену (UC-11 с расширением UC-07; REQ-FUNC-012-2, REQ-FUNC-015-2)
+digraph ad4 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.35, ranksep=0.32, pad=0.3, newrank=true, splines=spline];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.42];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  subgraph cluster_user {
+    label=<<b>Пользователь</b>>; style=solid; color="#888888";
+    start  [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.22, height=0.22];
+    open   [label="Открыть «Кандидаты на отмену»"];
+    look   [label="Просмотреть список\nи экономию за год"];
+    d_act  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    end    [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+  }
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; style=solid; color="#888888";
+    last   [label="Определить последний\nзавершённый месяц"];
+    d_day  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    prev   [label="Прошлый месяц"];
+    prev2  [label="Позапрошлый месяц\n(идёт срок исправления)"];
+    m_day  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    win    [label="Сформировать окно из N месяцев\n(N — порог неиспользования)"];
+    subs   [label="Выбрать активные\nподписки пользователя"];
+    subgraph cluster_each {
+      label="«iterative» для каждой подписки"; labeljust=l; style="dashed,rounded"; color="#555555"; fontsize=9;
+      d_new  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+      d_used [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+      add    [label="Добавить в кандидаты:\nэкономия = стоимость в месяц × 12\n(UC-24)"];
+      m_loop [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    }
+    d_empty[shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    empty  [label="Показать «Неиспользуемых\nподписок нет»"];
+    show   [label="Показать список кандидатов"];
+    cancel [label="Перевести подписку\nв статус «Отменена» (UC-07)"];
+  }
+
+  start -> open -> last -> d_day;
+  d_day -> prev  [label="[сегодня > 7 числа]"];
+  d_day -> prev2 [label="[1–7 число]"];
+  prev -> m_day; prev2 -> m_day;
+  m_day -> win -> subs -> d_new;
+  d_new -> m_loop [label="[создана после\nначала окна]"];
+  d_new -> d_used [label="[создана до\nначала окна]"];
+  d_used -> m_loop [label="[есть отметка\n«пользовался»]"];
+  d_used -> add    [label="[отметок нет]"];
+  add -> m_loop;
+  m_loop -> d_empty;
+  d_empty -> empty [headlabel="[список пуст]", labeldistance=3.2, labelangle=-25, minlen=2];
+  d_empty -> show  [label="[есть кандидаты]"];
+  empty -> end;
+  show -> look -> d_act;
+  d_act -> cancel [label="[«Отметить отменённой»]"];
+  d_act -> end    [label="[закрыть]"];
+  cancel -> show [constraint=false];
+}

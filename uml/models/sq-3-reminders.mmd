@@ -1,0 +1,41 @@
+%% Диаграмма последовательности 3: ежедневная отправка напоминаний (UC-21, UC-25; REQ-FUNC-011-3, REQ-INT-003, 004; ADR-0005, ADR-0007)
+sequenceDiagram
+  actor T as Время
+  participant J as :ReminderJob
+  participant S as :SubscriptionService
+  participant N as :NotificationService
+  participant LOG as :NotificationLogRepository
+  participant CH as :NotificationChannel
+  actor X as Служба доставки
+
+  T->>+J: run() — 09:00 Europe/Minsk
+  J->>+S: dueReminders(today)
+  S-->>-J: List<ReminderEvent> (списания и пробные периоды)
+  loop для каждого события
+    J->>+N: notify(event)
+    N->>+LOG: insert(user, subscription, kind, dueDate, channel, PENDING)
+    LOG-->>-N: id или DuplicateKeyException
+    alt запись уже есть
+      N-->>J: пропущено
+    else новая запись
+      N->>+CH: send(recipient, message)
+      CH->>+X: sendMail / sendMessage
+      alt доставлено
+        X-->>CH: OK
+        CH-->>N: OK
+        N->>LOG: status := SENT
+      else Telegram 403 (бот заблокирован)
+        X-->>CH: 403 Forbidden
+        CH-->>N: ChannelUnavailable
+        Note over N: отвязать чат, канал := EMAIL,<br/>повторить через EmailChannel
+      else ошибка доставки
+        X-->>-CH: ошибка / тайм-аут
+        CH-->>-N: DeliveryFailed
+        N->>LOG: status := FAILED, attempts += 1
+      end
+      N-->>-J: результат
+    end
+  end
+  J->>J: записать итог в журнал событий
+  deactivate J
+  Note over N,LOG: RetryJob каждые 10 мин повторяет FAILED при attempts < 3

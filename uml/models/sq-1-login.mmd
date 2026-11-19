@@ -1,0 +1,36 @@
+%% Диаграмма последовательности 1: вход в систему (UC-02; REQ-FUNC-002, REQ-SEC-001; ADR-0006)
+sequenceDiagram
+  actor G as Гость
+  participant F as :SecurityFilterChain
+  participant A as :AccountUserDetailsService
+  participant R as :AppUserRepository
+  participant E as :BCryptPasswordEncoder
+  participant L as :LoginAttemptService
+
+  G->>+F: POST /login (email, password, _csrf)
+  F->>+A: loadUserByUsername(email)
+  A->>+R: findByEmail(email)
+  R-->>-A: Optional<AppUser>
+  A-->>-F: UserDetails (accountNonLocked, enabled)
+  alt учётная запись не найдена или пароль неверен
+    F->>E: matches(password, hash)
+    E-->>F: false
+    F->>+L: loginFailed(email)
+    opt 5-я неудачная попытка подряд
+      L->>R: lock(userId, now + 15 мин)
+    end
+    L-->>-F: 
+    F-->>G: 302 /login?error «Неверный e-mail или пароль»
+  else locked_until > now
+    F-->>G: 302 /login?locked «Повторите через N мин»
+  else status = BLOCKED
+    F-->>G: 302 /login?blocked «Учётная запись заблокирована»
+  else пароль верен
+    F->>E: matches(password, hash)
+    E-->>F: true
+    F->>+L: loginSucceeded(email)
+    L->>R: resetFailedLogins(userId)
+    L-->>-F: 
+    F->>F: создать сеанс, сменить JSESSIONID
+    F-->>-G: 302 /dashboard
+  end

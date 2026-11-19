@@ -1,0 +1,52 @@
+// Диаграмма активности 1: вход в систему (UC-02, REQ-FUNC-002, REQ-SEC-001)
+digraph ad1 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.35, ranksep=0.32, pad=0.3, newrank=true, splines=spline];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.42];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+  // служебные виды узлов
+  // начальный узел — закрашенный круг; конечный — круг с точкой; решение/слияние — ромб; разветвление — чёрная полоса
+
+  subgraph cluster_guest {
+    label=<<b>Гость</b>>; style=solid; color="#888888";
+    start  [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.22, height=0.22];
+    enter  [label="Ввести e-mail и пароль,\nнажать «Войти»"];
+    msgbad [label="Увидеть «Неверный e-mail\nили пароль»"];
+    msglock[label="Увидеть «Повторите\nчерез N мин»"];
+    msgblk [label="Увидеть «Учётная запись\nзаблокирована»"];
+    dash   [label="Работать на экране «Обзор»"];
+    end    [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+  }
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; style=solid; color="#888888";
+    find   [label="Найти учётную запись\nпо e-mail"];
+    d_found[shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    d_state[shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    check  [label="Сверить пароль\nс хешем BCrypt"];
+    d_pwd  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    reset  [label="Обнулить счётчик\nнеудачных попыток"];
+    sess   [label="Создать сеанс,\nзаписать вход в журнал"];
+    inc    [label="Увеличить счётчик\nнеудачных попыток"];
+    d_five [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    lock   [label="Заблокировать вход на 15 мин,\nзаписать в журнал"];
+    m_bad  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+  }
+
+  start -> enter -> find -> d_found;
+  d_found -> d_state [label="[найдена]"];
+  d_found -> m_bad   [label="[не найдена]"];
+  d_state -> check   [label="[активна]"];
+  d_state -> msglock [label="[locked_until > сейчас]"];
+  d_state -> msgblk  [label="[заблокирована\nадмином]"];
+  check -> d_pwd;
+  d_pwd -> reset [label="[верен]"];
+  d_pwd -> inc   [label="[неверен]"];
+  reset -> sess -> dash -> end;
+  inc -> d_five;
+  d_five -> lock  [label="[5 попыток подряд]"];
+  d_five -> m_bad [label="[меньше 5]"];
+  lock -> m_bad;
+  m_bad -> msgbad;
+  msgbad -> enter [constraint=false, label="повторить"];
+  msglock -> end; msgblk -> end;
+}

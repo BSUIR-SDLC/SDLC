@@ -1,0 +1,18 @@
+// Диаграмма прецедентов 3: администрирование (uml/use-cases.md)
+digraph uc3 {
+  graph [rankdir=LR, fontname="Liberation Sans", fontsize=11, nodesep=0.3, ranksep=0.9, pad=0.3, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  admin [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Администратор</td></tr></table>>];
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; labeljust=l; style=solid; color="#2f6db3"; penwidth=1.4;
+    node [shape=ellipse, style=filled, fillcolor="#dbe8f7", color="#2f6db3", width=2.3, height=0.6, fixedsize=true];
+    uc17 [label="UC-17\nВести справочник\nкатегорий"];
+    uc18 [label="UC-18\nВести каталог\nсервисов"];
+    uc19 [label="UC-19\nЗаблокировать или\nразблокировать пользователя", width=2.6, height=0.7];
+  }
+
+  admin -> {uc17 uc18 uc19};
+}

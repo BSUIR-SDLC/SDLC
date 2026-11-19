@@ -1,0 +1,53 @@
+// Диаграмма активности 2: добавление подписки (UC-04 с расширениями UC-26, UC-27; REQ-FUNC-004-3, 013, 020, 022)
+digraph ad2 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.35, ranksep=0.32, pad=0.3, newrank=true, splines=spline];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.42];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  subgraph cluster_user {
+    label=<<b>Пользователь</b>>; style=solid; color="#888888";
+    start  [shape=circle, style=filled, fillcolor=black, color=black, label="", width=0.22, height=0.22];
+    open   [label="Нажать «Добавить подписку»"];
+    name   [label="Ввести название"];
+    d_pick [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    m_name [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    money  [label="Ввести цену, валюту,\nвыбрать период"];
+    rest   [label="Заполнить дату списания\nи необязательные поля,\nнажать «Сохранить»"];
+    see    [label="Увидеть список подписок\nс сообщением"];
+    end    [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+  }
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; style=solid; color="#888888";
+    form   [label="Показать пустую форму"];
+    d_len  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    hints  [label="Найти до 10 сервисов каталога\n(UC-26)"];
+    fill   [label="Подставить название\nи категорию по умолчанию"];
+    est    [label="Показать стоимость в месяц\nв базовой валюте (UC-24)"];
+    valid  [label="Проверить данные"];
+    d_ok   [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    marks  [label="Пометить ошибочные поля,\nсохранить введённые значения"];
+    save   [label="Сохранить подписку\nсо статусом «Активна»"];
+    total  [label="Рассчитать стоимость\nактивных подписок в месяц"];
+    d_lim  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    warn   [label="Добавить предупреждение\nо превышении лимита (UC-27)"];
+    m_lim  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    msg    [label="Перенаправить на список\nс сообщением «Подписка добавлена»"];
+  }
+
+  start -> open -> form -> name -> d_len;
+  d_len -> hints  [label="[≥ 2 символов]"];
+  d_len -> m_name [label="[< 2 символов]"];
+  hints -> d_pick;
+  d_pick -> fill   [label="[сервис выбран]"];
+  d_pick -> m_name [label="[не выбран]"];
+  fill -> m_name;
+  m_name -> money -> est -> rest -> valid -> d_ok;
+  d_ok -> marks [label="[есть ошибки]"];
+  marks -> rest [constraint=false, tailport=w, headport=e];
+  d_ok -> save  [label="[данные корректны]"];
+  save -> total -> d_lim;
+  d_lim -> warn  [label="[лимит задан\nи превышен]"];
+  d_lim -> m_lim [label="[иначе]"];
+  warn -> m_lim -> msg -> see -> end;
+}

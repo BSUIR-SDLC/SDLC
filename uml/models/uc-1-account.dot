@@ -1,0 +1,37 @@
+// Диаграмма прецедентов 1: учётная запись (uml/use-cases.md)
+digraph uc1 {
+  graph [rankdir=LR, fontname="Liberation Sans", fontsize=11, nodesep=0.3, ranksep=0.9, pad=0.3, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  guest [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Гость</td></tr></table>>];
+  user  [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Пользователь</td></tr></table>>];
+  mail     [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Почтовый сервер</td></tr></table>>];
+  telegram [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Telegram</td></tr></table>>];
+  delivery [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td><i>Служба доставки</i><br/><i>сообщений</i></td></tr></table>>];
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; labeljust=l; style=solid; color="#2f6db3"; penwidth=1.4;
+    node [shape=ellipse, style=filled, fillcolor="#dbe8f7", color="#2f6db3", width=2.3, height=0.6, fixedsize=true];
+    uc01 [label="UC-01\nЗарегистрироваться"];
+    uc02 [label="UC-02\nВойти в систему"];
+    uc03 [label="UC-03\nВосстановить пароль"];
+    uc16 [label="UC-16\nВыйти из системы"];
+    uc13 [label="UC-13\nНастроить профиль"];
+    uc14 [label="UC-14\nПривязать Telegram"];
+    uc15 [label="UC-15\nУдалить учётную запись"];
+    uc25 [label="UC-25\nОтправить уведомление", fillcolor="#e9f3e6", color="#4f9a5c"];
+  }
+
+  guest -> {uc01 uc02 uc03};
+  user  -> {uc16 uc13 uc14 uc15};
+  uc14 -> telegram;
+  uc25 -> delivery;
+  uc03 -> uc25 [style=dashed, label="«include»"];
+  delivery -> mail     [dir=back, arrowtail=onormal, arrowsize=1.1];
+  telegram -> delivery [arrowhead=onormal, arrowsize=1.1];
+
+  {rank=same; guest; user}
+  {rank=same; delivery; mail; telegram}
+  {rank=same; uc01; uc02; uc03; uc16; uc13; uc14; uc15; uc25}
+}

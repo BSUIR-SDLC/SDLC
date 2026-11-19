@@ -1,0 +1,40 @@
+// Диаграмма прецедентов 2: ведение подписок и анализ расходов (uml/use-cases.md)
+digraph uc2 {
+  graph [rankdir=LR, fontname="Liberation Sans", fontsize=11, nodesep=0.25, ranksep=0.9, pad=0.3, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  user [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Пользователь</td></tr></table>>];
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; labeljust=l; style=solid; color="#2f6db3"; penwidth=1.4;
+    node [shape=ellipse, style=filled, fillcolor="#dbe8f7", color="#2f6db3", width=2.3, height=0.6, fixedsize=true];
+    uc04 [label="UC-04\nДобавить подписку"];
+    uc05 [label="UC-05\nИзменить подписку"];
+    uc06 [label="UC-06\nУдалить подписку"];
+    uc11 [label="UC-11\nПросмотреть кандидатов\nна отмену"];
+    uc07 [label="UC-07\nИзменить статус подписки"];
+    uc08 [label="UC-08\nПросмотреть список\nподписок"];
+    uc09 [label="UC-09\nПросмотреть обзор\nрасходов"];
+    uc10 [label="UC-10\nОтметить использование"];
+    uc12 [label="UC-12\nПросмотреть аналитику"];
+    uc26 [label="UC-26\nВыбрать сервис\nиз каталога"];
+    uc27 [label="UC-27\nПредупредить\nо превышении лимита"];
+    uc24 [label="UC-24\nПересчитать\nв базовую валюту", fillcolor="#e9f3e6", color="#4f9a5c"];
+  }
+
+  user -> {uc04 uc05 uc06 uc11 uc07 uc08 uc09 uc10 uc12};
+
+  edge [style=dashed, arrowhead=vee];
+  uc04 -> uc24 [label="«include»"];
+  uc08 -> uc24 [label="«include»"];
+  uc09 -> uc24 [label="«include»"];
+  uc11 -> uc24 [label="«include»"];
+  uc12 -> uc24 [label="«include»"];
+  uc26 -> uc04 [label="«extend»\n(Каталог)", constraint=false];
+  uc27 -> uc04 [label="«extend»\n(Лимит)", constraint=false];
+  uc27 -> uc05 [label="«extend»\n(Лимит)", constraint=false];
+  uc07 -> uc11 [label="«extend»\n(Действие с кандидатом)", constraint=false];
+
+  {rank=same; uc26; uc27; uc24}
+}

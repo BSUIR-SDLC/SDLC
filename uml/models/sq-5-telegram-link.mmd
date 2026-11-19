@@ -1,0 +1,29 @@
+%% Диаграмма последовательности 5: привязка Telegram (UC-14; REQ-FUNC-023, REQ-INT-004; ADR-0007)
+sequenceDiagram
+  actor U as Пользователь
+  participant W as :SettingsController
+  participant K as :TokenService
+  actor B as Telegram
+  participant P as :TelegramUpdatesPoller
+  participant A as :AccountService
+
+  U->>+W: POST /settings/telegram (_csrf)
+  W->>+K: issue(userId, TELEGRAM_LINK, 15 мин)
+  K-->>-W: код
+  W-->>-U: ссылка t.me/SubScopeBot?start=код
+  U->>B: «Start» в боте
+  loop длинный опрос
+    P->>+B: getUpdates(offset, timeout = 25 с)
+    B-->>-P: [/start код, chat_id]
+  end
+  P->>+K: consume(код, TELEGRAM_LINK)
+  alt код действителен
+    K-->>P: userId
+    P->>+A: linkTelegram(userId, chat_id)
+    Note over A: telegram_chat_id := chat_id,<br/>channel := TELEGRAM
+    A-->>-P: OK
+    P->>B: sendMessage(chat_id, «Напоминания SubScope подключены»)
+  else код просрочен, использован или неизвестен
+    K-->>-P: InvalidTokenException
+    P->>B: sendMessage(chat_id, «Ссылка устарела. Получите новую в настройках»)
+  end

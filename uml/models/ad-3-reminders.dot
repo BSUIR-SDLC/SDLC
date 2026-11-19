@@ -1,0 +1,50 @@
+// Диаграмма активности 3: ежедневная отправка напоминаний (UC-21, UC-25; REQ-FUNC-011-3, REQ-INT-003, REQ-INT-004)
+digraph ad3 {
+  graph [rankdir=TB, fontname="Liberation Sans", fontsize=11, nodesep=0.35, ranksep=0.32, pad=0.3, newrank=true, splines=spline];
+  node  [fontname="Liberation Sans", fontsize=10, shape=box, style="rounded,filled", fillcolor="#dbe8f7", color="#2f6db3", height=0.42];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; style=solid; color="#888888";
+    tick   [shape=none, style="", label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="20" height="28"><img src="hourglass.png" scale="true"/></td></tr><tr><td>ежедневно 09:00 (Europe/Minsk)</td></tr></table>>];
+    fork   [shape=box, style=filled, fillcolor=black, color=black, label="", width=2.6, height=0.06];
+    charges[label="Выбрать активные подписки,\nсписание через срок напоминания"];
+    trials [label="Выбрать подписки, пробный период\nкоторых заканчивается через срок"];
+    join   [shape=box, style=filled, fillcolor=black, color=black, label="", width=2.6, height=0.06];
+    texts  [label="Сформировать тексты событий:\nсервис, суммы, доля, дата"];
+    d_next [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    log    [label="Записать событие в журнал\nсо статусом «Ожидает»"];
+    d_dup  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    chan   [label="Выбрать канал:\nTelegram или e-mail"];
+    d_res  [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    sent   [label="Отметить «Отправлено»"];
+    failed [label="Отметить «Ошибка»,\nRetryJob повторит отправку"];
+    relink [label="Отвязать чат,\nканал «E-mail»"];
+    m_ev   [shape=diamond, style=filled, fillcolor=white, label="", width=0.3, height=0.3];
+    sum    [label="Записать итог рассылки\nв журнал событий"];
+    end    [shape=doublecircle, style=filled, fillcolor=black, color=black, label="", width=0.16, height=0.16];
+  }
+
+  subgraph cluster_delivery {
+    label=<<b>Служба доставки сообщений</b>>; style=solid; color="#888888";
+    deliver[label="Принять и доставить\nсообщение"];
+  }
+
+  tick -> fork;
+  fork -> charges; fork -> trials;
+  charges -> join; trials -> join;
+  join -> texts -> d_next;
+  d_next -> log [label="[есть необработанное\nсобытие]"];
+  d_next -> sum [label="[событий больше нет]"];
+  log -> d_dup;
+  d_dup -> m_ev [label="[запись уже есть]"];
+  d_dup -> chan [label="[новая запись]"];
+  chan -> deliver -> d_res;
+  d_res -> sent   [label="[доставлено]"];
+  d_res -> failed [label="[ошибка]"];
+  d_res -> relink [label="[бот заблокирован]"];
+  relink -> deliver [constraint=false, label="повторить\nпо e-mail"];
+  sent -> m_ev; failed -> m_ev;
+  m_ev -> d_next [constraint=false, tailport=w, headport=w];
+  sum -> end;
+}

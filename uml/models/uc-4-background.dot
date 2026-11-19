@@ -1,0 +1,37 @@
+// Диаграмма прецедентов 4: прецеденты, инициируемые временем (uml/use-cases.md)
+digraph uc4 {
+  graph [rankdir=LR, fontname="Liberation Sans", fontsize=11, nodesep=0.3, ranksep=0.9, pad=0.3, newrank=true];
+  node  [fontname="Liberation Sans", fontsize=10];
+  edge  [fontname="Liberation Sans", fontsize=9, color="#333333", arrowhead=vee, arrowsize=0.7];
+
+  timer [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Время</td></tr></table>>];
+  nbrb     [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>НБ РБ</td></tr></table>>];
+  mail     [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Почтовый сервер</td></tr></table>>];
+  telegram [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td>Telegram</td></tr></table>>];
+  delivery [shape=none, label=<<table border="0" cellspacing="0" cellpadding="0"><tr><td fixedsize="true" width="34" height="62"><img src="actor.png" scale="true"/></td></tr><tr><td><i>Служба доставки</i><br/><i>сообщений</i></td></tr></table>>];
+
+  subgraph cluster_system {
+    label=<<b>SubScope</b>>; labeljust=l; style=solid; color="#2f6db3"; penwidth=1.4;
+    node [shape=ellipse, style=filled, fillcolor="#dbe8f7", color="#2f6db3", width=2.3, height=0.6, fixedsize=true];
+    uc20 [label="UC-20\nЗагрузить курсы валют"];
+    uc22 [label="UC-22\nПеренести даты\nсписания"];
+    uc23 [label="UC-23\nПроверить месячный\nлимит"];
+    uc21 [label="UC-21\nОтправить напоминания\nо списаниях"];
+    uc24 [label="UC-24\nПересчитать\nв базовую валюту", fillcolor="#e9f3e6", color="#4f9a5c"];
+    uc25 [label="UC-25\nОтправить уведомление", fillcolor="#e9f3e6", color="#4f9a5c"];
+  }
+
+  timer -> {uc20 uc21 uc22 uc23};
+  uc20 -> nbrb;
+  uc25 -> delivery;
+  edge [style=dashed];
+  uc21 -> uc25 [label="«include»"];
+  uc23 -> uc25 [label="«include»"];
+  uc23 -> uc24 [label="«include»"];
+  edge [style=solid];
+  delivery -> mail     [dir=back, arrowtail=onormal, arrowsize=1.1];
+  telegram -> delivery [arrowhead=onormal, arrowsize=1.1];
+
+  {rank=same; uc20; uc21; uc22; uc23; uc24; uc25}
+  {rank=same; nbrb; delivery; mail; telegram}
+}
