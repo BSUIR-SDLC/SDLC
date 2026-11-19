@@ -1,0 +1,40 @@
+# Параметры окружения задаются переменными окружения (REQ-INST-001, SDD 011-deployment).
+spring:
+  application:
+    name: subscope
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/subscope}
+    username: ${DB_USER:subscope}
+    password: ${DB_PASSWORD:subscope}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate          # схему создаёт только Flyway (ADR-0003)
+    properties:
+      hibernate.jdbc.time_zone: Europe/Minsk
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  thymeleaf:
+    cache: ${THYMELEAF_CACHE:true}
+  task:
+    scheduling:
+      pool:
+        size: 2                   # фоновые задачи, SDD 009-concurrency
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      timeout: 30m                # REQ-SEC-001
+
+subscope:
+  zone: Europe/Minsk
+  nbrb:
+    base-url: https://api.nbrb.by/exrates/rates
+
+logging:
+  level:
+    by.bsuir.subscope: INFO
