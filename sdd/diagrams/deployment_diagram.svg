@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 640" width="800" height="640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect width="800" height="640" fill="#ffffff"/>
+  <rect x="20" y="15" width="760" height="40" rx="6" fill="#1e293b"/>
+  <text x="400" y="40" fill="#f8fafc" font-size="15" font-weight="bold" text-anchor="middle">Топология развёртывания «WineVault» (Deployment View)</text>
+
+  <!-- Граница хоста клиента -->
+  <rect x="50" y="80" width="700" height="530" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+  <text x="80" y="110" fill="#0f172a" font-size="14" font-weight="bold">Клиентская рабочая станция (ПК / Ноутбук, macOS / Windows / Linux)</text>
+
+  <!-- JVM / Runtime -->
+  <rect x="80" y="140" width="640" height="230" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.8"/>
+  <rect x="80" y="140" width="640" height="30" rx="6" fill="#2563eb"/>
+  <text x="400" y="161" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Среда выполнения: OpenJDK 21 LTS + JavaFX 21 Runtime (JLink Bundle)</text>
+
+  <!-- App JAR -->
+  <rect x="110" y="190" width="280" height="150" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="250" y="215" fill="#1e40af" font-size="13" font-weight="bold" text-anchor="middle">winevault-app.jar</text>
+  <text x="125" y="240" fill="#334155" font-size="11">• UI: JavaFX FXML + CSS</text>
+  <text x="125" y="260" fill="#334155" font-size="11">• Business Logic: WineService, AgingCalculator</text>
+  <text x="125" y="280" fill="#334155" font-size="11">• Engine: SommelierEngine, CsvExport</text>
+  <text x="125" y="300" fill="#334155" font-size="11">• Jackson Databind 2.16 (JSON Serializer)</text>
+
+  <!-- JavaFX Window -->
+  <rect x="430" y="190" width="260" height="150" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="560" y="215" fill="#166534" font-size="13" font-weight="bold" text-anchor="middle">JavaFX GUI Stage</text>
+  <text x="445" y="245" fill="#334155" font-size="11">Экран каталога вин</text>
+  <text x="445" y="268" fill="#334155" font-size="11">Календарь-таймлайн выдержки</text>
+  <text x="445" y="291" fill="#334155" font-size="11">Экран виртуального сомелье</text>
+  <text x="445" y="314" fill="#334155" font-size="11">Журнал дегустаций</text>
+
+  <line x1="390" y1="265" x2="430" y2="265" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Локальный каталог данных -->
+  <rect x="80" y="400" width="640" height="180" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.8"/>
+  <rect x="80" y="400" width="640" height="30" rx="6" fill="#d97706"/>
+  <text x="400" y="421" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Каталог хранения данных пользователя (~/.winevault/data/)</text>
+
+  <rect x="110" y="450" width="170" height="100" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+  <text x="195" y="475" fill="#92400e" font-size="12" font-weight="bold" text-anchor="middle">Основная база</text>
+  <text x="195" y="500" fill="#78350f" font-size="11" text-anchor="middle">wine_cellar.json</text>
+  <text x="195" y="525" fill="#64748b" font-size="10" text-anchor="middle">(Air-gap JSON POJO)</text>
+
+  <rect x="310" y="450" width="170" height="100" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+  <text x="395" y="475" fill="#92400e" font-size="12" font-weight="bold" text-anchor="middle">Теневой буфер</text>
+  <text x="395" y="500" fill="#78350f" font-size="11" text-anchor="middle">wine_cellar.tmp</text>
+  <text x="395" y="525" fill="#64748b" font-size="10" text-anchor="middle">(Atomic Move Strategy)</text>
+
+  <rect x="510" y="450" width="180" height="100" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+  <text x="600" y="475" fill="#92400e" font-size="12" font-weight="bold" text-anchor="middle">Экспорт &amp; Резервы</text>
+  <text x="600" y="500" fill="#78350f" font-size="11" text-anchor="middle">wine_card.csv</text>
+  <text x="600" y="525" fill="#64748b" font-size="10" text-anchor="middle">backup_20261119.json</text>
+
+  <!-- Стрелка сохранения -->
+  <line x1="250" y1="340" x2="250" y2="400" stroke="#d97706" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="260" y="375" fill="#d97706" font-size="11">I/O запись</text>
+</svg>

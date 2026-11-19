@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 620" width="880" height="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect width="880" height="620" fill="#ffffff"/>
+  <rect x="20" y="15" width="840" height="40" rx="6" fill="#1e293b"/>
+  <text x="440" y="40" fill="#f8fafc" font-size="15" font-weight="bold" text-anchor="middle">Добавление вина и расчет зрелости (SYS-02, SYS-04, SYS-03)</text>
+
+  <!-- Линии участников -->
+  <!-- 1. Владелец -->
+  <g transform="translate(60, 75)">
+    <circle cx="25" cy="15" r="12" fill="none" stroke="#1e293b" stroke-width="1.8"/>
+    <line x1="25" y1="27" x2="25" y2="50" stroke="#1e293b" stroke-width="1.8"/>
+    <line x1="12" y1="36" x2="38" y2="36" stroke="#1e293b" stroke-width="1.8"/>
+    <line x1="25" y1="50" x2="12" y2="70" stroke="#1e293b" stroke-width="1.8"/>
+    <line x1="25" y1="50" x2="38" y2="70" stroke="#1e293b" stroke-width="1.8"/>
+    <text x="25" y="88" fill="#0f172a" font-size="11" font-weight="bold" text-anchor="middle">Владелец</text>
+  </g>
+  <line x1="85" y1="170" x2="85" y2="590" stroke="#94a3b8" stroke-dasharray="4,4"/>
+
+  <!-- 2. CatalogController -->
+  <rect x="180" y="85" width="130" height="36" rx="4" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="245" y="108" fill="#0369a1" font-size="11" font-weight="bold" text-anchor="middle">CatalogController</text>
+  <line x1="245" y1="121" x2="245" y2="590" stroke="#94a3b8" stroke-dasharray="4,4"/>
+
+  <!-- 3. WineService -->
+  <rect x="360" y="85" width="120" height="36" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="420" y="108" fill="#1e40af" font-size="11" font-weight="bold" text-anchor="middle">WineService</text>
+  <line x1="420" y1="121" x2="420" y2="590" stroke="#94a3b8" stroke-dasharray="4,4"/>
+
+  <!-- 4. AgingCalculator -->
+  <rect x="530" y="85" width="130" height="36" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="595" y="108" fill="#b45309" font-size="11" font-weight="bold" text-anchor="middle">AgingCalculator</text>
+  <line x1="595" y1="121" x2="595" y2="590" stroke="#94a3b8" stroke-dasharray="4,4"/>
+
+  <!-- 5. WineRepository -->
+  <rect x="710" y="85" width="130" height="36" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="775" y="108" fill="#15803d" font-size="11" font-weight="bold" text-anchor="middle">WineRepository</text>
+  <line x1="775" y1="121" x2="775" y2="590" stroke="#94a3b8" stroke-dasharray="4,4"/>
+
+  <!-- Сообщения -->
+  <!-- 1. Нажатие Сохранить -->
+  <line x1="85" y1="160" x2="245" y2="160" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="165" y="152" fill="#0f172a" font-size="11" text-anchor="middle">submitAddWine(form)</text>
+
+  <!-- 2. Controller -> Service -->
+  <line x1="245" y1="195" x2="420" y2="195" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="332" y="187" fill="#0f172a" font-size="11" text-anchor="middle">createWine(wineDto)</text>
+
+  <!-- 3. Service -> Calculator -->
+  <line x1="420" y1="235" x2="595" y2="235" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="507" y="227" fill="#0f172a" font-size="11" text-anchor="middle">calculatePeak(type, vintage)</text>
+
+  <!-- Self-call Calculator -->
+  <path d="M 595 260 L 635 260 L 635 295 L 595 295" fill="none" stroke="#b45309" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="645" y="275" fill="#b45309" font-size="10" text-anchor="start">Tpeak = vintage + M_opt</text>
+  <text x="645" y="290" fill="#b45309" font-size="10" text-anchor="start">P = (Tcur - Tvin)/(Tpeak - Tvin)</text>
+
+  <!-- Return status -->
+  <line x1="595" y1="330" x2="420" y2="330" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="507" y="322" fill="#b45309" font-size="11" text-anchor="middle">AgingStatus (AGING, P=68%)</text>
+
+  <!-- Service -> Repo -->
+  <line x1="420" y1="375" x2="775" y2="375" stroke="#0f172a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="597" y="367" fill="#0f172a" font-size="11" text-anchor="middle">saveAtomic(WineItem)</text>
+
+  <!-- Self-call Repo: Atomic Write -->
+  <path d="M 775 405 L 815 405 L 815 440 L 775 440" fill="none" stroke="#15803d" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="822" y="418" fill="#15803d" font-size="10">1. write wine_cellar.tmp</text>
+  <text x="822" y="434" fill="#15803d" font-size="10">2. Files.move(ATOMIC_MOVE)</text>
+
+  <!-- Return ok -->
+  <line x1="775" y1="475" x2="420" y2="475" stroke="#15803d" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="597" y="467" fill="#15803d" font-size="11" text-anchor="middle">success (UUID)</text>
+
+  <!-- Service -> Controller -->
+  <line x1="420" y1="515" x2="245" y2="515" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="332" y="507" fill="#0f172a" font-size="11" text-anchor="middle">onWineAdded(item)</text>
+
+  <!-- Controller -> User -->
+  <line x1="245" y1="555" x2="85" y2="555" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <text x="165" y="547" fill="#0f172a" font-size="11" text-anchor="middle">Обновление таблицы каталога</text>
+</svg>
