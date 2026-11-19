@@ -33,8 +33,9 @@ Spring Boot 3, Thymeleaf, PostgreSQL, Flyway (обоснование — в ADR)
 | Документ | Содержание |
 |----------|------------|
 | [srs/srs.md](srs/srs.md) | Спецификация требований (SRS v0.4), мокапы на SysML v2 |
-| [sdd/sdd.md](sdd/sdd.md) | Описание дизайна (SDD v0.3): системные требования с приоритетами, 12 проектных представлений |
-| [adr/](adr) | Протоколы архитектурных решений ADR-0001…0007 (MADR) |
+| [sdd/sdd.md](sdd/sdd.md) | Описание дизайна (SDD v0.4): системные требования с приоритетами, 12 проектных представлений, UML-диаграммы |
+| [uml/](uml/README.md) | UML-модель динамического поведения: [глоссарий](uml/glossary.md), [дополнительные спецификации](uml/supplementary-specification.md), [прецеденты](uml/use-cases.md), диаграммы активности, состояний и последовательности |
+| [adr/](adr) | Протоколы архитектурных решений ADR-0001…0008 (MADR) |
 | [plan/plan.md](plan/plan.md) | План реализации по итерациям: исходный (v1), изменённый (v2) и согласованный (v3) |
 | [plan/correspondence.md](plan/correspondence.md) | Переписка с Заказчиком по системным требованиям, срокам и стоимости |
 
@@ -49,9 +50,13 @@ Spring Boot 3, Thymeleaf, PostgreSQL, Flyway (обоснование — в ADR)
 | [0005](adr/0005-scheduled-jobs-with-notification-log.md) | Фоновые задачи `@Scheduled` с журналом уведомлений |
 | [0006](adr/0006-session-based-authentication.md) | Сеансовая аутентификация Spring Security |
 | [0007](adr/0007-telegram-channel-long-polling.md) | Telegram через длинный опрос и стратегию каналов |
+| [0008](adr/0008-uml-models-as-text.md) | UML-модели как текст: Graphviz DOT и Mermaid |
 
-Проект в папке `project/` — пока пустой шаблон Maven-проекта на Java 17, в котором
-будет выполняться разработка.
+Разработка ведётся в папке `project/` по согласованному плану v3 (итерации с 23.11.2026).
+Сейчас там каркас Spring Boot 3.5 (модули-пакеты `by.bsuir.subscope.*`), миграции Flyway
+начальной схемы, клиент API НБ РБ (проверка интеграции — POC), пересчёт валют и расчёт
+стоимости подписок с модульными тестами; сборка и тесты запускаются в GitHub Actions
+для каждого pull request.
 
 ## Структура репозитория
 
@@ -59,13 +64,15 @@ Spring Boot 3, Thymeleaf, PostgreSQL, Flyway (обоснование — в ADR)
 |------|------------|
 | `project/` | Maven-проект (Java 17), в котором ведётся разработка |
 | `project/src/main/java/` | Исходный код |
-| `project/src/main/resources/` | Ресурсы приложения |
+| `project/src/main/resources/` | Настройки приложения и миграции Flyway (`db/migration`) |
 | `project/src/test/java/` | Модульные тесты |
 | `srs/srs.md` | Спецификация требований SubScope (SRS) |
 | `srs/models/`, `srs/images/` | Модели SysML v2 (мокапы, контекст, карта экранов) и их PNG |
 | `srs/tools/sysml2png.py` | Построение PNG из моделей SysML v2 |
 | `sdd/sdd.md`, `sdd/models/`, `sdd/images/` | Описание дизайна, модели диаграмм (Graphviz, диаграммы последовательности) и их PNG |
 | `sdd/tools/diagrams.py` | Построение PNG диаграмм SDD |
+| `uml/` | Глоссарий, дополнительные спецификации, модель прецедентов, UML-модели (`uml/models`) и их PNG; `uml/tools/uml.py` — построение изображений |
+| `.github/workflows/build.yml` | Сборка и тесты в GitHub Actions |
 | `adr/NNNN-*.md` | Протоколы архитектурных решений |
 | `plan/` | План реализации, переписка с Заказчиком, скрипт `plan/tools/plan.py` для таблиц и диаграмм Ганта |
 | `srs/`, `sdd/`, `adr/` | Шаблоны проектной документации (SRS, SDD, ADR) |
@@ -80,17 +87,20 @@ Spring Boot 3, Thymeleaf, PostgreSQL, Flyway (обоснование — в ADR)
 | `lab1` | Материалы лабораторной работы №1 «Интегрированная среда разработки ПО» |
 | `ProjectTemplate` | Шаблон проекта, README.md и .gitignore (слита в `main`) |
 | `lab3` | Лабораторная работа №3: SRS проекта SubScope, мокапы на SysML v2 (слита в `main`) |
-| `lab4` | Лабораторная работа №4: системные требования, SDD, ADR, переписка и планы итераций, SRS v0.4 |
+| `lab4` | Лабораторная работа №4: системные требования, SDD, ADR, переписка и планы итераций, SRS v0.4 (слита в `main`) |
+| `lab5` | Лабораторная работа №5: UML-модель динамического поведения, SDD v0.4, ADR-0008, начало итерации 1 |
 
 ## Сборка и запуск
 
-Требуется JDK 17+ и Maven 3.8+ (или IntelliJ IDEA со встроенным Maven).
+Требуется JDK 17+ и Maven 3.8+ (или IntelliJ IDEA со встроенным Maven), для запуска — PostgreSQL 15+.
 
 ```bash
 cd project
-mvn package
-java -cp target/classes by.bsuir.sdlc.Main
+mvn verify                      # сборка и модульные тесты
+java -jar target/subscope.jar   # запуск; параметры БД — переменные DB_URL, DB_USER, DB_PASSWORD
 ```
+
+При первом запуске Flyway создаёт схему базы данных. Подробнее — [project/README.md](project/README.md).
 
 ## Лицензия
 
