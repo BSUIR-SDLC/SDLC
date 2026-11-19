@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="gshadow" x="-3%" y="-3%" width="106%" height="106%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="440" fill="#ffffff"/>
+
+  <!-- Заголовок -->
+  <rect x="20" y="15" width="920" height="36" rx="4" fill="#1e293b"/>
+  <text x="480" y="39" fill="#f8fafc" font-size="15" font-weight="bold" text-anchor="middle">Календарный график разработки WineVault по итерациям (4 спринта по 2 недели)</text>
+
+  <!-- Сетка времени (Недели 1 - 8) -->
+  <g transform="translate(240, 65)">
+    <line x1="0" y1="0" x2="680" y2="0" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="40" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 1</text>
+    <text x="125" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 2</text>
+    <text x="210" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 3</text>
+    <text x="295" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 4</text>
+    <text x="380" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 5</text>
+    <text x="465" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 6</text>
+    <text x="550" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 7</text>
+    <text x="635" y="-8" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Нед. 8</text>
+
+    <!-- Вертикальные разделители спринтов -->
+    <line x1="170" y1="0" x2="170" y2="340" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="340" y1="0" x2="340" y2="340" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="510" y1="0" x2="510" y2="340" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4"/>
+    <line x1="680" y1="0" x2="680" y2="340" stroke="#ef4444" stroke-width="2"/>
+    <text x="680" y="355" fill="#dc2626" font-size="11" font-weight="bold" text-anchor="middle">DEADLINE (8 нед)</text>
+  </g>
+
+  <!-- Итерация 1 -->
+  <g transform="translate(30, 80)">
+    <text x="200" y="24" fill="#0f172a" font-size="12" font-weight="bold" text-anchor="end">Спринт 1: Ядро каталога</text>
+    <text x="200" y="40" fill="#64748b" font-size="10" text-anchor="end">(Каталог + JSON Atomic Move)</text>
+    <rect x="210" y="10" width="170" height="32" rx="4" fill="#3b82f6" filter="url(#gshadow)"/>
+    <text x="295" y="31" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">Dev: Абрамчук (70 ч)</text>
+  </g>
+
+  <!-- Итерация 2 -->
+  <g transform="translate(30, 145)">
+    <text x="200" y="24" fill="#0f172a" font-size="12" font-weight="bold" text-anchor="end">Спринт 2: Расчет выдержки</text>
+    <text x="200" y="40" fill="#64748b" font-size="10" text-anchor="end">(AgingCalculator + Фильтр пика)</text>
+    <rect x="380" y="10" width="170" height="32" rx="4" fill="#0ea5e9" filter="url(#gshadow)"/>
+    <text x="465" y="31" fill="#ffffff" font-size="11" font-weight="600" text-anchor="middle">Dev: Абрамчук (66 ч)</text>
+  </g>
+
+  <!-- Итерация 3: Параллельная разработка с Junior -->
+  <g transform="translate(30, 210)">
+    <text x="200" y="18" fill="#0f172a" font-size="12" font-weight="bold" text-anchor="end">Спринт 3: Сомелье &amp; Топология</text>
+    <text x="200" y="32" fill="#2563eb" font-size="10" font-weight="600" text-anchor="end">Senior (Абрамчук): Сомелье</text>
+    <text x="200" y="46" fill="#16a34a" font-size="10" font-weight="600" text-anchor="end">Junior: Топология + Дегустация</text>
+    <!-- Полоса Senior -->
+    <rect x="550" y="5" width="170" height="20" rx="3" fill="#2563eb" filter="url(#gshadow)"/>
+    <text x="635" y="19" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">Senior: Sommelier (54 ч)</text>
+    <!-- Полоса Junior -->
+    <rect x="550" y="30" width="170" height="20" rx="3" fill="#16a34a" filter="url(#gshadow)"/>
+    <text x="635" y="44" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">Junior: CellarMap (56 ч)</text>
+  </g>
+
+  <!-- Итерация 4: Завершение и CSV -->
+  <g transform="translate(30, 285)">
+    <text x="200" y="18" fill="#0f172a" font-size="12" font-weight="bold" text-anchor="end">Спринт 4: CSV &amp; Стабилизация</text>
+    <text x="200" y="32" fill="#2563eb" font-size="10" font-weight="600" text-anchor="end">Senior: QA &amp; Integration</text>
+    <text x="200" y="46" fill="#16a34a" font-size="10" font-weight="600" text-anchor="end">Junior: CSV Export Engine</text>
+    <!-- Полоса Senior -->
+    <rect x="720" y="5" width="170" height="20" rx="3" fill="#2563eb" filter="url(#gshadow)"/>
+    <text x="805" y="19" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">Senior: Тестирование (40 ч)</text>
+    <!-- Полоса Junior -->
+    <rect x="720" y="30" width="170" height="20" rx="3" fill="#16a34a" filter="url(#gshadow)"/>
+    <text x="805" y="44" fill="#ffffff" font-size="10" font-weight="600" text-anchor="middle">Junior: CSV Export (22 ч)</text>
+  </g>
+
+  <!-- Легенда -->
+  <g transform="translate(240, 395)">
+    <rect x="0" y="0" width="16" height="12" rx="2" fill="#2563eb"/>
+    <text x="24" y="10" fill="#334155" font-size="11">Ведущий разработчик (Senior)</text>
+    <rect x="220" y="0" width="16" height="12" rx="2" fill="#16a34a"/>
+    <text x="244" y="10" fill="#334155" font-size="11">Junior-разработчик (Параллельные задачи)</text>
+    <line x1="500" y1="6" x2="524" y2="6" stroke="#ef4444" stroke-width="2"/>
+    <text x="532" y="10" fill="#334155" font-size="11">Неизменный дедлайн (8 недель)</text>
+  </g>
+</svg>
