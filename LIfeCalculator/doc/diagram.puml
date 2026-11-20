@@ -1,0 +1,92 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+class Main {
+    +main(String[] args)
+}
+
+package model {
+
+    class LifeData {
+        -birthDate : LocalDate
+        +LifeData(LocalDate)
+        +getBirthDate() : LocalDate
+        +setBirthDate(LocalDate)
+        +isValid() : boolean
+    }
+
+    class LifeModel {
+        -propertyChangeSupport : PropertyChangeSupport
+        -lifeData : LifeData
+
+        +setLifeData(LifeData)
+        +getBirthDate() : LocalDate
+        +getAge() : Period
+        +getHoursLived() : long
+        +getDaysLived() : long
+        +getSleepHours() : double
+        +getSleepDays() : double
+        +getBlinks() : long
+        +getHeartBeats() : long
+        +getBloodLiters() : double
+        +getWaterLiters() : double
+        +getLaughs() : long
+    }
+
+    class LifeStatistics {
+        {static} SLEEP_HOURS_PER_DAY : double
+        {static} BLINKS_PER_MINUTE : double
+        {static} HEART_BEATS_PER_MINUTE : double
+        {static} BLOOD_LITERS_PER_DAY : double
+        {static} WATER_LITERS_PER_DAY : double
+        {static} LAUGHS_PER_DAY : double
+    }
+}
+
+package view {
+
+    class MainFrame {
+        +getInputButton() : JButton
+        +displayModel(LifeModel)
+        +showError(String)
+    }
+
+    class InputDialog {
+        -dayField : JTextField
+        -monthField : JTextField
+        -yearField : JTextField
+        +getResult() : LocalDate
+    }
+}
+
+package controller {
+
+    class LifeController {
+        -model : LifeModel
+        -view : MainFrame
+        -preferences : Preferences
+
+        +start()
+    }
+}
+
+' Application entry point
+Main --> LifeModel : creates
+Main --> MainFrame : creates
+Main --> LifeController : creates
+
+' Controller interaction
+LifeController --> LifeModel : modifies data
+LifeController --> MainFrame : updates View
+LifeController --> InputDialog : opens
+
+' Model interaction
+LifeModel --> LifeData : stores data
+LifeModel --> LifeStatistics : uses coefficients
+
+' View and Model interaction
+MainFrame ..> LifeModel : displays data
+InputDialog ..> LifeData : builds date
+
+@enduml
