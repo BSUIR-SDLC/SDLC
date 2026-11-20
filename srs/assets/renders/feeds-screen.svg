@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
   <title id="t">Макет экрана управления лентами «Сводки»</title>
-  <desc id="d">Таблица пяти лент с URL, названием, временем последней загрузки, числом статей и статусом; форма добавления ленты и кнопки удаления.</desc>
+  <desc id="d">Таблица лент с URL, названием, временем последней загрузки, числом статей и статусом; форма добавления ленты и кнопки удаления.</desc>
 
   <rect width="1200" height="800" fill="#F7F7F5"/>
 
@@ -14,7 +14,7 @@
 
   <!-- Заголовок раздела -->
   <text x="40" y="156" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="22" font-weight="700" fill="#1F2328">Ленты</text>
-  <text x="40" y="182" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">Не более 5 лент. Статус показывает результат последней загрузки.</text>
+  <text x="40" y="182" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">Статус показывает результат последней загрузки.</text>
 
   <!-- Таблица -->
   <rect x="40" y="204" width="1120" height="356" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
@@ -85,7 +85,7 @@
   <text x="80" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">https://example.com/rss</text>
   <rect x="700" y="600" width="140" height="40" rx="8" fill="#1D4ED8"/>
   <text x="770" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Добавить</text>
-  <text x="864" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#5B6570">Лимит: 5 лент · коды 400 и 409</text>
+  <text x="864" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#5B6570">400 — невалидный URL · 409 — дубль</text>
 
   <!-- Подпись -->
   <text x="40" y="712" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#5B6570">Макет интерфейса · Сводка 1.0 · REQ-INT-003, REQ-INT-006 · sysml/mockups/feeds-screen.svg</text>

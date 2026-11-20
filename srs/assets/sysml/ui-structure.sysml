@@ -141,7 +141,7 @@ package SvodkaUI {
 
     part def FeedTable {
         doc /* Таблица лент с состоянием последней загрузки. */
-        part row : FeedRow [0..5];
+        part row : FeedRow [0..*];
     }
 
     part def FeedRow {
@@ -161,7 +161,7 @@ package SvodkaUI {
         attribute maxLength : Integer = 2048;
         attribute successStatus : Integer = 302;
         attribute invalidStatus : Integer = 400;
-        attribute limitStatus : Integer = 409;
+        attribute duplicateStatus : Integer = 409;
         part submit : Button;
     }
 
