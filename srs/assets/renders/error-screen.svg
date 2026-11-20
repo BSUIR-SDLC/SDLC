@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
+  <title id="t">Макет страницы ошибки «Сводки»</title>
+  <desc id="d">Страница с кодом 404, текстом «Страница не найдена» и кнопкой возврата на главный экран.</desc>
+
+  <rect width="1200" height="800" fill="#F7F7F5"/>
+
+  <!-- Шапка -->
+  <rect x="40" y="40" width="1120" height="72" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="84" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="24" font-weight="700" fill="#1F2328">Сводка</text>
+  <text x="900" y="83" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#5B6570" text-anchor="end">Обновлено: 2026-11-14 12:47</text>
+  <rect x="980" y="56" width="148" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="1054" y="81" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Обновить</text>
+
+  <!-- Карточка ошибки -->
+  <rect x="300" y="240" width="600" height="300" rx="12" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="600" y="360" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="72" font-weight="700" fill="#1D4ED8" text-anchor="middle">404</text>
+  <text x="600" y="410" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="24" font-weight="700" fill="#1F2328" text-anchor="middle">Страница не найдена</text>
+  <text x="600" y="446" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#5B6570" text-anchor="middle">Проверьте адрес или вернитесь на главную.</text>
+  <rect x="510" y="478" width="180" height="44" rx="8" fill="#1D4ED8"/>
+  <text x="600" y="506" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">На главную</text>
+
+  <!-- Подпись -->
+  <text x="600" y="720" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#5B6570" text-anchor="middle">Макет интерфейса · Сводка 1.0 · REQ-INT-001 · sysml/mockups/error-screen.svg</text>
+</svg>

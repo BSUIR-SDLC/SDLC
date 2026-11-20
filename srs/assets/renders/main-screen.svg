@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
+  <title id="t">Макет главного экрана «Сводки»</title>
+  <desc id="d">Шапка с временем обновления и кнопкой «Обновить», вкладки «Все» и «Непрочитанные», баннер работы из кэша, три строки статей и пагинация.</desc>
+
+  <rect width="1200" height="800" fill="#F7F7F5"/>
+
+  <!-- Шапка -->
+  <rect x="40" y="40" width="1120" height="72" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="84" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="24" font-weight="700" fill="#1F2328">Сводка</text>
+  <text x="900" y="83" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#5B6570" text-anchor="end">Обновлено: 2026-11-14 12:47</text>
+  <rect x="980" y="56" width="148" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="1054" y="81" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Обновить</text>
+
+  <!-- Фильтр -->
+  <text x="64" y="164" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="16" font-weight="700" fill="#1F2328">Все (128)</text>
+  <rect x="64" y="174" width="98" height="3" rx="1.5" fill="#1D4ED8"/>
+  <text x="190" y="164" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="16" fill="#5B6570">Непрочитанные (17)</text>
+
+  <!-- Баннер работы из кэша -->
+  <rect x="40" y="196" width="1120" height="56" rx="8" fill="#FFFBEB" stroke="#B45309" stroke-dasharray="6 4"/>
+  <circle cx="70" cy="224" r="11" fill="none" stroke="#B45309" stroke-width="2"/>
+  <text x="70" y="229" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="700" fill="#B45309" text-anchor="middle">i</text>
+  <text x="94" y="229" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#7C2D12">Данные от 2026-11-14 12:31 — источники недоступны, показан локальный кэш</text>
+
+  <!-- Статья 1: непрочитанная -->
+  <rect x="40" y="272" width="1120" height="116" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="300" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="18" font-weight="700" fill="#1F2328">Заголовок публикации из ленты</text>
+  <text x="64" y="324" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">lenta.ru · 2026-11-14 12:41</text>
+  <text x="64" y="354" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328">Фрагмент текста публикации длиной до 300 символов: начало материала …</text>
+  <rect x="940" y="286" width="132" height="24" rx="12" fill="#FEE4E2" stroke="#B42318"/>
+  <text x="1006" y="303" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="600" fill="#B42318" text-anchor="middle">непрочитано</text>
+  <text x="1136" y="324" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end">Открыть источник →</text>
+
+  <!-- Статья 2: прочитанная -->
+  <rect x="40" y="404" width="1120" height="116" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="432" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="18" font-weight="700" fill="#1F2328">Другой заголовок без бейджа</text>
+  <text x="64" y="456" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">habr.com · 2026-11-14 11:58</text>
+  <text x="64" y="486" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328">Короткий фрагмент текста статьи …</text>
+  <text x="1136" y="456" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end">Открыть источник →</text>
+
+  <!-- Статья 3: прочитанная -->
+  <rect x="40" y="536" width="1120" height="116" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="564" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="18" font-weight="700" fill="#1F2328">Третья публикация в объединённом списке</text>
+  <text x="64" y="588" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">onliner.by · 2026-11-14 10:15</text>
+  <text x="64" y="618" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328">Ещё один фрагмент текста в пределах 300 символов …</text>
+  <text x="1136" y="588" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="#1D4ED8" text-anchor="end">Открыть источник →</text>
+
+  <!-- Пагинация -->
+  <text x="64" y="703" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">Страница 1 из 3</text>
+  <rect x="900" y="680" width="44" height="36" rx="6" fill="#1D4ED8"/>
+  <text x="922" y="703" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">1</text>
+  <rect x="952" y="680" width="44" height="36" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="974" y="703" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328" text-anchor="middle">2</text>
+  <rect x="1004" y="680" width="44" height="36" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1026" y="703" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328" text-anchor="middle">3</text>
+  <rect x="1056" y="680" width="88" height="36" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1100" y="703" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#1F2328" text-anchor="middle">Вперёд</text>
+
+  <!-- Подпись -->
+  <text x="40" y="760" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#5B6570">Макет интерфейса · Сводка 1.0 · REQ-INT-002, REQ-INT-004, REQ-INT-006 · sysml/mockups/main-screen.svg</text>
+</svg>

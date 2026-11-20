@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-labelledby="t d">
+  <title id="t">Макет экрана управления лентами «Сводки»</title>
+  <desc id="d">Таблица лент с URL, названием, временем последней загрузки, числом статей и статусом; форма добавления ленты и кнопки удаления.</desc>
+
+  <rect width="1200" height="800" fill="#F7F7F5"/>
+
+  <!-- Шапка -->
+  <rect x="40" y="40" width="1120" height="72" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="64" y="84" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="24" font-weight="700" fill="#1F2328">Сводка</text>
+  <text x="900" y="83" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" fill="#5B6570" text-anchor="end">Обновлено: 2026-11-14 12:47</text>
+  <rect x="980" y="56" width="148" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="1054" y="81" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Обновить</text>
+
+  <!-- Заголовок раздела -->
+  <text x="40" y="156" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="22" font-weight="700" fill="#1F2328">Ленты</text>
+  <text x="40" y="182" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">Статус показывает результат последней загрузки.</text>
+
+  <!-- Таблица -->
+  <rect x="40" y="204" width="1120" height="356" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <rect x="40" y="204" width="1120" height="44" rx="10" fill="#F0F2F5"/>
+  <rect x="40" y="226" width="1120" height="22" fill="#F0F2F5"/>
+  <text x="64" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">URL</text>
+  <text x="352" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">НАЗВАНИЕ</text>
+  <text x="548" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ</text>
+  <text x="748" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">СТАТЕЙ</text>
+  <text x="828" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">СТАТУС</text>
+  <text x="1004" y="231" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" font-weight="700" fill="#5B6570">ДЕЙСТВИЯ</text>
+
+  <line x1="40" y1="248" x2="1160" y2="248" stroke="#D0D7DE"/>
+
+  <!-- Лента 1 -->
+  <text x="64" y="274" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">https://lenta.ru/rss</text>
+  <text x="352" y="274" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">Lenta.ru</text>
+  <text x="548" y="274" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">2026-11-14 12:47</text>
+  <text x="748" y="274" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">120</text>
+  <text x="828" y="274" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="#067647">успешно</text>
+  <rect x="1030" y="265" width="92" height="28" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1076" y="283" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#1F2328" text-anchor="middle">Удалить</text>
+  <line x1="40" y1="310" x2="1160" y2="310" stroke="#E8EAED"/>
+
+  <!-- Лента 2 -->
+  <text x="64" y="336" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">https://habr.com/rss</text>
+  <text x="352" y="336" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">Хабр</text>
+  <text x="548" y="336" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">2026-11-14 12:46</text>
+  <text x="748" y="336" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">95</text>
+  <text x="828" y="336" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="#067647">успешно</text>
+  <rect x="1030" y="327" width="92" height="28" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1076" y="345" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#1F2328" text-anchor="middle">Удалить</text>
+  <line x1="40" y1="372" x2="1160" y2="372" stroke="#E8EAED"/>
+
+  <!-- Лента 3: ошибка -->
+  <text x="64" y="398" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">https://onliner.by/rss</text>
+  <text x="352" y="398" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">Onliner</text>
+  <text x="548" y="398" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">2026-11-14 12:45</text>
+  <text x="748" y="398" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">64</text>
+  <text x="828" y="396" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="#B42318">ошибка</text>
+  <text x="828" y="412" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="11" fill="#B42318">HTTP 500</text>
+  <rect x="1030" y="389" width="92" height="28" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1076" y="407" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#1F2328" text-anchor="middle">Удалить</text>
+  <line x1="40" y1="434" x2="1160" y2="434" stroke="#E8EAED"/>
+
+  <!-- Лента 4 -->
+  <text x="64" y="460" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">https://example.com/atom</text>
+  <text x="352" y="460" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">Example Atom</text>
+  <text x="548" y="460" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">2026-11-13 18:20</text>
+  <text x="748" y="460" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">12</text>
+  <text x="828" y="460" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="#067647">успешно</text>
+  <rect x="1030" y="451" width="92" height="28" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1076" y="469" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#1F2328" text-anchor="middle">Удалить</text>
+  <line x1="40" y1="496" x2="1160" y2="496" stroke="#E8EAED"/>
+
+  <!-- Лента 5: не загружалась -->
+  <text x="64" y="522" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#1F2328">https://example.org/rss</text>
+  <text x="352" y="522" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">Example RSS</text>
+  <text x="548" y="522" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#5B6570">—</text>
+  <text x="748" y="522" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#1F2328">0</text>
+  <text x="828" y="522" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="#5B6570">не загружалась</text>
+  <rect x="1030" y="513" width="92" height="28" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="1076" y="531" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#1F2328" text-anchor="middle">Удалить</text>
+
+  <!-- Форма добавления -->
+  <rect x="40" y="580" width="1120" height="80" rx="10" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <rect x="64" y="600" width="620" height="40" rx="6" fill="#FFFFFF" stroke="#D0D7DE"/>
+  <text x="80" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="14" fill="#5B6570">https://example.com/rss</text>
+  <rect x="700" y="600" width="140" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="770" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">Добавить</text>
+  <text x="864" y="625" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="13" fill="#5B6570">400 — невалидный URL · 409 — дубль</text>
+
+  <!-- Подпись -->
+  <text x="40" y="712" font-family="DejaVu Sans, Liberation Sans, Arial, sans-serif" font-size="12" fill="#5B6570">Макет интерфейса · Сводка 1.0 · REQ-INT-003, REQ-INT-006 · sysml/mockups/feeds-screen.svg</text>
+</svg>
