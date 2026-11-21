@@ -1,0 +1,44 @@
+@startuml
+title Сохранение задачи
+actor Пользователь
+boundary "React UI" as UI
+control "Task API" as API
+control "Проверка сессии" as Auth
+control "Task Service" as Service
+database "Task Repository / PostgreSQL" as DB
+Пользователь -> UI : Заполнить форму и нажать «Сохранить»
+UI -> UI : Показать состояние loading
+UI -> API : POST /api/v1/tasks (поля задачи)
+API -> Auth : Проверить защищённую сессию
+alt Сессия недействительна
+  Auth --> API : Не аутентифицирован
+  API --> UI : 401 Unauthorized
+  UI --> Пользователь : Запросить повторный вход
+else Сессия действительна
+  Auth --> API : userId из контекста сессии
+  API -> Service : createTask(userId, DTO)
+  Service -> Service : Проверить поля и срок
+  alt Данные невалидны
+    Service --> API : Ошибка валидации
+    API --> UI : 400 + fieldErrors
+    UI --> Пользователь : Показать ошибки, сохранить введённые поля
+  else Данные корректны
+    Service -> DB : INSERT task(owner_id=userId, ...)
+    alt Запись сохранена
+      DB --> Service : Task
+      Service --> API : Созданная задача
+      API --> UI : 201 Created + Task DTO
+      UI --> Пользователь : Показать успех и обновить список
+    else Ошибка хранилища
+      DB --> Service : Ошибка
+      Service --> API : Ошибка сохранения
+      API --> UI : 5xx
+      UI --> Пользователь : Показать ошибку, оставить форму
+    end
+  end
+end
+note over Service,DB
+  При изменении и удалении запись всегда
+  выбирается с owner_id из сессии.
+end note
+@enduml

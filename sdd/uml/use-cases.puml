@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor "Пользователь\nВладелец аккаунта, управляющий\nличными планами" as User
+rectangle "Planora — персональный веб-планер" {
+  usecase "Зарегистрироваться / войти\nСоздать аккаунт или начать\nаутентифицированную сессию" as UCAuth
+  usecase "Управлять задачами\nСоздать, просмотреть, изменить,\nудалить или сменить статус" as UCTasks
+  usecase "Просмотреть планы\nОткрыть Сегодня, просроченные\nзадачи или календарь" as UCViews
+  usecase "Управлять событиями\nСоздать и изменить события\nкалендаря" as UCEvents
+  usecase "Управлять заметками\nСоздать, изменить или удалить\nличную заметку" as UCNotes
+  usecase "Искать записи\nНайти записи по названию\nили описанию" as UCSearch
+  usecase "Настроить планер\nЗадать часовой пояс и вид\nкалендаря" as UCSettings
+  usecase "Работать с CSV\nЭкспортировать данные или\nимпортировать после предпросмотра" as UCCsv
+  usecase "Получить напоминание\nУвидеть наступившее напоминание\nв открытом приложении" as UCReminder
+  usecase "Выйти\nЗавершить текущую сессию" as UCLogout
+}
+User --> UCAuth
+User --> UCTasks
+User --> UCViews
+User --> UCEvents
+User --> UCNotes
+User --> UCSearch
+User --> UCSettings
+User --> UCCsv
+User --> UCReminder
+User --> UCLogout
+note bottom of UCAuth
+  Предусловие: для входа аккаунт существует.
+  Результат: открыта сессия либо показана ошибка.
+end note
+note bottom of UCCsv
+  Импорт сначала показывает предпросмотр.
+  Запись происходит только после подтверждения.
+end note
+@enduml
