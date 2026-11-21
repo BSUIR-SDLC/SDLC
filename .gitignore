@@ -1,0 +1,50 @@
+# ===== Результаты сборки .NET (MSBuild) =====
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]64/
+[Ll]og/
+*.pdb
+
+# ===== Публикация и пакеты NuGet =====
+publish/
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# ===== Результаты тестов и покрытия =====
+TestResults/
+[Tt]est[Rr]esult*/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+
+# ===== Настройки Visual Studio =====
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# ===== Настройки JetBrains Rider / VS Code =====
+.idea/
+*.sln.iml
+.vscode/
+
+# ===== Временные файлы Microsoft Office =====
+~$*
+
+# ===== Служебные файлы операционных систем =====
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ===== Логи =====
+*.log
