@@ -1,0 +1,7 @@
+﻿# Build & OS junk
+build/
+.DS_Store
+Thumbs.db
+~$*.docx
+*.tmp
+*.log
