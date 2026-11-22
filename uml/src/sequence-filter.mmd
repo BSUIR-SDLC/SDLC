@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    actor V as Посетитель
+    participant F as FilterPanel
+    participant P as CatalogPage
+    participant D as catalog.ts
+    V->>F: ввести текст поиска / выбрать фильтры
+    F->>D: validateFilters(filters)
+    alt фильтры противоречивы
+        D-->>F: текст ошибки
+        F-->>V: сообщение (role=alert)
+    else фильтры корректны
+        F->>P: onChange(filters), страница = 1
+        P->>D: applyFilters(events, filters)
+        D-->>P: отфильтрованный список
+        P->>D: paginate(list, page)
+        D-->>P: страница, totalPages
+        alt список пуст
+            P-->>V: «События не найдены»
+        else есть события
+            P-->>V: карточки и навигация по страницам
+        end
+    end
+    V->>F: «Сбросить»
+    F->>P: onChange(emptyFilters)

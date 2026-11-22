@@ -1,0 +1,14 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Empty
+    Empty --> Active : AddToCart [есть свободные места] / создать бронь, запустить таймер 15 мин
+    Active --> Active : ChangeCart [места есть] / обновить состав, срок не продлевать
+    Active --> Empty : RemoveLastItem / снять бронь
+    Active --> Expired : Timeout [серверное время ≥ expiresAt] / вернуть места в продажу
+    Active --> Ordered : Checkout [бронь действует] / создать заказ
+    Expired --> Empty : Acknowledge / очистить корзину
+    Ordered --> [*]
+    state "Empty (корзина пуста)" as Empty
+    state "Active (бронь действует)" as Active
+    state "Expired (бронь истекла)" as Expired
+    state "Ordered (заказ оформлен)" as Ordered

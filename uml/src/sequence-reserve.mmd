@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor V as Посетитель
+    participant UI as CatalogPage / CartPanel
+    participant C as cart.ts
+    participant API as REST API (MockApi)
+    participant T as useCountdown
+
+    V->>UI: нажать «Партер: 45.00 BYN»
+    UI->>C: addItem(cart, item)
+    alt мест недостаточно (на клиенте)
+        C-->>UI: CartError NO_SEATS
+        UI-->>V: сообщение «Свободных мест: N»
+    else мест достаточно
+        C-->>UI: новая корзина
+        UI->>API: PUT /reservations/{session}
+        activate API
+        alt мест не хватает у сервера (чужие брони)
+            API-->>UI: 409 SEATS_UNAVAILABLE
+            UI-->>V: сообщение об ошибке
+        else места закреплены
+            API-->>UI: id, expiresAt, serverTime
+            deactivate API
+            UI->>T: запустить отсчёт (offset = serverTime − clientNow)
+            loop каждую секунду
+                T-->>UI: remainingMs
+                UI-->>V: «Бронь действует: мм:сс»
+            end
+        end
+    end
+    T-->>UI: remainingMs = 0
+    UI->>API: DELETE /reservations/{session}
+    API-->>UI: места возвращены в продажу
+    UI-->>V: «Время брони истекло», корзина очищена

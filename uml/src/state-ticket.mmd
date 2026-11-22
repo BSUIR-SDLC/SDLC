@@ -1,0 +1,8 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Valid : OrderCreated / выдать билет с QR
+    Valid --> Refunded : RefundConfirmed (после первой версии)
+    Valid --> Valid : View / показать QR
+    Refunded --> Refunded : View / показать статус «Возвращён»
+    state "Valid (действителен)" as Valid
+    state "Refunded (возвращён)" as Refunded
