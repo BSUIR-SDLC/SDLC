@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Создано Microsoft Visio, экспорт SVG sequence.svg Г — Создание задачи -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="11.6929in" height="8.26772in"
+		viewBox="0 0 841.89 595.276" xml:space="preserve" color-interpolation-filters="sRGB" class="st14">
+	<v:documentProperties v:langID="1049" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st3 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st4 {fill:#000000;font-family:GOST type B;font-size:0.75em}
+		.st5 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st6 {font-size:1em}
+		.st7 {stroke:#000000;stroke-dasharray:5.25,3.75;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st8 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st9 {marker-end:url(#mrkr4-61);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st10 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22935779816514}
+		.st11 {fill:#000000;font-family:GOST type B;font-size:0.499992em}
+		.st12 {marker-end:url(#mrkr4-78);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st13 {marker-end:url(#mrkr3-111);stroke:#000000;stroke-dasharray:5.25,3.75;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st14 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-61" class="st10" v:arrowType="4" v:arrowSize="2" v:setback="8.72" refX="-8.72" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-4.36,-4.36) "/>
+		</marker>
+		<marker id="mrkr4-78" class="st10" v:arrowType="4" v:arrowSize="2" v:setback="8.24" refX="-8.24" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-4.36,-4.36) "/>
+		</marker>
+		<g id="lend3">
+			<path d="M 2 1 L 0 0 L 2 -1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr3-111" class="st10" v:arrowType="3" v:arrowSize="2" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend3" transform="scale(-4.36,-4.36) "/>
+		</marker>
+	</defs>
+	<g v:mID="6" v:index="4" v:groupContext="foregroundPage">
+		<title>Г — Создание задачи</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="Сеть" v:index="0"/>
+		<v:layer v:name="Соединительная линия" v:index="1"/>
+		<g id="shape3-1" v:mID="3" v:groupContext="shape" transform="translate(120.504,-495.893)">
+			<title>StateNode_actor</title>
+			<v:userDefs>
+				<v:ud v:nameU="visDescription" v:val="VT4(Используйте для добавления пользователя системы в схему системы.)"/>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M5.76 549.46 A5.76 4.58182 0 0 1 17.28 549.46 A5.76 4.58182 0 0 1 5.76 549.46 Z" class="st1"/>
+			<path d="M0 558.62 L23.04 558.62" class="st2"/>
+			<path d="M11.52 576.95 L23.04 595.28" class="st2"/>
+			<path d="M11.52 554.04 L11.52 576.95 L0 595.28" class="st2"/>
+			<path d="M5.76 549.46 A5.76 4.58182 0 0 1 17.28 549.46 A5.76 4.58182 0 0 1 5.76 549.46" class="st2"/>
+		</g>
+		<g id="shape4-7" v:mID="4" v:groupContext="shape" transform="translate(83.4236,-477.173)">
+			<title>StateNode_head-user</title>
+			<desc>Пользователь</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="48.6" cy="586.636" width="97.2" height="17.28"/>
+			<rect x="0" y="577.996" width="97.2" height="17.28" class="st3"/>
+			<text x="21.99" y="589.34" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Пользователь</text>		</g>
+		<g id="shape5-10" v:mID="5" v:groupContext="shape" transform="translate(214.824,-480.773)">
+			<title>StateNode_head-controller</title>
+			<desc>TaskController</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="54" cy="576.556" width="108" height="37.44"/>
+			<rect x="0" y="557.836" width="108" height="37.44" class="st5"/>
+			<text x="26.31" y="579.26" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>TaskController</text>		</g>
+		<g id="shape6-13" v:mID="6" v:groupContext="shape" transform="translate(351.624,-480.773)">
+			<title>StateNode_head-service</title>
+			<desc>TaskService</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="54" cy="576.556" width="108" height="37.44"/>
+			<rect x="0" y="557.836" width="108" height="37.44" class="st5"/>
+			<text x="31.54" y="579.26" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>TaskService</text>		</g>
+		<g id="shape7-16" v:mID="7" v:groupContext="shape" transform="translate(492.024,-480.773)">
+			<title>StateNode_head-repository</title>
+			<desc>TaskRepository</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="54" cy="576.556" width="108" height="37.44"/>
+			<rect x="0" y="557.836" width="108" height="37.44" class="st5"/>
+			<text x="25.08" y="579.26" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>TaskRepository</text>		</g>
+		<g id="shape8-19" v:mID="8" v:groupContext="shape" v:layerMember="0" transform="translate(634.224,-480.773)">
+			<title>StateNode_head-db</title>
+			<v:custProps>
+				<v:cp v:nameU="Manufacturer" v:lbl="Изготовитель" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="ProductNumber" v:lbl="Код товара" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="PartNumber" v:lbl="Код позиции" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="ProductDescription" v:lbl="Описание товара" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="AssetNumber" v:lbl="Инвентарный номер" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="SerialNumber" v:lbl="Серийный номер" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="Location" v:lbl="Расположение" v:type="0" v:sortKey="1" v:invis="false" v:ask="false"
+						v:langID="1049" v:val="VT4()"/>
+				<v:cp v:nameU="Building" v:lbl="Здание" v:type="0" v:sortKey="1" v:invis="false" v:ask="false" v:langID="1049"
+						v:val="VT4()"/>
+				<v:cp v:nameU="Room" v:lbl="Комната" v:type="0" v:sortKey="1" v:invis="false" v:ask="false" v:langID="1049"
+						v:val="VT4()"/>
+				<v:cp v:nameU="Department" v:lbl="Отдел" v:type="0" v:sortKey="1" v:invis="false" v:ask="false" v:langID="1049"
+						v:val="VT4()"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visDescription"
+						v:val="VT4(Используйте для добавления базы данных, источника данных или устройства накопления данных в схему системы.)"/>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M0 556.4 L0 582.32 A52.2 12.96 -180 1 0 104.4 582.32 L104.4 556.4 A52.2 12.96 -180 1 0 0 556.4 Z" class="st1"/>
+			<path d="M0 556.4 L0 582.32 A52.2 12.96 -180 1 0 104.4 582.32 L104.4 556.4 A52.2 12.96 -180 1 0 0 556.4" class="st2"/>
+			<path d="M0 556.4 A52.2 12.96 -180 1 0 104.4 556.4" class="st2"/>
+		</g>
+		<g id="shape9-23" v:mID="9" v:groupContext="shape" transform="translate(637.824,-481.493)">
+			<title>Лист.9</title>
+			<desc>«database» SQLite</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="48.6" cy="583.036" width="97.2" height="24.48"/>
+			<rect x="0" y="570.796" width="97.2" height="24.48" class="st3"/>
+			<text x="26.76" y="580.34" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>«database»<v:newlineChar/><tspan
+						x="36.3" dy="1.2em" class="st6">SQLite</tspan></text>		</g>
+		<g id="shape10-27" v:mID="10" v:groupContext="shape" transform="translate(727.299,118.103) rotate(90)">
+			<title>Лист.10</title>
+			<path d="M0 595.28 L384.48 595.28" class="st7"/>
+		</g>
+		<g id="shape11-30" v:mID="11" v:groupContext="shape" transform="translate(864.099,114.503) rotate(90)">
+			<title>Лист.11</title>
+			<path d="M0 595.28 L388.08 595.28" class="st7"/>
+		</g>
+		<g id="shape12-33" v:mID="12" v:groupContext="shape" transform="translate(1000.9,114.503) rotate(90)">
+			<title>Лист.12</title>
+			<path d="M0 595.28 L388.08 595.28" class="st7"/>
+		</g>
+		<g id="shape13-36" v:mID="13" v:groupContext="shape" transform="translate(1141.3,114.503) rotate(90)">
+			<title>Лист.13</title>
+			<path d="M0 595.28 L388.08 595.28" class="st7"/>
+		</g>
+		<g id="shape14-39" v:mID="14" v:groupContext="shape" transform="translate(1281.7,114.503) rotate(90)">
+			<title>Лист.14</title>
+			<path d="M0 595.28 L388.08 595.28" class="st7"/>
+		</g>
+		<g id="shape15-42" v:mID="15" v:groupContext="shape" transform="translate(127.704,-135.893)">
+			<title>StateNode_act-user</title>
+			<rect x="0" y="300.076" width="8.64" height="295.2" class="st8"/>
+		</g>
+		<g id="shape16-44" v:mID="16" v:groupContext="shape" transform="translate(264.504,-135.893)">
+			<title>StateNode_act-controller</title>
+			<rect x="0" y="300.076" width="8.64" height="295.2" class="st8"/>
+		</g>
+		<g id="shape17-46" v:mID="17" v:groupContext="shape" transform="translate(401.304,-171.893)">
+			<title>StateNode_act-service</title>
+			<rect x="0" y="375.676" width="8.64" height="219.6" class="st8"/>
+		</g>
+		<g id="shape18-48" v:mID="18" v:groupContext="shape" transform="translate(541.704,-200.693)">
+			<title>StateNode_act-repository</title>
+			<rect x="0" y="530.476" width="8.64" height="64.8" class="st8"/>
+		</g>
+		<g id="shape19-50" v:mID="19" v:groupContext="shape" transform="translate(682.104,-215.093)">
+			<title>StateNode_act-db</title>
+			<rect x="0" y="573.676" width="8.64" height="21.6" class="st8"/>
+		</g>
+		<g id="shape20-52" v:mID="20" v:groupContext="shape" transform="translate(409.944,-330.293)">
+			<title>StateNode_act-validate</title>
+			<rect x="0" y="580.876" width="8.64" height="14.4" class="st8"/>
+		</g>
+		<g id="shape21-54" v:mID="21" v:groupContext="shape" transform="translate(409.944,-287.093)">
+			<title>StateNode_act-construct</title>
+			<rect x="0" y="580.876" width="8.64" height="14.4" class="st8"/>
+		</g>
+		<g id="shape22-56" v:mID="22" v:groupContext="shape" transform="translate(136.344,-431.093)">
+			<title>Лист.22</title>
+			<path d="M0 595.28 L121.62 595.28" class="st9"/>
+		</g>
+		<g id="shape23-62" v:mID="23" v:groupContext="shape" transform="translate(139.944,-433.253)">
+			<title>Лист.23</title>
+			<desc>Нажать «Создать задачу»</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="60.48" cy="588.796" width="120.96" height="12.96"/>
+			<rect x="0" y="582.316" width="120.96" height="12.96" class="st3"/>
+			<text x="26.23" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Нажать «Создать задачу»</text>		</g>
+		<g id="shape24-65" v:mID="24" v:groupContext="shape" transform="translate(273.144,-391.493)">
+			<title>Лист.24</title>
+			<path d="M0 595.28 L121.62 595.28" class="st9"/>
+		</g>
+		<g id="shape25-70" v:mID="25" v:groupContext="shape" transform="translate(276.744,-393.653)">
+			<title>Лист.25</title>
+			<desc>createTask(taskData)</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="60.48" cy="588.796" width="120.96" height="12.96"/>
+			<rect x="0" y="582.316" width="120.96" height="12.96" class="st3"/>
+			<text x="33.41" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>createTask(taskData)</text>		</g>
+		<g id="shape26-73" v:mID="26" v:groupContext="shape" transform="translate(946.598,-25.0116) rotate(64.359)">
+			<title>Лист.26</title>
+			<path d="M0 595.28 L13.71 566.72 L29.94 574.5 L19.97 595.28 L19.97 595.28" class="st12"/>
+		</g>
+		<g id="shape27-79" v:mID="27" v:groupContext="shape" transform="translate(416.424,-365.573)">
+			<title>Лист.27</title>
+			<desc>Проверить данные validateTask()</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="64.8" cy="588.796" width="129.6" height="12.96"/>
+			<rect x="0" y="582.316" width="129.6" height="12.96" class="st3"/>
+			<text x="22.35" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Проверить данные validateTask()</text>		</g>
+		<g id="shape28-82" v:mID="28" v:groupContext="shape" transform="translate(946.598,18.1884) rotate(64.359)">
+			<title>Лист.28</title>
+			<path d="M0 595.28 L13.71 566.72 L29.94 574.5 L19.97 595.28 L19.97 595.28" class="st12"/>
+		</g>
+		<g id="shape29-87" v:mID="29" v:groupContext="shape" transform="translate(416.424,-322.373)">
+			<title>Лист.29</title>
+			<desc>Создать объект со статусом «Новая»</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="64.8" cy="588.796" width="129.6" height="12.96"/>
+			<rect x="0" y="582.316" width="129.6" height="12.96" class="st3"/>
+			<text x="14.97" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Создать объект со статусом «Новая»</text>		</g>
+		<g id="shape30-90" v:mID="30" v:groupContext="shape" transform="translate(409.944,-265.493)">
+			<title>Лист.30</title>
+			<path d="M0 595.28 L125.22 595.28" class="st9"/>
+		</g>
+		<g id="shape31-95" v:mID="31" v:groupContext="shape" transform="translate(413.544,-267.653)">
+			<title>Лист.31</title>
+			<desc>Сохранить задачу save(task)</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.28" cy="588.796" width="124.56" height="12.96"/>
+			<rect x="0" y="582.316" width="124.56" height="12.96" class="st3"/>
+			<text x="24.85" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Сохранить задачу save(task)</text>		</g>
+		<g id="shape32-98" v:mID="32" v:groupContext="shape" transform="translate(550.344,-236.693)">
+			<title>Лист.32</title>
+			<path d="M0 595.28 L125.22 595.28" class="st9"/>
+		</g>
+		<g id="shape33-103" v:mID="33" v:groupContext="shape" transform="translate(553.944,-238.853)">
+			<title>Лист.33</title>
+			<desc>INSERT INTO tasks (...)</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.28" cy="588.796" width="124.56" height="12.96"/>
+			<rect x="0" y="582.316" width="124.56" height="12.96" class="st3"/>
+			<text x="33.77" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>INSERT INTO tasks (...)</text>		</g>
+		<g id="shape34-106" v:mID="34" v:groupContext="shape" transform="translate(682.104,975.458) rotate(180)">
+			<title>Лист.34</title>
+			<path d="M0 595.28 L131.76 595.28" class="st13"/>
+		</g>
+		<g id="shape35-112" v:mID="35" v:groupContext="shape" transform="translate(553.944,-217.253)">
+			<title>Лист.35</title>
+			<desc>Задача сохранена, taskId</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.28" cy="588.796" width="124.56" height="12.96"/>
+			<rect x="0" y="582.316" width="124.56" height="12.96" class="st3"/>
+			<text x="30.29" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Задача сохранена, taskId</text>		</g>
+		<g id="shape36-115" v:mID="36" v:groupContext="shape" transform="translate(541.704,989.858) rotate(180)">
+			<title>Лист.36</title>
+			<path d="M0 595.28 L131.76 595.28" class="st13"/>
+		</g>
+		<g id="shape37-120" v:mID="37" v:groupContext="shape" transform="translate(413.544,-202.853)">
+			<title>Лист.37</title>
+			<desc>Сохранённая задача</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.28" cy="588.796" width="124.56" height="12.96"/>
+			<rect x="0" y="582.316" width="124.56" height="12.96" class="st3"/>
+			<text x="36.75" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Сохранённая задача</text>		</g>
+		<g id="shape38-123" v:mID="38" v:groupContext="shape" transform="translate(401.304,1018.66) rotate(180)">
+			<title>Лист.38</title>
+			<path d="M0 595.28 L128.16 595.28" class="st13"/>
+		</g>
+		<g id="shape39-128" v:mID="39" v:groupContext="shape" transform="translate(276.744,-174.053)">
+			<title>Лист.39</title>
+			<desc>Результат создания TaskDTO</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="60.48" cy="588.796" width="120.96" height="12.96"/>
+			<rect x="0" y="582.316" width="120.96" height="12.96" class="st3"/>
+			<text x="22.13" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Результат создания TaskDTO</text>		</g>
+		<g id="shape40-131" v:mID="40" v:groupContext="shape" transform="translate(264.504,1054.66) rotate(180)">
+			<title>Лист.40</title>
+			<path d="M0 595.28 L128.16 595.28" class="st13"/>
+		</g>
+		<g id="shape41-136" v:mID="41" v:groupContext="shape" transform="translate(139.944,-138.053)">
+			<title>Лист.41</title>
+			<desc>Показать созданную задачу</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="60.48" cy="588.796" width="120.96" height="12.96"/>
+			<rect x="0" y="582.316" width="120.96" height="12.96" class="st3"/>
+			<text x="24.69" y="590.6" class="st11" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Показать созданную задачу</text>		</g>
+		<g id="group43-139" transform="translate(124.937,-85.0394)" v:mID="43" v:groupContext="group">
+			<title>Лист.43</title>
+			<g id="shape44-140" v:mID="44" v:groupContext="shape" transform="translate(420.923,160.179) rotate(45)">
+				<title>Лист.44</title>
+				<path d="M0 595.28 L20.04 595.28" class="st2"/>
+			</g>
+			<g id="shape45-143" v:mID="45" v:groupContext="shape" transform="translate(-436.733,191.991) rotate(-47.3533)">
+				<title>Лист.45</title>
+				<path d="M0 595.28 L19.27 595.28" class="st2"/>
+			</g>
+		</g>
+		<g id="group46-146" transform="translate(261.51,-85.0394)" v:mID="46" v:groupContext="group">
+			<title>Лист.46</title>
+			<g id="shape47-147" v:mID="47" v:groupContext="shape" transform="translate(420.923,160.179) rotate(45)">
+				<title>Лист.47</title>
+				<path d="M0 595.28 L20.04 595.28" class="st2"/>
+			</g>
+			<g id="shape48-150" v:mID="48" v:groupContext="shape" transform="translate(-436.733,191.991) rotate(-47.3533)">
+				<title>Лист.48</title>
+				<path d="M0 595.28 L19.27 595.28" class="st2"/>
+			</g>
+		</g>
+		<g id="group49-153" transform="translate(398.424,-85.0394)" v:mID="49" v:groupContext="group">
+			<title>Лист.49</title>
+			<g id="shape50-154" v:mID="50" v:groupContext="shape" transform="translate(420.923,160.179) rotate(45)">
+				<title>Лист.50</title>
+				<path d="M0 595.28 L20.04 595.28" class="st2"/>
+			</g>
+			<g id="shape51-157" v:mID="51" v:groupContext="shape" transform="translate(-436.733,191.991) rotate(-47.3533)">
+				<title>Лист.51</title>
+				<path d="M0 595.28 L19.27 595.28" class="st2"/>
+			</g>
+		</g>
+		<g id="group52-160" transform="translate(538.937,-85.0394)" v:mID="52" v:groupContext="group">
+			<title>Лист.52</title>
+			<g id="shape53-161" v:mID="53" v:groupContext="shape" transform="translate(420.923,160.179) rotate(45)">
+				<title>Лист.53</title>
+				<path d="M0 595.28 L20.04 595.28" class="st2"/>
+			</g>
+			<g id="shape54-164" v:mID="54" v:groupContext="shape" transform="translate(-436.733,191.991) rotate(-47.3533)">
+				<title>Лист.54</title>
+				<path d="M0 595.28 L19.27 595.28" class="st2"/>
+			</g>
+		</g>
+		<g id="group55-167" transform="translate(679.054,-85.0394)" v:mID="55" v:groupContext="group">
+			<title>Лист.55</title>
+			<g id="shape56-168" v:mID="56" v:groupContext="shape" transform="translate(420.923,160.179) rotate(45)">
+				<title>Лист.56</title>
+				<path d="M0 595.28 L20.04 595.28" class="st2"/>
+			</g>
+			<g id="shape57-171" v:mID="57" v:groupContext="shape" transform="translate(-436.733,191.991) rotate(-47.3533)">
+				<title>Лист.57</title>
+				<path d="M0 595.28 L19.27 595.28" class="st2"/>
+			</g>
+		</g>
+	</g>
+</svg>

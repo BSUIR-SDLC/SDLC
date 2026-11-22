@@ -1,0 +1,36 @@
+@startuml
+skinparam defaultFontName "GOST type B"
+skinparam defaultFontSize 12
+skinparam monochrome true
+skinparam shadowing false
+skinparam backgroundColor white
+actor "Пользователь" as User
+participant TaskController as Controller
+participant TaskService as Service
+participant TaskRepository as Repository
+database "SQLite" as DB
+activate User
+User -> Controller : Нажать «Создать задачу»
+activate Controller
+Controller -> Service : createTask(taskData)
+activate Service
+Service -> Service : Проверить данные validateTask()
+activate Service
+deactivate Service
+Service -> Service : Создать объект со статусом «Новая»
+activate Service
+deactivate Service
+Service -> Repository : Сохранить задачу save(task)
+activate Repository
+Repository -> DB : INSERT INTO tasks (...)
+activate DB
+DB --> Repository : Задача сохранена, taskId
+deactivate DB
+Repository --> Service : Сохранённая задача
+deactivate Repository
+Service --> Controller : Результат создания TaskDTO
+deactivate Service
+Controller --> User : Показать созданную задачу
+deactivate Controller
+deactivate User
+@enduml
