@@ -296,3 +296,23 @@ interface TicketRecord {
 | REQ-FUNC-008 | HistoryModule (`OrderHistoryList`) | FEAT-07 | 40 |
 | REQ-FUNC-009 | ExportModule (`PdfDownloader`) | FEAT-08 | 45 |
 | REQ-FUNC-010 | CartModule (`PromoCodeInput`) | FEAT-09 | 50 |
+## Динамическая модель (ЛР5)
+
+Добавлено в версии 0.3. Подробности — `docs/uml.md`, решение — `adr/adr-002.md`.
+
+| Представление | Содержание | Диаграмма | Требования |
+|---------------|------------|-----------|------------|
+| DV-UC | Модель вариантов использования: 3 актёра, 12 прецедентов, `include`/`extend` | `uml/usecase.png` | REQ-FUNC-001…009 |
+| DV-ACT | Активность «Покупка билета»: поиск, корзина, бронь, промокод, заказ | `uml/activity-purchase.png` | REQ-FUNC-002, 003, 005, 006, FEAT-02, 09 |
+| DV-STATE | Состояния брони/корзины и билета | `uml/state-reservation.png`, `uml/state-ticket.png` | FEAT-02, REQ-FUNC-007 |
+| DV-SEQ | Последовательности «Бронирование» и «Поиск и фильтры» | `uml/sequence-reserve.png`, `uml/sequence-filter.png` | FEAT-02, REQ-FUNC-003 |
+
+### Соответствие модулей кода
+| Модуль | Назначение | Прецеденты |
+|--------|-----------|------------|
+| `src/domain/catalog.ts` | поиск, фильтры, постраничная выдача | UC-02, 03 |
+| `src/domain/cart.ts` | корзина: добавление, количество, удаление, сумма | UC-05 |
+| `src/domain/promo.ts` | промокоды и пересчёт суммы | UC-07 |
+| `src/domain/reservation.ts` | таймер брони по часам сервера | UC-06, 12 |
+| `src/api/mockApi.ts` | имитация REST API: события, брони (409, 410) | UC-06, 12 |
+| `src/ui/*` | React-компоненты: каталог, фильтры, корзина | UC-02…UC-07 |

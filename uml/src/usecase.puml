@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+actor "Посетитель" as Visitor
+actor "REST API\n(серверная часть)" as Api <<external>>
+actor "Время\n(таймер брони)" as Timer
+
+rectangle EventPass {
+  usecase "UC-01 Войти в систему" as UC01
+  usecase "UC-02 Просмотреть каталог" as UC02
+  usecase "UC-03 Найти и отфильтровать события" as UC03
+  usecase "UC-04 Просмотреть карточку события" as UC04
+  usecase "UC-05 Управлять корзиной" as UC05
+  usecase "UC-06 Зарезервировать места на 15 минут" as UC06
+  usecase "UC-07 Применить промокод" as UC07
+  usecase "UC-08 Оформить заказ" as UC08
+  usecase "UC-09 Просмотреть билет с QR-кодом" as UC09
+  usecase "UC-10 Просмотреть историю покупок" as UC10
+  usecase "UC-11 Скачать билет в PDF" as UC11
+  usecase "UC-12 Освободить просроченную бронь" as UC12
+}
+
+Visitor --> UC02
+Visitor --> UC04
+Visitor --> UC05
+Visitor --> UC08
+Visitor --> UC10
+Visitor --> UC09
+
+UC06 --> Api
+UC01 --> Api
+Timer --> UC12
+
+UC05 ..> UC06 : <<include>>
+UC08 ..> UC01 : <<include>>
+UC10 ..> UC01 : <<include>>
+UC09 ..> UC01 : <<include>>
+UC03 ..> UC02 : <<extend>>
+UC07 ..> UC05 : <<extend>>
+UC11 ..> UC09 : <<extend>>
+@enduml
