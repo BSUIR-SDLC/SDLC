@@ -1,0 +1,35 @@
+@startuml
+skinparam defaultFontName "GOST type B"
+skinparam defaultFontSize 12
+skinparam monochrome true
+skinparam shadowing false
+skinparam backgroundColor white
+state "Новая" as New
+state "В работе" as InProgress
+state "Выполнена" as Done
+state "Удалена" as Deleted
+[*] --> New : создать задачу / сохранить данные
+New --> InProgress : начать выполнение
+InProgress --> Done : завершить задачу
+New --> Done : завершить без начала выполнения
+New --> Deleted : удалить задачу
+InProgress --> Deleted : удалить задачу
+Done --> Deleted : удалить задачу
+Deleted --> [*]
+note left of New
+Задача сохранена. Указаны
+приоритет, срок и категория.
+end note
+note left of InProgress
+Пользователь выполняет задачу
+и отмечает готовность подзадач.
+end note
+note left of Done
+Выполнение завершено.
+История задачи сохраняется.
+При повторении создаётся ДРУГОЙ
+экземпляр в состоянии «Новая».
+Просроченность определяется дедлайном
+и не заменяет статус выполнения.
+end note
+@enduml

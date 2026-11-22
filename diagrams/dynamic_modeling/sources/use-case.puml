@@ -1,0 +1,45 @@
+@startuml
+skinparam defaultFontName "GOST type B"
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+actor "Неаутентифицированный\nпользователь" as Guest
+actor "Аутентифицированный\nпользователь" as User
+usecase "Регистрация пользователя" as Register
+usecase "Аутентификация пользователя" as Login
+usecase "Создание задачи" as Create
+usecase "Редактирование задачи" as Edit
+usecase "Изменение приоритета" as Priority
+usecase "Изменение дедлайна" as Deadline
+usecase "Проверка данных задачи" as Validate
+usecase "Настройка повторения" as Repeat
+usecase "Управление категориями" as Categories
+usecase "Управление подзадачами" as Subtasks
+usecase "Завершение задачи" as Complete
+usecase "Поиск и фильтрация задач" as Search
+usecase "Уведомление о дедлайне" as Notify
+node "SMTP-сервер" as SMTP <<external>>
+Guest --> Register
+Guest --> Login
+User --> Create
+User --> Edit
+User --> Categories
+User --> Subtasks
+User --> Complete
+User --> Search
+User --> Notify
+Repeat ..> Create : <<extend>>
+Priority -|> Edit
+Deadline -|> Edit
+Create ..> Validate : <<include>>
+Edit ..> Validate : <<include>>
+Notify --> SMTP
+actor "Администратор" as Admin
+usecase "Управление учётными записями" as Accounts
+usecase "Блокировка пользователя" as BlockUser
+usecase "Просмотр журнала ошибок" as ErrorLog
+Admin -|> User
+Admin --> Accounts
+Admin --> BlockUser
+Admin --> ErrorLog
+@enduml

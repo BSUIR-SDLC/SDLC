@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Создано Microsoft Visio, экспорт SVG use-case.svg А — Варианты использования -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="11.6929in" height="8.26772in"
+		viewBox="0 0 841.89 595.276" xml:space="preserve" color-interpolation-filters="sRGB" class="st13">
+	<v:documentProperties v:langID="1049" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st3 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st4 {fill:#000000;font-family:GOST type B;font-size:0.666664em}
+		.st5 {font-size:1em}
+		.st6 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st7 {fill:#000000;font-family:GOST type B;font-size:0.75em}
+		.st8 {marker-end:url(#mrkr3-72);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st9 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22935779816514}
+		.st10 {marker-end:url(#mrkr3-72);stroke:#000000;stroke-dasharray:5.25,3.75;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st11 {marker-end:url(#mrkr14-121);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st12 {fill:#e4e4e4;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st13 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend3">
+			<path d="M 2 1 L 0 0 L 2 -1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr3-72" class="st9" v:arrowType="3" v:arrowSize="2" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend3" transform="scale(-4.36,-4.36) "/>
+		</marker>
+		<g id="lend14">
+			<path d="M 3 -1 L 0 0 L 3 1 L 3 -1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr14-121" class="st9" v:arrowType="14" v:arrowSize="2" v:setback="13.08" refX="-13.08" orient="auto"
+				markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend14" transform="scale(-4.36,-4.36) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>А — Варианты использования</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="Соединительная линия" v:index="0"/>
+		<g id="shape3-1" v:mID="3" v:groupContext="shape" transform="translate(64.0369,-140.467)">
+			<title>Пользователь</title>
+			<v:userDefs>
+				<v:ud v:nameU="visDescription" v:val="VT4(Используйте для добавления пользователя системы в схему системы.)"/>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44 Z" class="st1"/>
+			<path d="M0 558.61 L22.56 558.61" class="st2"/>
+			<path d="M11.28 576.94 L22.56 595.28" class="st2"/>
+			<path d="M11.28 554.02 L11.28 576.94 L0 595.28" class="st2"/>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44" class="st2"/>
+		</g>
+		<g id="shape4-7" v:mID="4" v:groupContext="shape" transform="translate(7.36218,-113.738)">
+			<title>Лист.4</title>
+			<desc>Неаутентифицированный пользователь</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="67.9533" cy="583.289" width="135.91" height="23.9723"/>
+			<rect x="0" y="571.303" width="135.907" height="23.9723" class="st3"/>
+			<text x="25.3" y="580.89" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Неаутентифицированный<v:newlineChar/><tspan
+						x="44.57" dy="1.2em" class="st5">пользователь</tspan></text>		</g>
+		<g id="shape5-11" v:mID="5" v:groupContext="shape" transform="translate(412.09,-280.305)">
+			<title>Пользователь.5</title>
+			<v:userDefs>
+				<v:ud v:nameU="visDescription" v:val="VT4(Используйте для добавления пользователя системы в схему системы.)"/>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44 Z" class="st1"/>
+			<path d="M0 558.61 L22.56 558.61" class="st2"/>
+			<path d="M11.28 576.94 L22.56 595.28" class="st2"/>
+			<path d="M11.28 554.02 L11.28 576.94 L0 595.28" class="st2"/>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44" class="st2"/>
+		</g>
+		<g id="shape6-17" v:mID="6" v:groupContext="shape" transform="translate(353.758,-252.91)">
+			<title>Лист.6</title>
+			<desc>Аутентифицированный пользователь</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="69.6107" cy="582.624" width="139.23" height="25.3041"/>
+			<rect x="0" y="569.972" width="139.221" height="25.3041" class="st3"/>
+			<text x="30.51" y="580.22" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Аутентифицированный<v:newlineChar/><tspan
+						x="46.23" dy="1.2em" class="st5">пользователь</tspan></text>		</g>
+		<g id="shape7-21" v:mID="7" v:groupContext="shape" transform="translate(20.6214,-220.947)">
+			<title>Вариант использования</title>
+			<desc>Регистрация пользователя</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="54.6941" cy="577.296" width="109.39" height="35.9584"/>
+			<ellipse cx="54.6941" cy="577.296" rx="54.6941" ry="17.9792" class="st6"/>
+			<text x="30.08" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Регистрация<v:newlineChar/><tspan
+						x="28.39" dy="1.2em" class="st5">пользователя</tspan></text>		</g>
+		<g id="shape8-25" v:mID="8" v:groupContext="shape" transform="translate(163.745,-147.699)">
+			<title>Вариант использования.8</title>
+			<desc>Аутентификация пользователя</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.0089" cy="577.296" width="116.02" height="35.9584"/>
+			<ellipse cx="58.0089" cy="577.296" rx="58.0089" ry="17.9792" class="st6"/>
+			<text x="25.09" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Аутентификация<v:newlineChar/><tspan
+						x="31.71" dy="1.2em" class="st5">пользователя</tspan></text>		</g>
+		<g id="shape9-29" v:mID="9" v:groupContext="shape" transform="translate(13.9918,-300.855)">
+			<title>Вариант использования.9</title>
+			<desc>Настройка повторения</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="54.6941" cy="577.296" width="109.39" height="35.9584"/>
+			<ellipse cx="54.6941" cy="577.296" rx="54.6941" ry="17.9792" class="st6"/>
+			<text x="34.7" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Настройка<v:newlineChar/><tspan
+						x="32.55" dy="1.2em" class="st5">повторения</tspan></text>		</g>
+		<g id="shape10-33" v:mID="10" v:groupContext="shape" transform="translate(194.648,-300.855)">
+			<title>Вариант использования.10</title>
+			<desc>Создание задачи</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="31.3" y="580" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Создание задачи</text>		</g>
+		<g id="shape11-36" v:mID="11" v:groupContext="shape" transform="translate(360.388,-414.057)">
+			<title>Вариант использования.11</title>
+			<desc>Редактирование задачи</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="31.91" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Редактирование<v:newlineChar/><tspan
+						x="50.21" dy="1.2em" class="st5">задачи</tspan></text>		</g>
+		<g id="shape12-40" v:mID="12" v:groupContext="shape" transform="translate(201.278,-445.931)">
+			<title>Вариант использования.12</title>
+			<desc>Изменение приоритета</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="59.6663" cy="577.296" width="119.34" height="35.9584"/>
+			<ellipse cx="59.6663" cy="577.296" rx="59.6663" ry="17.9792" class="st6"/>
+			<text x="39.82" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Изменение<v:newlineChar/><tspan
+						x="36.9" dy="1.2em" class="st5">приоритета</tspan></text>		</g>
+		<g id="shape13-44" v:mID="13" v:groupContext="shape" transform="translate(204.592,-380.763)">
+			<title>Вариант использования.13</title>
+			<desc>Изменение дедлайна</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="59.6663" cy="577.296" width="119.34" height="35.9584"/>
+			<ellipse cx="59.6663" cy="577.296" rx="59.6663" ry="17.9792" class="st6"/>
+			<text x="39.82" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Изменение<v:newlineChar/><tspan
+						x="42.44" dy="1.2em" class="st5">дедлайна</tspan></text>		</g>
+		<g id="shape14-48" v:mID="14" v:groupContext="shape" transform="translate(519.498,-354.127)">
+			<title>Вариант использования.14</title>
+			<desc>Управление категориями</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="41.14" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Управление<v:newlineChar/><tspan
+						x="38.37" dy="1.2em" class="st5">категориями</tspan></text>		</g>
+		<g id="shape15-52" v:mID="15" v:groupContext="shape" transform="translate(519.498,-280.878)">
+			<title>Вариант использования.15</title>
+			<desc>Управление подзадачами</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="41.14" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Управление<v:newlineChar/><tspan
+						x="39.14" dy="1.2em" class="st5">подзадачами</tspan></text>		</g>
+		<g id="shape16-56" v:mID="16" v:groupContext="shape" transform="translate(519.498,-207.63)">
+			<title>Вариант использования.16</title>
+			<desc>Завершение задачи</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="26.22" y="580" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Завершение задачи</text>		</g>
+		<g id="shape17-59" v:mID="17" v:groupContext="shape" transform="translate(194.648,-215.848)">
+			<title>Вариант использования.17</title>
+			<desc>Поиск и фильтрация задач</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="23.3" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Поиск и фильтрация<v:newlineChar/><tspan
+						x="52.37" dy="1.2em" class="st5">задач</tspan></text>		</g>
+		<g id="shape18-63" v:mID="18" v:groupContext="shape" transform="translate(42.1675,-414.057)">
+			<title>Вариант использования.18</title>
+			<desc>Проверка данных задачи</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="30.37" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Проверка данных<v:newlineChar/><tspan
+						x="50.21" dy="1.2em" class="st5">задачи</tspan></text>		</g>
+		<g id="shape19-67" v:mID="19" v:groupContext="shape" transform="translate(-519.96,404.387) rotate(-90)">
+			<title>UML_Connector_1</title>
+			<path d="M0 595.28 L29.85 595.28" class="st8"/>
+		</g>
+		<g id="shape20-73" v:mID="20" v:groupContext="shape" transform="translate(89.2478,-165.678)">
+			<title>UML_Connector_2</title>
+			<path d="M0 595.28 L74.83 595.28" class="st8"/>
+		</g>
+		<g id="shape21-78" v:mID="21" v:groupContext="shape" transform="translate(372.672,875.978) rotate(-176.523)">
+			<title>UML_Connector_3</title>
+			<path d="M0 595.28 L88.33 595.28" class="st8"/>
+		</g>
+		<g id="shape22-83" v:mID="22" v:groupContext="shape" transform="translate(-171.907,260.764) rotate(-90)">
+			<title>UML_Connector_4</title>
+			<path d="M0 595.28 L79.55 595.28" class="st8"/>
+		</g>
+		<g id="shape23-88" v:mID="23" v:groupContext="shape" transform="translate(157.46,-248.553) rotate(-28.1133)">
+			<title>UML_Connector_5</title>
+			<path d="M0 595.28 L96.2 595.28" class="st8"/>
+		</g>
+		<g id="shape24-93" v:mID="24" v:groupContext="shape" transform="translate(476.811,-302.921) rotate(3.74168)">
+			<title>UML_Connector_6</title>
+			<path d="M0 595.28 L81.71 595.28" class="st8"/>
+		</g>
+		<g id="shape25-98" v:mID="25" v:groupContext="shape" transform="translate(838.679,-155.553) rotate(39.1096)">
+			<title>UML_Connector_7</title>
+			<path d="M0 595.28 L84.55 595.28" class="st8"/>
+		</g>
+		<g id="shape26-103" v:mID="26" v:groupContext="shape" transform="translate(595.647,858.346) rotate(161.591)">
+			<title>UML_Connector_8</title>
+			<path d="M0 595.28 L158.12 595.28" class="st8"/>
+		</g>
+		<g id="shape27-108" v:mID="27" v:groupContext="shape" transform="translate(123.711,-318.834)">
+			<title>UML_Connector_9</title>
+			<path d="M0 595.28 L70.94 595.28" class="st10"/>
+		</g>
+		<g id="shape28-113" v:mID="28" v:groupContext="shape" transform="translate(123.048,-325.493)">
+			<title>Лист.28</title>
+			<desc>&#60;&#60;extend&#62;&#62;</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="36.4627" cy="587.285" width="72.93" height="15.9815"/>
+			<rect x="0" y="579.294" width="72.9255" height="15.9815" class="st3"/>
+			<text x="17.6" y="589.68" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>&#60;&#60;extend&#62;&#62;</text>		</g>
+		<g id="shape29-116" v:mID="29" v:groupContext="shape" transform="translate(576.044,-401.669) rotate(25.5665)">
+			<title>UML_Connector_10</title>
+			<path d="M0 595.28 L40.31 595.28" class="st11"/>
+		</g>
+		<g id="shape30-122" v:mID="30" v:groupContext="shape" transform="translate(-15.4615,-292.516) rotate(-34.7595)">
+			<title>UML_Connector_11</title>
+			<path d="M0 595.28 L38.56 595.28" class="st11"/>
+		</g>
+		<g id="shape32-127" v:mID="32" v:groupContext="shape" transform="translate(172.749,-362.118)">
+			<title>Лист.32</title>
+			<desc>&#60;&#60;include&#62;&#62;</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="36.4627" cy="587.285" width="72.93" height="15.9815"/>
+			<rect x="0" y="579.294" width="72.9255" height="15.9815" class="st3"/>
+			<text x="17.6" y="589.68" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>&#60;&#60;include&#62;&#62;</text>		</g>
+		<g id="shape33-130" v:mID="33" v:groupContext="shape" transform="translate(360.388,758.515) rotate(180)">
+			<title>UML_Connector_13</title>
+			<path d="M0 595.28 L192.26 595.28" class="st10"/>
+		</g>
+		<g id="shape34-135" v:mID="34" v:groupContext="shape" transform="translate(149.567,-414.057)">
+			<title>Лист.34</title>
+			<desc>&#60;&#60;include&#62;&#62;</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="36.4627" cy="587.285" width="72.93" height="15.9815"/>
+			<rect x="0" y="579.294" width="72.9255" height="15.9815" class="st3"/>
+			<text x="17.6" y="589.68" class="st4" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>&#60;&#60;include&#62;&#62;</text>		</g>
+		<g id="shape35-138" v:mID="35" v:groupContext="shape" transform="translate(516.183,-107.745)">
+			<title>Вариант использования.35</title>
+			<desc>Уведомление о дедлайне</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="66.2959" cy="577.296" width="132.6" height="35.9584"/>
+			<ellipse cx="66.2959" cy="577.296" rx="66.2959" ry="17.9792" class="st6"/>
+			<text x="41.99" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Уведомление<v:newlineChar/><tspan
+						x="45.07" dy="1.2em" class="st5">о дедлайне</tspan></text>		</g>
+		<g id="group36-142" transform="translate(680.265,-97.4236)" v:mID="36" v:groupContext="group">
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>Куб</title>
+			<g id="shape37-143" v:mID="37" v:groupContext="shape">
+				<title>Лист.37</title>
+				<v:userDefs>
+					<v:ud v:nameU="ControlHeight" v:prompt="" v:val="VT0(0.94488188976378):24"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT0(1):26"/>
+					<v:ud v:nameU="ControlHeight" v:prompt="" v:val="VT0(0.77687935566993):1"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT5(#ffffff)"/>
+				</v:userDefs>
+				<path d="M0 539.34 L82.15 539.34 L96.13 525.36 L13.98 525.36 L0 539.34 Z" class="st6"/>
+			</g>
+			<g id="shape38-145" v:mID="38" v:groupContext="shape">
+				<title>Лист.38</title>
+				<v:userDefs>
+					<v:ud v:nameU="ControlHeight" v:prompt="" v:val="VT0(0.94488188976378):24"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT0(1):26"/>
+					<v:ud v:nameU="ControlHeight" v:prompt="" v:val="VT0(0.77687935566993):1"/>
+					<v:ud v:nameU="FillForegnd" v:prompt="" v:val="VT5(#ffffff)"/>
+				</v:userDefs>
+				<path d="M82.15 595.28 L96.13 581.29 L96.13 525.36 L82.15 539.34 L82.15 595.28 Z" class="st12"/>
+			</g>
+			<g id="shape36-147" v:mID="36" v:groupContext="groupContent">
+				<rect x="0" y="539.34" width="82.1452" height="55.9353" class="st6"/>
+			</g>
+		</g>
+		<g id="shape39-149" v:mID="39" v:groupContext="shape" transform="translate(677.726,-110.361)">
+			<title>Лист.39</title>
+			<desc>SMTP-сервер</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="43.7553" cy="580.293" width="87.52" height="29.9653"/>
+			<rect x="0" y="565.31" width="87.5105" height="29.9653" class="st3"/>
+			<text x="18.84" y="582.99" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>SMTP-сервер</text>		</g>
+		<g id="shape40-152" v:mID="40" v:groupContext="shape" transform="translate(675.293,-169.008)">
+			<title>Лист.40</title>
+			<desc>&#60;&#60;external&#62;&#62;</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="53.0367" cy="587.285" width="106.08" height="15.9815"/>
+			<rect x="0" y="579.294" width="106.073" height="15.9815" class="st3"/>
+			<text x="28.73" y="589.98" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>&#60;&#60;external&#62;&#62;</text>		</g>
+		<g id="shape43-155" v:mID="43" v:groupContext="shape" transform="translate(648.775,-125.724)">
+			<title>UML_Connector_15</title>
+			<path d="M0 595.28 L31.16 595.28" class="st8"/>
+		</g>
+		<g id="shape45-160" v:mID="45" v:groupContext="shape" transform="translate(717.051,-370.201)">
+			<title>Пользователь.45</title>
+			<v:userDefs>
+				<v:ud v:nameU="visDescription" v:val="VT4(Используйте для добавления пользователя системы в схему системы.)"/>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44 Z" class="st1"/>
+			<path d="M0 558.61 L22.56 558.61" class="st2"/>
+			<path d="M11.28 576.94 L22.56 595.28" class="st2"/>
+			<path d="M11.28 554.02 L11.28 576.94 L0 595.28" class="st2"/>
+			<path d="M5.64 549.44 A5.63927 4.58379 0 0 1 16.92 549.44 A5.63927 4.58379 0 0 1 5.64 549.44" class="st2"/>
+		</g>
+		<g id="shape46-166" v:mID="46" v:groupContext="shape" transform="translate(670.321,-348.637)">
+			<title>Лист.46</title>
+			<desc>Администратор</desc>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.0089" cy="585.953" width="116.02" height="18.6451"/>
+			<rect x="0" y="576.63" width="116.018" height="18.6451" class="st3"/>
+			<text x="28.17" y="588.65" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Администратор</text>		</g>
+		<g id="shape47-169" v:mID="47" v:groupContext="shape" transform="translate(526.127,-427.375)">
+			<title>Вариант использования.47</title>
+			<desc>Управление учётными записями</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="62.9811" cy="577.296" width="125.97" height="35.9584"/>
+			<ellipse cx="62.9811" cy="577.296" rx="62.9811" ry="17.9792" class="st6"/>
+			<text x="20.84" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Управление учётными<v:newlineChar/><tspan
+						x="45.91" dy="1.2em" class="st5">записями</tspan></text>		</g>
+		<g id="shape48-173" v:mID="48" v:groupContext="shape" transform="translate(662.034,-274.219)">
+			<title>Вариант использования.48</title>
+			<desc>Блокировка пользователя</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="59.6663" cy="577.296" width="119.34" height="35.9584"/>
+			<ellipse cx="59.6663" cy="577.296" rx="59.6663" ry="17.9792" class="st6"/>
+			<text x="37.83" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Блокировка<v:newlineChar/><tspan
+						x="33.36" dy="1.2em" class="st5">пользователя</tspan></text>		</g>
+		<g id="shape49-177" v:mID="49" v:groupContext="shape" transform="translate(662.034,-207.63)">
+			<title>Вариант использования.49</title>
+			<desc>Просмотр журнала ошибок</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(0.72,0.72,0.72,0.72)" v:tabSpace="42.5197"/>
+			<v:textRect cx="59.6663" cy="577.296" width="119.34" height="35.9584"/>
+			<ellipse cx="59.6663" cy="577.296" rx="59.6663" ry="17.9792" class="st6"/>
+			<text x="23.98" y="574.6" class="st7" v:langID="1049"><v:paragraph v:horizAlign="1"/><v:tabList/>Просмотр журнала<v:newlineChar/><tspan
+						x="46.13" dy="1.2em" class="st5">ошибок</tspan></text>		</g>
+		<g id="shape50-181" v:mID="50" v:groupContext="shape" transform="translate(473.535,730.67) rotate(-156.063)">
+			<title>UML_Connector_16</title>
+			<path d="M0 595.28 L73.97 595.28" class="st8"/>
+		</g>
+		<g id="shape51-186" v:mID="51" v:groupContext="shape" transform="translate(1323.61,263.123) rotate(90)">
+			<title>UML_Connector_17</title>
+			<path d="M0 595.28 L22.64 595.28" class="st8"/>
+		</g>
+		<g id="shape52-191" v:mID="52" v:groupContext="shape" transform="translate(1316.97,67.1231) rotate(75.142)">
+			<title>UML_Connector_18</title>
+			<path d="M0 595.28 L50.62 534.02 L156.8 583.93 L155.09 595.28" class="st8"/>
+		</g>
+		<g id="shape55-196" v:mID="55" v:groupContext="shape" transform="translate(-170.193,707.599) rotate(-138.569)">
+			<title>UML_Connector_9.55</title>
+			<path d="M0 595.28 L123.44 595.28" class="st10"/>
+		</g>
+		<g id="shape56-201" v:mID="56" v:groupContext="shape" transform="translate(948.731,8.76142) rotate(57.0129)">
+			<title>UML_Connector_7.56</title>
+			<path d="M0 595.28 L149.53 595.28" class="st8"/>
+		</g>
+		<g id="shape57-206" v:mID="57" v:groupContext="shape" v:layerMember="0" transform="translate(721.243,-348.637)">
+			<title>Динамическая соединительная линия</title>
+			<path d="M7.09 595.28 L7.09 611.76" class="st2"/>
+		</g>
+		<g id="shape58-209" v:mID="58" v:groupContext="shape" transform="translate(834.355,807.945) rotate(167.608)">
+			<title>UML_Connector_10.58</title>
+			<path d="M0 595.28 L253.52 595.28" class="st11"/>
+		</g>
+	</g>
+</svg>
