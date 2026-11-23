@@ -1,0 +1,64 @@
+@startuml gitpulse-sequence
+autonumber
+
+actor "Пользователь" as User
+participant "MainWindow" as View
+participant "MainViewModel" as VM
+participant "DiskScannerService" as Scanner
+participant "CleanupService" as Cleaner
+participant "GitCliExecutor" as GitCli
+participant "OsFileSystemProvider" as FS
+participant "FileLogger" as Logger
+
+User -> View : Нажать "Scan Disk"
+View -> VM : ScanDiskCommand.Execute()
+activate VM
+
+VM -> Scanner : ScanAsync(targetPath, ct)
+activate Scanner
+
+Scanner -> FS : Найти каталоги с .git
+activate FS
+FS --> Scanner : Список репозиториев
+deactivate FS
+
+loop Для каждого репозитория
+  Scanner -> GitCli : GetBranchAndStatusAsync(repoPath)
+  activate GitCli
+  GitCli --> Scanner : Ветка, Clean / Dirty
+  deactivate GitCli
+
+  Scanner -> FS : Подсчитать размер артефактов
+  activate FS
+  FS --> Scanner : Размер в байтах
+  deactivate FS
+end
+
+Scanner --> VM : ScanResult и порог 500 МБ
+deactivate Scanner
+VM --> View : Обновить таблицу и порог
+deactivate VM
+
+User -> View : Выбрать цели и нажать "Clean Artifacts"
+View -> VM : CleanArtifactsCommand.Execute()
+activate VM
+VM -> View : Открыть диалог подтверждения
+
+alt Подтверждено пользователем
+  User -> View : Подтвердить удаление
+  View -> VM : Подтверждение получено
+  VM -> Cleaner : CleanSelectedAsync(selectedRepos)
+  Cleaner -> FS : Удалить каталоги артефактов
+  FS --> Cleaner : Результат (успех / ошибка)
+  Cleaner -> Logger : LogOperation(результат, объём)
+  Logger --> Cleaner : Записано в gitpulse.log
+  Cleaner --> VM : Освобождённый объём
+  VM --> View : Обновить таблицу и метрики
+else Отменено пользователем
+  User -> View : Отменить удаление
+  View -> VM : Отмена очистки
+  VM --> View : Без изменений
+end
+
+deactivate VM
+@enduml

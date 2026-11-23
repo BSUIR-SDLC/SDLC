@@ -1,0 +1,37 @@
+@startuml gitpulse-statemachine
+skinparam state {
+  BackgroundColor #F8F9FA
+  BorderColor #333333
+}
+
+[*] --> Idle : запуск приложения
+
+state Idle : Ожидание выбора пути\nи запуска сканирования
+
+state Scanning : Сканирование каталогов\n(поиск .git, Git CLI, расчёт размера)
+
+state Error : Ошибка доступа / Git CLI\n(запись в gitpulse.log)
+
+state Ready : Результаты готовы\n(Clean/Dirty, порог 500 МБ)
+
+state ConfirmingCleanup : Модальный диалог\nподтверждения очистки
+
+state Cleaning : Удаление артефактов\nи запись в gitpulse.log
+
+Idle --> Scanning : ScanDisk() [путь задан]
+Scanning --> Idle : отмена [CancellationToken]
+Scanning --> Error : ошибка доступа / сбой Git CLI
+Scanning --> Ready : сканирование завершено
+
+Error --> Idle : сброс / выбор пути
+Error --> Ready : продолжить с доступными данными
+
+Ready --> Scanning : ScanDisk() [повторный аудит]
+Ready --> ConfirmingCleanup : CleanArtifacts() [выбраны Clean-цели]
+
+ConfirmingCleanup --> Ready : отмена в диалоге
+ConfirmingCleanup --> Cleaning : подтвердить удаление
+
+Cleaning --> Ready : очистка завершена
+Cleaning --> Error : ошибка ввода-вывода
+@enduml
