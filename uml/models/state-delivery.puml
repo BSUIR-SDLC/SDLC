@@ -1,0 +1,53 @@
+@startuml state-delivery
+' Связи: ADR-0006 (5 попыток); UC-07, UC-08, UC-09; SDD 016-delivery-state-machine; BR-06, BR-07, BR-09, BR-10, BR-12
+' Решения: ADR-0004 (очередь в PostgreSQL), ADR-0006 (at-least-once), ADR-0010 (таблица переходов)
+' Код: apps/api/src/modules/dispatcher/deliveryMachine.ts (TRANSITIONS, COMPOSITE_TRANSITIONS)
+' Тест: apps/api/test/deliveryMachine.test.ts сверяет переходы этой модели с кодом
+title Состояния доставки действия
+skinparam defaultFontName Arial
+hide empty description
+
+state "Проверка защиты" as guardCheck <<choice>>
+
+state "В обработке" as active {
+  state "В очереди" as queued
+  queued : entry / NOTIFY delivery_queued
+  state "Отправка" as sending
+  sending : entry / POST с Idempotency-Key
+  sending : do / ожидание ответа ≤ 5 с
+  state "Ожидание повтора" as retryWait
+  retryWait : entry / таймер 2^retries с
+  state "Приостановлено" as paused
+
+  [*] --> queued
+  queued --> sending : WORKER_PICKED / FOR UPDATE SKIP LOCKED
+  sending --> retryWait : RETRYABLE_ERROR [retries < 4] / retries + 1
+  retryWait --> sending : BACKOFF_ELAPSED
+  queued --> paused : GLOBAL_PAUSE
+  paused --> queued : RESUME
+}
+
+state "Доставлено" as delivered
+state "Пропущено" as skipped
+skipped : entry / причина HOP_LIMIT, COOLDOWN или RULE_DISABLED
+state "Недоставлено" as failed
+failed : entry / в список недоставленных
+state "Отменено" as cancelled
+state "Удалено" as purged
+
+[*] --> guardCheck
+guardCheck --> active : [защита пройдена]
+guardCheck --> skipped : [X-Hop ≥ 3, cooldown или правило выключено]
+
+sending --> delivered : RESPONSE_2XX
+sending --> failed : RETRYABLE_ERROR [retries = 4]
+sending --> failed : PERMANENT_ERROR [4xx, кроме 408 и 429]
+failed --> active : REPLAY / тот же Idempotency-Key, retries = 0
+active --> cancelled : TARGET_DELETED
+
+delivered --> purged : RETENTION_EXPIRED [> 30 сут]
+skipped --> purged : RETENTION_EXPIRED [> 30 сут]
+cancelled --> purged : RETENTION_EXPIRED [> 30 сут]
+failed --> purged : RETENTION_EXPIRED [> 90 сут]
+purged --> [*]
+@enduml

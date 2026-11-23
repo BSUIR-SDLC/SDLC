@@ -1,0 +1,13 @@
+{
+  "name": "rulehook",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --test \"packages/*/test/*.test.ts\" \"apps/*/test/*.test.ts\"",
+    "test:coverage": "node --test --experimental-test-coverage \"packages/*/test/*.test.ts\" \"apps/*/test/*.test.ts\"",
+    "uml": "python tools/uml_render.py",
+    "uml:check": "python tools/uml_render.py --check"
+  }
+}

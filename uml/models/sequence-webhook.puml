@@ -1,0 +1,62 @@
+@startuml sequence-webhook
+' Связи: UC-02, UC-10, UC-09; SDD 018-sequence; линии жизни – компоненты представления 002
+' Решения: ADR-0003, ADR-0004, ADR-0006, ADR-0008
+title Обработка вебхука и доставка действия (UC-02, UC-10, UC-09)
+skinparam defaultFontName Arial
+autonumber
+
+participant "Эмулятор" as Emu
+participant "WebhookController\n(webhooks)" as WC
+participant "SourceService\n(sources)" as SS
+participant "MatchingEngine\n(engine)" as ME
+participant "LoopGuard\n(guard)" as LG
+database "PostgreSQL" as DB
+participant "DeliveryWorker\n(dispatcher)" as DW
+participant "Система\nуведомлений" as N
+
+Emu -> WC : POST /hooks/{sourceId}\n(тело, X-RuleHook-Signature, X-Hop)
+activate WC
+WC -> SS : getSource(sourceId)
+activate SS
+SS --> WC : source (секреты)
+deactivate SS
+WC -> WC : verify HMAC, разбор JSON
+alt подпись неверна
+  WC --> Emu : 401 BAD_SIGNATURE
+else подпись верна
+  WC -> DB : BEGIN; INSERT event ON CONFLICT DO NOTHING
+  alt событие уже было
+    WC -> DB : COMMIT
+    WC --> Emu : 200 DUPLICATE
+  else новое событие
+    WC -> ME : matchAndEnqueue(event)
+    activate ME
+    ME -> DB : активные правила (кэш)
+    loop для каждого правила по приоритету
+      ME -> ME : evaluate(when, payload)
+      opt условие выполнено
+        ME -> LG : check(rule, event.hop)
+        activate LG
+        LG --> ME : OK / HOP_LIMIT / COOLDOWN
+        deactivate LG
+        ME -> DB : INSERT rule_match, delivery
+      end
+    end
+    ME --> WC : queued = n
+    deactivate ME
+    WC -> DB : COMMIT
+    par ответ эмулятору
+      WC --> Emu : 202 ACCEPTED
+    else доставка
+      DB ->> DW : NOTIFY delivery_queued
+      activate DW
+      DW -> DB : SELECT … FOR UPDATE SKIP LOCKED
+      DW -> N : POST /notify (Idempotency-Key, X-Hop + 1)
+      N --> DW : 204
+      DW -> DB : UPDATE delivery SET status = DELIVERED
+      deactivate DW
+    end
+  end
+end
+deactivate WC
+@enduml

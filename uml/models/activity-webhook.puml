@@ -1,0 +1,64 @@
+@startuml activity-webhook
+' Связи: UC-02 (основной поток, А1, Е1 – Е4), UC-10, UC-14; SDD 014-webhook-activity
+' Решения: ADR-0003 (HMAC), ADR-0004 (одна транзакция, очередь в PostgreSQL), ADR-0008 (защита от петель)
+' Код: apps/api/src/modules/webhooks/receiveWebhook.ts (шаги 1 – 5)
+title Обработка входящего вебхука (UC-02, UC-10)
+skinparam defaultFontName Arial
+
+|Эмулятор|
+start
+:Отправить POST /hooks/{sourceId}\nс подписью и X-Hop;
+|Приёмник (API)|
+if (Источник есть и включён?) then (нет)
+  :Ответ 404;
+  stop
+endif
+if (Тело ≤ 1 МиБ?) then (нет)
+  :Ответ 413;
+  stop
+endif
+if (Подпись HMAC верна?) then (нет)
+  :Ответ 401;
+  stop
+endif
+if (JSON и поля id, type верны?) then (нет)
+  :Ответ 400;
+  stop
+endif
+|Движок (транзакция)|
+:BEGIN;
+if (Событие с этим id уже есть?) then (да)
+  :COMMIT;
+  |Приёмник (API)|
+  :Ответ 200 (дубликат);
+  stop
+else (нет)
+  |Движок (транзакция)|
+  :INSERT event;
+endif
+:Выбрать активные правила\nисточника и типа по приоритету;
+while (Есть ещё правило?) is (да)
+  if (Условие when выполнено?) then (да)
+    :INSERT rule_match;
+    if (X-Hop < 3, нет cooldown,\nправило включено?) then (да)
+      :INSERT delivery (QUEUED)\nдля каждого действия;
+    else (нет)
+      :INSERT delivery (SKIPPED)\nс причиной;
+    endif
+    if (> 20 срабатываний в минуту?) then (да)
+      :Отключить правило (UC-14);
+    endif
+  endif
+endwhile (нет)
+:COMMIT;
+fork
+  |Приёмник (API)|
+  :Ответ 202;
+fork again
+  |Воркер доставки|
+  :NOTIFY delivery_queued;
+  :Забрать задачи\n(FOR UPDATE SKIP LOCKED);
+  :Доставить действия (UC-09);
+end fork
+stop
+@enduml
