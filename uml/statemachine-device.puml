@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+state "Idle\n(ONLINE_IDLE)" as Idle
+state "Out of Service\n(OFFLINE_LOCKED)" as Offline
+state "Active\n(COMMAND_ACTIVE)" as Active
+
+[*] --> Idle
+
+Idle --> Offline : heartbeat_lost (>5s)
+Offline --> Idle : heartbeat_ok
+
+Idle --> Active : postCommand(ON)
+Active --> Idle : cancel / timeout
+Active --> Idle : done (OFF)
+@enduml
