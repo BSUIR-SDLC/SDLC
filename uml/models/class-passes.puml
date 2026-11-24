@@ -1,0 +1,172 @@
+@startuml class-passes
+' Диаграмма классов: модуль passes (F08) и экран результата сканера (F06, F07); SDD 020
+' Связи: пакеты = каталоги репозитория; классы и операции сверяются с кодом тестом
+' apps/api/test/classDiagram.test.ts (ADR-0011); операции PassService = переходы
+' state-pass-lifecycle.puml; события кнопок ResultCard = события ScannerEvent диаграммы state-scanner.puml
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam package {
+  BorderColor #8AA4C0
+  FontColor #2F5D8A
+}
+hide empty members
+
+title Модуль passes и экран результата сканера: проектные классы
+
+package "apps/api/src/modules/passes" {
+  class PassService {
+    -repo : PassRepository
+    -signer : QrSigner
+    -ids : IdGenerator
+    +issue(input : IssuePassInput) : Promise<IssuedPass>
+    +extend(id : string, validTo : number) : Promise<Pass>
+    +revoke(id : string) : Promise<Pass>
+    +reissue(id : string) : Promise<IssuedPass>
+    +findByCode(input : string) : Promise<Pass>
+    +remove(id : string) : Promise<void>
+    +tokenOf(pass : Pass) : string
+    -get(id : string) : Promise<Pass>
+  }
+  class Pass <<entity>> {
+    +id : string
+    +code : string
+    +holderId : string
+    +type : PassType
+    +validFrom : number
+    +validTo : number
+    +status : StoredStatus
+    +version : number
+    +zoneIds : string[]
+  }
+  class IssuedPass <<dataType>> {
+    +pass : Pass
+    +token : string
+  }
+  class IssuePassInput <<dataType>> {
+    +holderId : string
+    +type : PassType
+    +validFrom : number
+    +validTo : number
+    +zoneIds : string[]
+  }
+  interface PassRepository <<port>> {
+    +nextNumber(type : PassType) : Promise<number>
+    +insert(pass : Pass) : Promise<void>
+    +findById(id : string) : Promise<Pass>
+    +findByCode(code : string) : Promise<Pass>
+    +update(pass : Pass) : Promise<void>
+    +delete(id : string) : Promise<void>
+  }
+  interface QrSigner <<port>> {
+    +sign(payload) : string
+  }
+  interface IdGenerator <<port>> {
+    +newId() : string
+  }
+  class InMemoryPassRepository <<adapter>> {
+    -passes : Map<string, Pass>
+    -counters : Record<PassType, number>
+  }
+  class PassRules <<utility>> {
+    +formatPassCode(type : PassType, n : number) : string
+    +lifecycleOf(pass : Pass, now : number) : PassStatus
+  }
+  enum PassStatus <<union>> {
+    PENDING
+    ACTIVE
+    EXPIRED
+    REVOKED
+  }
+  class PassRuleError {
+    +status = 400
+  }
+  class PassNotFoundError {
+    +status = 404
+  }
+}
+
+package "packages/qr-token/src" {
+  class QrToken <<utility>> {
+    +sign(payload : TokenPayload, secret : Buffer) : string
+    +verify(token : string, secret : Buffer) : TokenPayload [0..1]
+  }
+}
+
+package "apps/scanner/src/result" {
+  class ResultCardPresenter <<utility>> {
+    +toResultCard(res : ValidationResponse) : ResultCard
+    +offlineCard() : ResultCard
+  }
+  class ResultCard <<dataType>> {
+    +tone : Tone
+    +title : string
+    +message : string
+    +details : string[]
+    +vibrateMs : number
+    +autoCloseMs : number [0..1]
+    +button : CardButton [0..1]
+  }
+  enum Tone <<union>> {
+    allow
+    deny
+    offline
+  }
+}
+
+package "apps/scanner/src/state" {
+  class ScannerMachine <<utility>> {
+    +nextState(state : ScannerState, event : ScannerEvent) : ScannerState
+    +isCameraActive(state : ScannerState) : boolean
+    +timerFor(state : ScannerState) : Timer [0..1]
+    +isValidManualCode(code : string) : boolean
+    +createDuplicateFilter(windowMs : number) : Filter
+  }
+  enum ScannerEvent <<union>> {
+    ALLOW
+    DENY
+    TIMEOUT
+    AUTO_RETURN
+    NEXT
+    RETRY
+    ...
+  }
+}
+
+class Error <<TypeScript>>
+class ValidationResponse <<dataType>>
+
+PassRepository <|.. InMemoryPassRepository
+Error <|-- PassRuleError
+Error <|-- PassNotFoundError
+
+PassService --> "1" PassRepository : repo
+PassService --> "1" QrSigner : signer
+PassService --> "1" IdGenerator : ids
+PassService ..> IssuedPass : <<create>>
+PassService ..> IssuePassInput : <<use>>
+PassService ..> PassRules : <<use>>
+PassService ..> PassRuleError : <<throw>>
+PassService ..> PassNotFoundError : <<throw>>
+IssuedPass *-- "1" Pass
+InMemoryPassRepository o-- "0..*" Pass : passes
+PassRules ..> PassStatus
+QrSigner ..> QrToken : <<adapter: sign>>
+
+ResultCardPresenter ..> ValidationResponse : <<use>>
+ResultCardPresenter ..> ResultCard : <<create>>
+ResultCard --> Tone
+ResultCard ..> ScannerEvent : button.event
+
+note bottom of PassService
+  revoke / reissue: version + 1 (BR-05)
+  issue / extend: срок по BR-03
+end note
+@enduml

@@ -1,0 +1,207 @@
+@startuml class-validation
+' Диаграмма классов: проектные классы модуля validation (F04, F07; SDD 020)
+' Связи: пакеты = каталоги репозитория; классы, интерфейсы и операции = экспортируемые сущности кода;
+' соответствие проверяет тест apps/api/test/classDiagram.test.ts (ADR-0011);
+' порядок проверок CheckChain = BR-01; сценарий — sequence-validate-pass.puml; паттерны — SDD 011
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam package {
+  BorderColor #8AA4C0
+  FontColor #2F5D8A
+}
+hide empty members
+
+title Модуль validation: проектные классы
+
+package "packages/contracts/src" {
+  class Contracts <<utility>> {
+    +normalizePassCode(input : string) : string | null
+    +decisionOf(reason : Reason) : Decision
+  }
+  class ValidationResponse <<dataType>> {
+    +decision : Decision
+    +reason : Reason
+    +pass : PassSummary [0..1]
+    +occupancy : number [0..1]
+    +capacity : number [0..1]
+  }
+  class PassSummary <<dataType>> {
+    +code : string
+    +holderName : string
+    +type : PassType
+    +validTo : number
+  }
+  enum Reason <<union>> {
+    OK
+    DENY_BAD_SIGNATURE
+    DENY_NOT_FOUND
+    DENY_REVOKED
+    DENY_EXPIRED
+    DENY_ZONE
+    DENY_ALREADY_INSIDE
+    DENY_NOT_INSIDE
+    DENY_CAPACITY
+  }
+}
+
+package "packages/qr-token/src" {
+  class QrToken <<utility>> {
+    +sign(payload : TokenPayload, secret : Buffer) : string
+    +verify(token : string, secret : Buffer) : TokenPayload [0..1]
+  }
+}
+
+package "apps/api/src/modules/validation" {
+  class ValidationService {
+    -repo : ValidationRepository
+    -tokens : TokenVerifier
+    -publisher : OccupancyPublisher
+    -clock : Clock
+    -chain : CheckChain
+    +validate(cmd : ValidationCommand) : Promise<ValidationResponse>
+    +validateManual(cmd : ValidationCommand) : Promise<ValidationResponse>
+    -denyBadSignature(cmd, started) : Promise<ValidationResponse>
+    -run(cmd, lookup, manual, started) : Promise<ValidationResponse>
+    -event(cmd, passId, reason, manual, started) : AccessEventRecord
+  }
+  class CheckChain {
+    -checks : PassCheck[1..*] {ordered}
+    {static} +standard() : CheckChain
+    +evaluate(ctx : ValidationContext) : Reason
+    +names() : string[]
+  }
+  interface PassCheck {
+    +name : string {readOnly}
+    +check(ctx : ValidationContext) : Reason [0..1]
+  }
+  class PassExistsCheck
+  class RevocationCheck
+  class ValidityPeriodCheck
+  class ZoneCheck
+  class AntiPassbackCheck
+  class CapacityCheck
+  class ValidationContext <<dataType>> {
+    +pass : PassRecord [0..1]
+    +presentedVersion : number [0..1]
+    +checkpoint : CheckpointInfo
+    +direction : Direction
+    +inside : boolean
+    +occupancy : number
+    +now : number
+  }
+  class PassRecord <<dataType>> {
+    +id : string
+    +code : string
+    +status : ACTIVE | REVOKED
+    +version : number
+    +zoneIds : string[]
+  }
+  class CheckpointInfo <<dataType>> {
+    +id : string
+    +zoneId : string
+    +site : SiteRules
+  }
+  class SiteRules <<dataType>> {
+    +capacity : number
+    +antipassbackStrict : boolean
+    +capacityLock : boolean
+  }
+  class AccessEventRecord <<dataType>> {
+    +ts : number
+    +reason : Reason
+    +manual : boolean
+    +latencyMs : number
+  }
+  interface ValidationRepository <<port>> {
+    +transaction(work) : Promise<T>
+  }
+  interface ValidationTx <<port>> {
+    +findCheckpoint(id : string) : Promise<CheckpointInfo>
+    +lockCounter(siteId : string) : Promise<number>
+    +findPassById(id : string) : Promise<PassRecord>
+    +findPassByCode(code : string) : Promise<PassRecord>
+    +isInside(passId, siteId) : Promise<boolean>
+    +insertEvent(e : AccessEventRecord) : Promise<void>
+    +setInside(passId, siteId, inside, at) : Promise<void>
+    +addToCounter(siteId, delta) : Promise<number>
+  }
+  interface TokenVerifier <<port>> {
+    +verify(token : string) : TokenPayload [0..1]
+  }
+  interface OccupancyPublisher <<port>> {
+    +publish(e : OccupancyEvent) : void
+  }
+  interface Clock <<port>> {
+    +now() : number
+  }
+  class InMemoryValidationRepository <<adapter>> {
+    -state : State
+    -queue : Promise
+    +transaction(work) : Promise<T>
+    +addCheckpoint(cp : CheckpointInfo) : void
+    +addPass(pass : PassRecord) : void
+    +counter(siteId : string) : number
+  }
+  class CheckpointNotFoundError {
+    +status = 404
+  }
+  class InvalidPassCodeError {
+    +status = 400
+  }
+}
+
+class Error <<TypeScript>>
+
+' реализация интерфейсов
+PassCheck <|.. PassExistsCheck
+PassCheck <|.. RevocationCheck
+PassCheck <|.. ValidityPeriodCheck
+PassCheck <|.. ZoneCheck
+PassCheck <|.. AntiPassbackCheck
+PassCheck <|.. CapacityCheck
+ValidationRepository <|.. InMemoryValidationRepository
+' обобщение
+Error <|-- CheckpointNotFoundError
+Error <|-- InvalidPassCodeError
+' композиция и агрегация
+ValidationService *-- "1" CheckChain : chain
+CheckChain o-- "1..*" PassCheck : checks {ordered}
+' направленные ассоциации к портам (внедрение зависимостей)
+ValidationService --> "1" ValidationRepository : repo
+ValidationService --> "1" TokenVerifier : tokens
+ValidationService --> "1" OccupancyPublisher : publisher
+ValidationService --> "1" Clock : clock
+' зависимости
+ValidationRepository ..> ValidationTx : <<use>>
+ValidationService ..> ValidationContext : <<create>>
+ValidationService ..> AccessEventRecord : <<create>>
+ValidationService ..> ValidationResponse : <<create>>
+ValidationService ..> Contracts : <<use>>
+ValidationService ..> CheckpointNotFoundError : <<throw>>
+ValidationService ..> InvalidPassCodeError : <<throw>>
+PassCheck ..> ValidationContext : <<use>>
+ValidationContext --> "0..1" PassRecord
+ValidationContext --> "1" CheckpointInfo
+CheckpointInfo --> "1" SiteRules
+ValidationResponse --> "0..1" PassSummary
+ValidationResponse ..> Reason
+TokenVerifier ..> QrToken : <<adapter: verify>>
+
+note right of CheckChain
+  порядок BR-01: существование → отзыв и версия →
+  срок → зона → anti-passback → вместимость;
+  подпись проверяется раньше, без БД
+end note
+note bottom of ValidationTx
+  PostgreSQL-адаптер: BEGIN … COMMIT,
+  lockCounter = SELECT … FOR UPDATE (ADR-0004)
+end note
+@enduml

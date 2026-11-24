@@ -59,3 +59,5 @@ informed: преподаватель С. С. Силич
 ## Дополнительная информация
 
 Затрагивает представление SDD 009-deployment.
+
+UML (ЛР 6): диаграмма развёртывания [`deployment-qrgate.puml`](../../uml/models/deployment-qrgate.puml) (SDD 022) детализирует представление 009: узлы `<<device>>` → `<<OS>>` → `<<executionEnvironment>>` Docker → `<<container>>`, артефакты (образ `qrgate-api`, бандлы PWA и SPA, `docker-compose.yml` как `<<deployment spec>>`), пути связи с протоколами и портами и связи `<<manifest>>` артефактов с компонентами диаграммы 021.

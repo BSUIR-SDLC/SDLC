@@ -1,0 +1,173 @@
+@startuml class-domain
+' Диаграмма классов: модель предметной области QRGate (уровень анализа, SDD 019)
+' Связи: классы = понятия глоссария docs/glossary.md и таблицы модели данных SDD 004;
+' атрибуты = столбцы qrgate-data.sysml; кратности = связи r1–r12 логической модели;
+' перечисления = значения PassStatus, Reason, Role в коде (packages/contracts, apps/api)
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam note {
+  BackgroundColor #FFFBE6
+  BorderColor #B59B2A
+}
+hide empty members
+
+title Модель предметной области QRGate
+
+abstract class User {
+  -id : UUID
+  -login : String
+  -passwordHash : String
+  -failedAttempts : Integer = 0
+  -lockedUntil : DateTime [0..1]
+  +login(password : String) : Session
+  +logout()
+}
+class Controller {
+  +validate(token : String, checkpoint : Checkpoint, direction : Direction) : Decision
+}
+class Administrator {
+  +issuePass(holder : Holder, type : PassType) : Pass
+  +resetCounter(site : Site, reason : String)
+}
+User <|-- Controller
+User <|-- Administrator
+
+class Site {
+  -id : UUID
+  -name : String
+  -capacity : Integer
+  -warnThresholdPct : Integer = 90
+  -antipassbackStrict : Boolean
+  -capacityLock : Boolean
+  -timezone : String
+  +occupancyPct() : Integer
+}
+class Zone {
+  -id : UUID
+  -name : String
+}
+class Checkpoint {
+  -id : UUID
+  -name : String
+}
+class SiteCounter {
+  -inside : Integer {>= 0}
+  -updatedAt : DateTime
+  ~increment()
+  ~decrement()
+  ~reset()
+}
+class Holder {
+  -id : UUID
+  -fullName : String
+  -email : String
+  -photoConsentAt : DateTime [0..1]
+}
+class Photo {
+  -id : UUID
+  -size : Integer
+}
+abstract class Pass {
+  -id : UUID
+  -code : String {unique}
+  -validFrom : DateTime
+  -validTo : DateTime
+  -version : Integer = 1
+  -/status : PassStatus
+  +revoke()
+  +reissue() : QrToken
+  +extend(validTo : DateTime)
+  {abstract} +maxDuration() : Duration
+}
+class EmployeePass {
+  +maxDuration() : Duration
+}
+class GuestPass {
+  +maxDuration() : Duration
+}
+Pass <|-- EmployeePass
+Pass <|-- GuestPass
+
+class Presence {
+  -inside : Boolean
+  -changedAt : DateTime
+}
+class AccessEvent {
+  -id : Long
+  -ts : DateTime
+  -direction : Direction
+  -decision : Decision
+  -reason : Reason
+  -manual : Boolean
+  -latencyMs : Integer
+}
+class CounterReset {
+  -reason : String
+  -ts : DateTime
+}
+class QrToken <<value object>> {
+  -passId : UUID
+  -version : Integer
+  -signature : Bytes
+}
+
+enum PassStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+enum Reason {
+  OK
+  DENY_BAD_SIGNATURE
+  DENY_NOT_FOUND
+  DENY_REVOKED
+  DENY_EXPIRED
+  DENY_ZONE
+  DENY_ALREADY_INSIDE
+  DENY_NOT_INSIDE
+  DENY_CAPACITY
+}
+enum Direction {
+  IN
+  OUT
+}
+
+' композиция: зоны и точки не существуют без объекта
+Site "1" *-- "1..*" Zone : содержит
+Zone "1" *-- "1..*" Checkpoint : содержит
+Site "1" *-- "1" SiteCounter : счётчик
+' ассоциации с кратностями и именами ролей
+Controller "0..*" -- "1..*" Checkpoint : назначен >
+Holder "1" -- "0..*" Pass : владеет >
+Pass "0..*" -- "1..*" Zone : +допуск
+Holder "1" o-- "0..1" Photo : фото
+' ассоциативный класс: присутствие пропуска на объекте (anti-passback)
+(Pass, Site) .. Presence
+AccessEvent "0..*" --> "1" Checkpoint : где
+AccessEvent "0..*" --> "0..1" Pass : чей
+AccessEvent "0..*" --> "1" Controller : кто
+CounterReset "0..*" --> "1" Site
+CounterReset "0..*" --> "0..1" Administrator : автор
+Pass ..> QrToken : <<create>>
+Pass ..> PassStatus
+AccessEvent ..> Reason
+AccessEvent ..> Direction
+
+note bottom of SiteCounter
+  изменяется только в транзакции
+  валидации или сброса (ADR-0004)
+end note
+note right of Pass
+  /status — производный атрибут:
+  REVOKED хранится, PENDING/ACTIVE/EXPIRED
+  вычисляются по времени (lifecycleOf)
+end note
+@enduml

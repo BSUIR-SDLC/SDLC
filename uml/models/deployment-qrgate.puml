@@ -1,0 +1,96 @@
+@startuml deployment-qrgate
+' Диаграмма развёртывания QRGate, релизы 1.0–2.0 (SDD 022, ADR-0007)
+' Связи: узлы и пути связи = SysML-модель sdd/models/qrgate-deployment.sysml (SDD 009);
+' артефакты = результаты сборки каталогов apps/* и packages/*; <<manifest>> = компоненты
+' диаграммы component-qrgate.puml; параметры узлов = REQ-INST-001, ресурсы = SDD 012
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam node {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+}
+skinparam artifact {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5D8A
+}
+skinparam component {
+  BackgroundColor #EAF2E3
+  BorderColor #4F7A3A
+}
+skinparam ArrowColor #2F5D8A
+skinparam note {
+  BackgroundColor #FFFBE6
+  BorderColor #B59B2A
+}
+
+title Развёртывание QRGate
+
+node "Смартфон контролёра" as phone <<device>> {
+  node "Chrome 100+ / Safari 16+" as phoneBrowser <<executionEnvironment>> {
+    artifact "scanner-dist/\n(index.html, sw.js, *.js)" as scannerArt <<PWA bundle>>
+  }
+}
+
+node "ПК администратора" as pc <<device>> {
+  node "Браузер" as pcBrowser <<executionEnvironment>> {
+    artifact "admin-dist/\n(index.html, *.js)" as adminArt <<SPA bundle>>
+  }
+}
+
+node "VPS: 2 vCPU, 4 ГБ RAM, 40 ГБ SSD" as vps <<device>> {
+  node "Ubuntu 24.04" as os <<OS>> {
+    node "Docker Engine 24+" as docker <<executionEnvironment>> {
+      artifact "docker-compose.yml\n.env" as compose <<deployment spec>>
+      node "nginx:1.27" as nginx <<container>> {
+        artifact "nginx.conf" as nginxConf <<file>>
+        artifact "TLS-сертификат\nLet's Encrypt" as cert <<file>>
+      }
+      node "qrgate-api (node:24-alpine)" as apiC <<container>> {
+        artifact "qrgate-api.tar\n(apps/api, packages/*)" as apiArt <<image>>
+      }
+      node "postgres:16" as dbC <<container>> {
+        artifact "db/migrations/*.sql" as migr <<script>>
+      }
+      node "backup (cron 03:00)" as backupC <<container>>
+      database "pgdata" as pgdata <<volume>>
+      folder "photos" as photosVol <<volume>>
+    }
+  }
+}
+
+node "GitHub" as gh <<cloud>> {
+  node "GitHub Actions" as ci <<executionEnvironment>>
+  artifact "ghcr.io/…/qrgate-api" as registry <<image registry>>
+}
+
+node "Хранилище резервных копий" as offsite <<device>>
+
+' компоненты, реализуемые артефактами (manifestation)
+component "Scanner PWA" as cScanner
+component "Admin SPA" as cAdmin
+component "API Server" as cServer
+scannerArt ..> cScanner : <<manifest>>
+adminArt ..> cAdmin : <<manifest>>
+apiArt ..> cServer : <<manifest>>
+
+' пути связи с протоколами
+phone -- nginx : HTTPS / 443\n4G, Wi-Fi
+pc -- nginx : HTTPS + WSS / 443
+nginx -- apiC : HTTP, WS / 3000\n(внутренняя сеть)
+apiC -- dbC : TCP / 5432\n(внутренняя сеть)
+dbC -- pgdata : mount
+apiC -- photosVol : mount
+backupC -- dbC : pg_dump
+backupC -- offsite : SFTP, 14 копий
+ci --> registry : push образа
+docker --> registry : docker compose pull
+compose ..> apiC : <<deploy>>
+compose ..> nginx : <<deploy>>
+compose ..> dbC : <<deploy>>
+
+note right of vps
+  наружу открыты только 80 (редирект) и 443;
+  обновление в окне 22:00–07:00 (REQ-AVAIL-001)
+end note
+@enduml
