@@ -1,0 +1,14 @@
+stateDiagram-v2
+    [*] --> DRAFT
+    DRAFT --> PUBLISHED: опубликовать
+    PUBLISHED --> IN_PROGRESS: выбран кандидат, средства зарезервированы
+    IN_PROGRESS --> ON_REVIEW: работа сдана
+    ON_REVIEW --> COMPLETED: одобрить работу [выплата выполнена]
+    ON_REVIEW --> REVISION: вернуть на доработку
+    REVISION --> ON_REVIEW: работа сдана повторно
+    ON_REVIEW --> DISPUTE: открыть спор
+    REVISION --> DISPUTE: открыть спор
+    DISPUTE --> COMPLETED: решение — выплатить
+    DISPUTE --> CANCELLED: решение — вернуть деньги
+    COMPLETED --> [*]
+    CANCELLED --> [*]

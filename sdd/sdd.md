@@ -2,7 +2,7 @@
 
 | Поле | Значение |
 |---|---|
-| Версия | 1.2 (согласована с Заказчиком) |
+| Версия | 1.3 (добавлена динамическая модель UML) |
 | Дата | 10.11.2026 |
 | Автор (Архитектор) | _ФИО, группа_ |
 | Заказчик (роль) | _ФИО напарника_ |
@@ -14,7 +14,7 @@
 
 **Назначение.** Документ описывает системные требования и проектные решения для веб-приложения DoneDeal (кабинет заказчика) и служит руководством для разработчиков.
 
-**Связанные документы:** `srs/srs.md`, `adr/0001-modular-monolith-ts-stack.md`, `adr/0002-payment-gateway-hosted-checkout.md`.
+**Связанные документы:** `srs/srs.md`, `adr/adr-0001-modular-monolith-ts-stack.md`, `adr/adr-0002-payment-gateway-hosted-checkout.md`, `adr/adr-0003-uml-dynamic-modeling.md`, `docs/glossary.md`, `docs/supplementary-spec.md`, `docs/uml/use-cases.md`.
 
 **Шкала приоритетов** (чем меньше число, тем важнее): 10 — critical, 20 — high, 30 — medium, 40 — low, 50 — optional.
 
@@ -57,7 +57,7 @@ flowchart LR
 | User | id, email, password_hash, role (CUSTOMER / PERFORMER / ADMIN), rating |
 | Task | id, customer_id, title, description, category, budget, deadline, status |
 | Application | id, task_id, performer_id, price, duration_days, message, status |
-| Payment | id, task_id, amount, status (RESERVED / PAID / REFUNDED), idempotency_key |
+| Payment | id, task_id, amount, status (CREATED / RESERVED / PAID / REFUNDED / FAILED), idempotency_key |
 | Review | id, task_id, author_id, target_id, rating, text |
 | Dispute | id, task_id, opened_by, reason, status, resolution |
 | Attachment | id, task_id, file_name, path |
@@ -153,10 +153,41 @@ stateDiagram-v2
 | Позднее появление требований | Приоритизация, письменное согласование, резерв в итерации 5 |
 | Качество задач junior | Код-ревью, задачи с низким риском, наставничество (2 дня senior) |
 
-## 9. Журнал изменений
+## 9. Динамическая модель (UML)
+
+Динамическое поведение описано четырьмя видами диаграмм. Подробные описания актёров и прецедентов — в `docs/uml/use-cases.md`, глоссарий — в `docs/glossary.md`, дополнительные спецификации — в `docs/supplementary-spec.md`.
+
+### 9.1 Модель вариантов использования
+
+![Use case](../docs/uml/img/usecase.png)
+
+Выделено 6 актёров (Заказчик, Исполнитель, Администратор, Платёжный шлюз, Почтовый сервис, Время) и 17 прецедентов. Прецеденты связаны с функциональными требованиями: UC-01 — FR-01, UC-02 — FR-02, UC-03 — FR-03, UC-04 — FR-04, UC-05 — FR-05, UC-06 — FR-06, UC-07 — FR-07, UC-09 — FR-08, UC-10 и UC-11 — FR-09, UC-13 — FR-10, UC-12 и UC-14 — FR-11, UC-08 — FR-13, UC-15 и UC-16 — FR-14, UC-17 — FR-15.
+
+### 9.2 Диаграмма активности
+
+![Activity](../docs/uml/img/activity.png)
+
+Показывает основной процесс: от создания задачи до выплаты исполнителю или возврата денег заказчику, с ветвлениями (доработка, спор) и параллельным запросом отзывов.
+
+### 9.3 Диаграммы состояний
+
+![Task states](../docs/uml/img/state_task.png)
+
+![Payment states](../docs/uml/img/state_payment.png)
+
+Состояния задачи совпадают со статусами из раздела 4. Состояния платежа уточняют сущность Payment: добавлены CREATED и FAILED.
+
+### 9.4 Диаграмма последовательности «Одобрить работу»
+
+![Sequence](../docs/uml/img/sequence.png)
+
+Диаграмма показывает взаимодействие браузера, модулей Tasks, Payments, Notifications и внешних систем при одобрении работы, включая сценарий ошибки шлюза. Выплата идемпотентна, поэтому повторный вызов `POST /tasks/{id}/approve` не приводит к двойной выплате.
+
+## 10. Журнал изменений
 
 | Версия | Изменение |
 |---|---|
 | 1.0 | Первая версия: 13 функций, 40 дней, 5 итераций, 7 680 USD |
 | 1.1 | Раунд 1: FR-07 5→4 дн. (hosted checkout), FR-12 3→2 дн. (3 письма), FR-03 приоритет 30→40; итого 46 дн., 7 360 USD |
 | 1.2 | Раунд 2: добавлены FR-14, FR-15; подключён junior; срок сохранён, 9 080 USD |
+| 1.3 | Лабораторная работа №5: добавлена динамическая модель UML (use case, activity, state, sequence), глоссарий и дополнительные спецификации; уточнены статусы платежа |

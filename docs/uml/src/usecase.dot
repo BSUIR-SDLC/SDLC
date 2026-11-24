@@ -1,0 +1,49 @@
+digraph UseCases {
+  rankdir=LR; nodesep=0.12; ranksep=1.2; compound=true; bgcolor=white;
+  node [fontname="DejaVu Sans", fontsize=12];
+  edge [fontname="DejaVu Sans", fontsize=10, color="#333333"];
+
+  node [shape=none, image="actor.png", imagescale=false, labelloc=b, width=1.1, height=1.4];
+  Z [label="Заказчик"]; P [label="Исполнитель"]; A [label="Администратор"];
+  G [label="Платёжный шлюз"]; M [label="Почтовый сервис"]; T [label="Время"];
+  {rank=min; Z; P; A}
+  {rank=max; G; M; T}
+
+  subgraph cluster_sys {
+    label="Система DoneDeal"; labeljust=c; fontname="DejaVu Sans Bold"; fontsize=14; style="rounded"; color="#555555";
+    node [shape=ellipse, image="", imagescale=false, labelloc=c, width=2.3, height=0.5, style=filled, fillcolor="#FFFDE7", color="#8A7E00"];
+    UC01 [label="UC-01\nАутентификация"];
+    UC02 [label="UC-02\nСоздать задачу"];
+    UC03 [label="UC-03\nПрикрепить файлы"];
+    UC04 [label="UC-04\nОпубликовать задачу"];
+    UC05 [label="UC-05\nПросмотреть кандидатов"];
+    UC06 [label="UC-06\nВыбрать кандидата"];
+    UC07 [label="UC-07\nЗарезервировать средства"];
+    UC08 [label="UC-08\nОткликнуться на задачу"];
+    UC09 [label="UC-09\nСдать работу"];
+    UC10 [label="UC-10\nОдобрить работу"];
+    UC11 [label="UC-11\nВыплатить исполнителю"];
+    UC12 [label="UC-12\nЗапросить отзыв"];
+    UC13 [label="UC-13\nВернуть на доработку"];
+    UC14 [label="UC-14\nОставить отзыв"];
+    UC15 [label="UC-15\nОткрыть спор"];
+    UC16 [label="UC-16\nРазрешить спор"];
+    UC17 [label="UC-17\nНапоминание о сроке"];
+  }
+
+  Z -> UC02; Z -> UC04; Z -> UC05; Z -> UC06; Z -> UC10; Z -> UC13; Z -> UC14; Z -> UC15;
+  P -> UC08; P -> UC09; P -> UC14; P -> UC15;
+  A -> UC16;
+  Z -> UC01; P -> UC01; A -> UC01;
+  T -> UC17 [constraint=false];
+  UC07 -> G; UC11 -> G; UC12 -> M; UC17 -> M;
+
+  edge [style=dashed, constraint=false, fontcolor="#7A1F1F", color="#7A1F1F"];
+  UC03 -> UC02 [label="«extend»"];
+  UC02 -> UC01 [label="«include»"];
+  UC06 -> UC07 [label="«include»"];
+  UC08 -> UC01 [label="«include»"];
+  UC10 -> UC11 [label="«include»"];
+  UC10 -> UC12 [label="«include»"];
+  UC16 -> UC11 [label="«include»"];
+}
