@@ -1,0 +1,114 @@
+@startuml component-qrgate
+' Диаграмма компонентов QRGate (SDD 021)
+' Связи: компоненты = элементы композиции SDD 002 и каталоги SDD 003 (apps/*, packages/*, modules/*);
+' предоставляемые интерфейсы = публичные index.ts модулей (ADR-0001) и эндпоинты SDD 005;
+' требуемые интерфейсы = порты (ValidationRepository, TokenVerifier, OccupancyPublisher, ...) — ADR-0012;
+' артефакты, которые реализуют компоненты, — deployment-qrgate.puml (<<manifest>>)
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam componentStyle uml2
+skinparam nodesep 40
+skinparam ranksep 50
+skinparam component {
+  BackgroundColor #F4F8FC
+  BorderColor #2F5D8A
+  ArrowColor #2F5D8A
+}
+skinparam interface {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5D8A
+}
+
+title Компоненты QRGate
+
+component "Scanner PWA  <<subsystem>>" as scanner {
+  component "CameraDecoder\n(ZXing)" as scamera
+  component "ScannerMachine" as smachine
+  component "ResultScreen" as sresult
+  portin "camera" as sCam
+  portout "https" as sOut
+  sCam --> scamera
+  scamera -right-> smachine
+  smachine -right-> sresult
+}
+
+component "Admin SPA  <<subsystem>>" as admin {
+  component "PassesPage" as apasses
+  component "Dashboard\n(Chart.js)" as adash
+  portin "UI" as aUi
+  portout "https + wss" as aOut
+  aUi --> apasses
+  aUi --> adash
+}
+
+interface "HTTPS :443" as IHttps
+component "Reverse Proxy\n(nginx)" as proxy
+IHttps - proxy
+
+sOut ..> IHttps : <<use>>
+aOut ..> IHttps : <<use>>
+
+component "API Server" as server <<subsystem>> {
+  portin "/api/v1" as pRest
+  portin "/ws" as pWs
+  portout "sql" as pSql
+
+  component "HttpApi" as api
+  component "Realtime" as realtime
+  component "Auth" as auth
+  component "Validation" as validation
+  component "Passes" as passes
+  component "Occupancy" as occupancy
+  component "Sites" as sites
+  component "AccessLog" as accesslog
+  component "PgAdapters" as pg <<adapter>>
+
+  interface "IAuth" as IAuth
+  interface "IValidation" as IValidation
+  interface "IPassAdmin" as IPassAdmin
+  interface "IOccupancyPublisher" as IOccPub
+  interface "IValidationStore\nIPassStore" as IStore
+
+  pRest --> api : delegate
+  pWs --> realtime : delegate
+
+  api -down-( IAuth
+  api -down-( IValidation
+  api -down-( IPassAdmin
+  IAuth -down- auth
+  IValidation -down- validation
+  IPassAdmin -down- passes
+
+  validation -down-( IOccPub
+  IOccPub -down- occupancy
+  occupancy -up-> realtime : publish
+  api ..> sites
+  api ..> accesslog
+
+  validation -down-( IStore
+  passes -down-( IStore
+  IStore -down- pg
+  pg -down-> pSql : delegate
+}
+
+proxy --> pRest : /api
+proxy --> pWs : /ws
+
+component "qr-token" as qrtoken <<library>>
+interface "ITokenVerifier\nIQrSigner" as IToken
+validation -right-( IToken
+passes -right-( IToken
+IToken -right- qrtoken
+
+component "contracts" as contracts <<library>>
+interface "ValidationResponse\nReason" as IContracts
+IContracts -right- contracts
+api -left-( IContracts
+sresult -down-( IContracts
+
+database "PostgreSQL 16" as db
+interface "SQL :5432" as ISql
+pSql -down-( ISql
+ISql -down- db
+@enduml
