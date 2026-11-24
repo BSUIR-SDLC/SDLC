@@ -1,4 +1,5 @@
 @startuml gitpulse-usecase
+title Диаграмма вариантов использования системы «GitPulse»
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
@@ -36,4 +37,19 @@ UC5 ..> UC9 : <<include>>
 UC7 -- GitCli
 UC5 -- FileSystem
 UC8 -- FileSystem
+
+note bottom of User
+  Запускает сканирование, выбирает Clean-репозитории
+  и подтверждает очистку артефактов.
+end note
+
+note bottom of GitCli
+  Внешний консольный клиент Git (>= 2.40).
+  Отдаёт активную ветку и статус Clean / Dirty.
+end note
+
+note bottom of FileSystem
+  Локальная файловая система ОС.
+  Хранит каталоги, артефакты и журнал gitpulse.log.
+end note
 @enduml

@@ -1,4 +1,5 @@
 @startuml gitpulse-statemachine
+title Диаграмма состояний жизненного цикла системы «GitPulse»
 skinparam state {
   BackgroundColor #F8F9FA
   BorderColor #333333

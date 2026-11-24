@@ -1,4 +1,5 @@
 @startuml gitpulse-sequence
+title Диаграмма последовательности сканирования и очистки системы «GitPulse»
 autonumber
 
 actor "Пользователь" as User
