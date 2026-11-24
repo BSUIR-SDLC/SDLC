@@ -1,5 +1,5 @@
 @startuml state-booking
-' Диаграмма состояний записи (рисунок 3.4 отчёта ЛР5)
+' Диаграмма состояний записи (рисунок Д.1 отчёта ЛР5)
 ' SDD: представление 007-booking-states; REQ-FUNC-006, 011-013, 023; ADR-0006
 
 skinparam monochrome true

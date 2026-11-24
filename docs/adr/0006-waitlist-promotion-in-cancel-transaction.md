@@ -68,7 +68,7 @@ SDD: представления 003, 005, 006, 007. Переписка — `docs
 
 Модель поведения (ЛР5, ADR-0007): решение отражено включаемым прецедентом UC-09 «Продвинуть лист ожидания»
 (включается в UC-08 и UC-18), циклом с выходом `break` на диаграмме активности
-[`../uml/img/activity-cancel.png`](../uml/img/activity-cancel.png), фрагментами `opt`/`loop`/`break` между
-`begin` и `COMMIT` объекта `tx :Transaction` на [`../uml/img/sequence-cancel.png`](../uml/img/sequence-cancel.png)
+[`../uml/img/activity-cancel.png`](../uml/img/activity-cancel.png), сообщениями 12–26 между `BEGIN` и `COMMIT` на
+[`../uml/img/sequence-cancel.png`](../uml/img/sequence-cancel.png)
 и автоматом элемента очереди `WAITING → PROMOTED | LEFT | EXPIRED` на
 [`../uml/img/state-training.png`](../uml/img/state-training.png).

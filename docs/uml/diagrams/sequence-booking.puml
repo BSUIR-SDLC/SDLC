@@ -1,5 +1,5 @@
 @startuml sequence-booking
-' Диаграмма последовательности «Записаться на занятие» (приложение В отчёта ЛР5, лист 1 формата А3)
+' Диаграмма последовательности «Записаться на занятие» (рисунок Е.1 отчёта ЛР5, лист формата А3)
 ' Прецеденты UC-05, UC-07; REQ-FUNC-007-009, REQ-PERF-002, REQ-REL-001; ADR-0004
 
 skinparam monochrome true
@@ -19,7 +19,6 @@ V -> SPA : нажать «Записаться»
 activate SPA
 SPA -> C : POST /api/trainings/{id}/bookings
 activate C
-note left of C : {≤ 2 с, REQ-PERF-002}
 C -> C : проверить сессию и CSRF
 C -> S : book(visitorId, trainingId)
 activate S
@@ -44,32 +43,28 @@ activate P
 P --> S : decision
 deactivate P
 
-alt decision = OK
-  create entity ":Booking" as B <<entity>>
-  S --> B : <<create>>
-  S -> R : save(booking)
-  activate R
-  R -> DB : INSERT booking; free_places − 1
-  activate DB
-  DB --> R : ok
-  deactivate DB
-  R --> S : booking
-  deactivate R
-  S --> C : BookingDto
-  C --> SPA : 201 Created {status, freePlaces}
-  SPA --> V : «Запись подтверждена», новое число мест
-else decision = NO_PLACES | CONFLICT | UNAVAILABLE
-  S --> C : BookingRejectedException(reason)
-  deactivate S
-  C --> SPA : 409 {reason, waitlist}
-  deactivate C
-  SPA --> V : показать причину и «Встать в очередь»
-  deactivate SPA
-  ref over V, SPA, C, S : Встать в лист ожидания (UC-06)
-end
+create entity ":Booking" as B <<entity>>
+S --> B : <<create>>
+S -> R : save(booking)
+activate R
+R -> DB : INSERT booking; free_places − 1
+activate DB
+DB --> R : ok
+deactivate DB
+R --> S : booking
+deactivate R
+S --> C : BookingDto
+C --> SPA : 201 Created {status, freePlaces}
+SPA --> V : «Запись подтверждена», новое число мест
+S --> C : BookingRejectedException(reason)
+deactivate S
+C --> SPA : 409 {reason, waitlist}
+deactivate C
+SPA --> V : показать причину и «Встать в очередь»
+deactivate SPA
 deactivate V
 
-' уничтожение линий жизни в конце взаимодействия
+' уничтожение линий жизни в конце взаимодействия (крест)
 destroy V
 destroy SPA
 destroy C
