@@ -1,0 +1,29 @@
+@startuml dd
+left to right direction
+actor "Оператор мониторинга" as Op
+actor "Инженер автоматизации" as Eng
+actor "Device Emulator" as Emu
+actor "Telegram / Webhook" as Tg
+
+rectangle "IoTPanel (Web Client + Rule Engine)" {
+  usecase "UC-01: Просмотр live-графиков\nтелеметрии (Chart.js)" as UC1
+  usecase "UC-02: Переключение состояния\nустройства (/command)" as UC2
+  usecase "UC-03: Проверка\nтокена доступа" as UC3
+  usecase "UC-04: Создание правила\n(4 шага -> JSON)" as UC4
+  usecase "UC-05: Тестовый прогон\nправила (Dry-Run)" as UC5
+  usecase "UC-06: Управление правилами\nи просмотр журнала" as UC6
+  usecase "UC-07: Автоматическое срабатывание\nправила и тревога" as UC7
+
+  UC2 ..> UC3 : <<include>>
+  UC5 ..> UC4 : <<extend>>
+}
+
+Op --> UC1
+Op --> UC2
+Eng --> UC4
+Eng --> UC6
+Emu --> UC1
+UC2 --> Emu
+Emu --> UC7
+UC7 --> Tg
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+participant ":Dashboard" as UI
+participant "<<typescript>>\n:CommandCtrl" as Ctrl
+participant "<<fetch>>\n:ApiClient" as Client
+control "<<express>>\n:RuleEngine" as Engine
+
+[-> UI : toggleState()
+activate UI
+
+UI -> Ctrl : validateState()
+activate Ctrl
+
+create Client
+Ctrl -->> Client : <<create>>
+
+Ctrl ->> Client : <<fetch>> POST /command
+activate Client
+
+Client ->> Engine : <<http>> forward()
+activate Engine
+
+Ctrl -->> UI
+deactivate Ctrl
+
+Engine -->> Client : errors / 200 OK
+deactivate Engine
+destroy Engine
+
+Client ->> UI : <<callback>>
+deactivate Client
+
+[<-- UI
+deactivate UI
+
+note left of UI : {10..200ms}
+
+ref over UI, Ctrl, Client : Handle Errors (504 / Fail-Closed)
+@enduml

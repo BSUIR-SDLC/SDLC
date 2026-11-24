@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam nodesep 30
+skinparam ranksep 60
+skinparam shadowing false
+
+rectangle " " as OuterFrame {
+  actor "Оператор\nмониторинга" as Operator
+  actor "Пользователь\nIoTPanel" as BaseUser
+  actor "Инженер\nавтоматизации" as Engineer
+
+  Operator -right-|> BaseUser
+  Engineer -left-|> BaseUser
+
+  rectangle " " as SystemBoundary {
+    usecase "Просмотр live-графиков\nтелеметрии (Chart.js)" as UC_Charts
+    usecase "Переключение состояния\nустройства (/command)" as UC_Command
+    usecase "Просмотр списка и\nстатусов устройств" as UC_Devices
+    usecase "Авторизация\nпо токену (JWT)" as UC_Auth
+    usecase "Аварийное оповещение\nпо порогу метрики" as UC_Alert
+    usecase "Создание правила\n(4 шага -> JSON)" as UC_CreateRule
+    usecase "Тестовый прогон\nправила (Dry-Run)" as UC_DryRun
+
+    UC_Command ..> UC_Auth : <<include>>
+    UC_Devices ..> UC_Auth : <<include>>
+    UC_CreateRule <.. UC_DryRun : <<extend>>
+  }
+
+  actor "Device Emulator\n(Датчики и реле)" as Emulator
+  actor "Telegram / Webhook\nШлюз тревог" as Telegram
+
+  Operator --> UC_Charts
+  Operator --> UC_Command
+  BaseUser --> UC_Devices
+  Engineer --> UC_CreateRule
+
+  UC_Charts <-- Emulator
+  UC_Command --> Emulator
+  UC_Alert <-- Emulator
+  UC_Alert --> Telegram
+}
+@enduml

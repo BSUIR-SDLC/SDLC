@@ -1,0 +1,35 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+start
+repeat
+  if (Режим работы?) then ([мониторинг])
+    repeat
+      :Приём пакетов телеметрии (WS);
+    repeat while (Данные получены?) is ([нет новых данных]) not ([данные получены])
+  else ([правила])
+    repeat
+      :Выбор устройства и метрики;
+    repeat while (Валидация пройдена?) is ([ошибка валидации]) not ([валидно])
+  endif
+
+  :Проверка порога и JSON-правила;
+repeat while (Готово к сохранению?) is ([не готово]) not ([подтверждено])
+
+:Сохранить правило (POST /api/rules);
+
+repeat
+  :Просмотр таблицы активных правил;
+  if (Действие со списком?) then ([изменить])
+    :Изменить / Вкл. статус правила;
+  else ([просмотр списка])
+  endif
+repeat while (Настроить ещё правила?) is ([ещё правила]) not ([завершено])
+
+if (Срабатывание триггера /command?) then ([да])
+  :POST /command + Лог события;
+endif
+
+stop
+@enduml
