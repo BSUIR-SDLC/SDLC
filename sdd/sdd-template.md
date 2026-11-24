@@ -127,7 +127,7 @@
 Портативный дистрибутив `GitPulse.zip` (Portable / Self-contained) для среды выполнения `.NET 9` на рабочей станции пользователя, включающий исполняемый файл `GitPulse.exe` и сборки `GitPulse.UI.dll`, `GitPulse.Core.dll`, `GitPulse.Infrastructure.dll`.
 
 #### 2.2.5 Структура {#225-structure}
-Компоненты взаимодействуют через интерфейсные контракты (`IScanningService` / `IDiskScanner`, `ICleanupService`, `IGitCliExecutor` / `IGitService`, `IFileSystemProvider`, `ILogger`) с внедрением зависимостей, что обеспечивает слабую связанность и модульное тестирование.
+Компоненты взаимодействуют через интерфейсные контракты (`IScanningService`, `ICleanupService`, `IGitCliExecutor`, `IFileSystemProvider`, `ILogger`) с внедрением зависимостей, что обеспечивает слабую связанность и модульное тестирование[cite: 28, 35].
 
 #### 2.2.6 Зависимости {#226-dependency}
 Направленные зависимости от слоя представления к сервисному слою; отсутствие циклических зависимостей между модулями.
