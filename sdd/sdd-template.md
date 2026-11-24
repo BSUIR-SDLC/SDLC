@@ -2,7 +2,7 @@
 
 Для кроссплатформенной десктопной утилиты аудита Git-репозиториев и очистки сборочных артефактов "GitPulse"
 
-Версия 0.4
+Версия 0.5
 
 Подготовил: Толкач Д. Г.
 
@@ -10,7 +10,7 @@
 
 Белорусский государственный университет информатики и радиоэлектроники (БГУИР)
 
-Дата изменения: 23 ноября 2026 г.
+Дата изменения: 24 ноября 2026 г.
 
 ## Оглавление
 
@@ -56,6 +56,7 @@
 | Толкач Д. Г. | 18.11.2026 | Добавление колонки сквозной трассировки требований (REQ) в матрицу приоритетов (Раздел 2.2) | 0.2 |
 | Толкач Д. Г. | 23.11.2026 | Обновлена архитектурная диаграмма системы (gitpulse-architecture.png) в соответствии с нотацией SysML v2 (представление Interconnection) | 0.3 |
 | Толкач Д. Г. | 23.11.2026 | Добавлены проектные представления динамического поведения (Use Case, Activity, State Machine, Sequence) и ссылки на диаграммы в рамках ЛР №5 | 0.4 |
+| Толкач Д. Г. | 24.11.2026 | Добавлены проектные представления диаграммы компонентов (gitpulse-components.png) и диаграммы развёртывания (gitpulse-deployment.png), обновлено описание решений в рамках ЛР №6 | 0.5 |
 
 ---
 
@@ -117,16 +118,16 @@
 Система работает локально в изолированном окружении операционной системы (Windows, Linux, macOS), взаимодействуя с файловой системой и утилитой Git CLI.
 
 #### 2.2.2 Композиция {#222-composition}
-Система делится на логические модули: презентационный слой (Avalonia UI), сервисный слой (DiskScannerService, SizeCalculator) и уровень интеграции с ОС/Git (GitProcessExecutor).
+Система делится на три логических слоя: представление (`GitPulse.UI`: `MainWindow`, `MainViewModel`), прикладное ядро (`GitPulse.Core`: `DiskScannerService`, `CleanupService`, `ThresholdChecker`) и инфраструктура (`GitPulse.Infrastructure`: `GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`).
 
 #### 2.2.3 Логическое представление {#223-logical}
 Использование паттерна MVVM: `MainViewModel` управляет состоянием таблиц, инкапсулируя бизнес-логику фильтрации и подсчета порогов кэша (от 500 МБ).
 
 #### 2.2.4 Физическое представление {#224-physical}
-Однофайловый автономный исполняемый модуль (.NET Self-contained), запускаемый на локальной рабочей станции инженера.
+Портативный дистрибутив `GitPulse.zip` (Portable / Self-contained) для среды выполнения `.NET 9` на рабочей станции пользователя, включающий исполняемый файл `GitPulse.exe` и сборки `GitPulse.UI.dll`, `GitPulse.Core.dll`, `GitPulse.Infrastructure.dll`.
 
 #### 2.2.5 Структура {#225-structure}
-Компоненты связаны через интерфейсы (`IDiskScanner`, `IGitService`), что обеспечивает легкость модульного тестирования.
+Компоненты взаимодействуют через интерфейсные контракты (`IScanningService` / `IDiskScanner`, `ICleanupService`, `IGitCliExecutor` / `IGitService`, `IFileSystemProvider`, `ILogger`) с внедрением зависимостей, что обеспечивает слабую связанность и модульное тестирование.
 
 #### 2.2.6 Зависимости {#226-dependency}
 Направленные зависимости от слоя представления к сервисному слою; отсутствие циклических зависимостей между модулями.
@@ -144,7 +145,7 @@
 Рекурсивный обход файловой системы с проверкой наличия папки `.git` и быстрым исключением системных директорий.
 
 #### 2.2.11 Динамика состояний {#2211-state-dynamics}
-Состояния репозитория: `Idle` -> `Scanning` -> `Ready` (отображение `Clean`/`Dirty` и размеров) -> `Cleaning` -> `Cleaned`.
+Основные состояния жизненного цикла аудита и очистки: `Idle` -> `Scanning` -> `Ready` (результаты с веткой, статусом `Clean`/`Dirty` и проверкой порога 500 МБ) -> `ConfirmingCleanup` -> `Cleaning` -> возврат в `Ready`/`Idle`, а также переход в `Error` при сбоях доступа, `Git CLI` или ввода-вывода с записью в `gitpulse.log`.
 
 #### 2.2.12 Параллелизм {#2212-concurrency}
 Использование пула потоков .NET (`ThreadPool`) и асинхронных примитивов (`async/await`) для предотвращения блокировки пользовательского интерфейса.
@@ -172,7 +173,7 @@ MVVM, Repository Pattern, Dependency Injection.
 - **ID**: VIEW-002-LogicalClassModel
 - **Title**: Логическая модель данных и контракты сервисов
 - **Viewpoint**: Логическое представление / Интерфейс / Информация
-- **Representation**: Центральной сущностью в памяти является модель `RepositoryInfo`, инкапсулирующая состояние репозитория и флаг `CanSelect` (блокирующий выбор при `Status == GitStatus.Dirty`). Сервис `CacheThresholdService` отслеживает превышение суммарного объёма сборочных артефактов свыше порога в 500 МБ. Реализует требования SRS: REQ-FUNC-002, REQ-FUNC-003, REQ-FUNC-005.
+- **Representation**: Центральной сущностью в памяти является модель `RepositoryInfo`, инкапсулирующая состояние репозитория и флаг `CanSelect` (блокирующий выбор при `Status == GitStatus.Dirty`). Компонент проверки порога `ThresholdChecker` (`CacheThresholdService`) отслеживает превышение суммарного объёма сборочных артефактов свыше порога в 500 МБ. Реализует требования SRS: REQ-FUNC-002, REQ-FUNC-003, REQ-FUNC-005.
   ![Диаграмма классов GitPulse](../images/gitpulse-classes.png)
 - **More Information**: Детали выбора структуры хранения в памяти без БД зафиксированы в ADR-003.
 
@@ -186,7 +187,7 @@ MVVM, Repository Pattern, Dependency Injection.
 - **Title**: Асинхронный конвейер сканирования и интеграция с Git CLI
 - **Viewpoint**: Взаимодействие / Алгоритм / Параллелизм
 - **Representation**: Сканирование выполняется асинхронно в пуле потоков (`Task.Run`) с поддержкой токена отмены (`CancellationToken`). При обнаружении каталога `.git` запускаются дочерние процессы `git status --porcelain` и `git branch --show-current`. Ошибки доступа к заблокированным файлам перехватываются и записываются в `gitpulse.log` без прерывания общего цикла. Реализует требования SRS: REQ-PERF-001, REQ-PERF-002, REQ-REL-001, REQ-OBS-001.
-- **More Information**: См. решение DEC-002-GitCliProcess и файл `adr/adr-template.md`.
+- **More Information**: См. решение DEC-002-GitCliProcess и файл `../adr/adr-template.md`.
 
 ### 3.1 Варианты использования {#31-use-cases}
 
@@ -213,7 +214,7 @@ MVVM, Repository Pattern, Dependency Injection.
 - **Viewpoint**: Динамика состояний
 - **Representation**: Описывает переходы между состояниями `Idle`, `Scanning`, `Ready`, `ConfirmingCleanup`, `Cleaning` и `Error` под действием команд пользователя, сторожевых условий (`[путь задан]`, `[повторный аудит]`, `[выбраны Clean-цели]`), отмены (`CancellationToken` или отмена в диалоге) и исключительных ситуаций (ошибки доступа, сбой Git CLI, ошибки ввода-вывода) с записью в `gitpulse.log` и восстановлением работы. Реализует требования SRS: REQ-FUNC-002, REQ-FUNC-005, REQ-FUNC-006, REQ-REL-001, REQ-OBS-001.
   ![Диаграмма состояний GitPulse](../images/gitpulse-statemachine.png)
-- **More Information**: См. описание состояний в Разделе 2.2.11, `adr/adr-template.md` и исходный код диаграммы `../diagrams/gitpulse-statemachine.puml`.
+- **More Information**: См. описание состояний в Разделе 2.2.11, `../adr/adr-template.md` и исходный код диаграммы `../diagrams/gitpulse-statemachine.puml`.
 
 ### 3.4 Взаимодействие компонентов {#34-sequence-interaction}
 
@@ -222,7 +223,21 @@ MVVM, Repository Pattern, Dependency Injection.
 - **Viewpoint**: Взаимодействие / Структура / Зависимости
 - **Representation**: Отображает хронологический обмен сообщениями между `Пользователь`, `MainWindow`, `MainViewModel`, `DiskScannerService`, `CleanupService`, `GitCliExecutor`, `OsFileSystemProvider` и `FileLogger` при выполнении `ScanAsync` (включая цикл `loop` по репозиториям) и `CleanSelectedAsync` (с ветвлением `alt` на подтверждение и отмену удаления, удалением артефактов и логированием в `gitpulse.log`). Реализует требования SRS: REQ-FUNC-001..006, REQ-SEC-001, REQ-OBS-001.
   ![Диаграмма последовательности GitPulse](../images/gitpulse-sequence.png)
-- **More Information**: Отражает взаимодействие слоёв MVVM, сервисов и инфраструктуры, описанное в `adr/adr-template.md`. Исходный код диаграммы: `../diagrams/gitpulse-sequence.puml`.
+- **More Information**: Отражает взаимодействие слоёв MVVM, сервисов и инфраструктуры, описанное в `../adr/adr-template.md`. Исходный код диаграммы: `../diagrams/gitpulse-sequence.puml`.
+
+- **ID**: VIEW-009-ComponentDiagram
+- **Title**: Диаграмма компонентов и интерфейсных связей GitPulse
+- **Viewpoint**: Композиция / Структура / Зависимости / Интерфейс
+- **Representation**: Отображает статическую декомпозицию приложения на три слоя (`GitPulse.UI`: `:MainWindow`, `:MainViewModel`; `GitPulse.Core`: `:DiskScannerService`, `:CleanupService`, `:ThresholdChecker`; `GitPulse.Infrastructure`: `:GitCliExecutor`, `:OsFileSystemProvider`, `:FileLogger`), их предоставляемые и требуемые интерфейсы (`IScanningService`, `ICleanupService`, `IGitCliExecutor`, `IFileSystemProvider`, `ILogger`), контроль порога объёма артефактов (500 МБ) и взаимодействие с внешним окружением (`Git CLI >= 2.40`, локальные каталоги `.git`, `bin/`, `obj/`, `node_modules/` и журнал `gitpulse.log`). Реализует требования SRS: REQ-FUNC-001..006, REQ-SEC-001, REQ-REL-001, REQ-OBS-001.
+  ![Диаграмма компонентов GitPulse](../images/gitpulse-components.png)
+- **More Information**: См. решения DEC-001..DEC-005 в Разделе 4 и файл `../adr/adr-template.md`. Исходный код диаграммы: `../diagrams/gitpulse-components.puml`.
+
+- **ID**: VIEW-010-DeploymentDiagram
+- **Title**: Диаграмма развёртывания десктопного приложения GitPulse
+- **Viewpoint**: Физическое представление / Развёртывание / Ресурсы
+- **Representation**: Описывает физическое размещение артефактов на рабочей станции пользователя (Windows, Linux, macOS) в среде выполнения `.NET 9` из дистрибутива `GitPulse.zip` (Portable / Self-contained): исполняемый модуль `GitPulse.exe` и сборки `GitPulse.UI.dll`, `GitPulse.Core.dll`, `GitPulse.Infrastructure.dll`, связанные отношением проявления (`<<manifest>>`) с соответствующими компонентами, а также взаимодействие инфраструктурной сборки с внешними ресурсами ОС (`Git CLI >= 2.40`, локальные каталоги репозиториев и файл журнала `gitpulse.log`). Реализует требования SRS: REQ-CON-001, REQ-AVAIL-001, REQ-FUNC-002, REQ-FUNC-006, REQ-OBS-001.
+  ![Диаграмма развёртывания GitPulse](../images/gitpulse-deployment.png)
+- **More Information**: См. решения DEC-001-AvaloniaUI, DEC-002-GitCliProcess, DEC-003-InMemoryStorage и DEC-005-ComponentAssemblyAndDeployment в Разделе 4. Исходный код диаграммы: `../diagrams/gitpulse-deployment.puml`.
 
 ---
 
@@ -233,31 +248,38 @@ MVVM, Repository Pattern, Dependency Injection.
 - **Context**: Требовалось обеспечить идентичный нативный интерфейс на Windows 10/11, Linux и macOS на базе технологического стека C# / .NET 9.
 - **Options**: WPF (только Windows), Windows Forms (устарел, только Windows), .NET MAUI (ограниченная поддержка Linux), Avalonia UI.
 - **Outcome**: Выбран вариант «Avalonia UI», потому что он обеспечивает полноценную кроссплатформенность (включая Linux), высокую производительность рендеринга и зрелую поддержку паттерна MVVM.
-- **More Information**: Подробный протокол решения зафиксирован в `adr/adr-template.md` (ADR-001).
+- **More Information**: Подробный протокол решения зафиксирован в `../adr/adr-template.md` (ADR-001).
 
 - **ID**: DEC-002-GitCliProcess
 - **Title**: Использование Git CLI через дочерние процессы вместо нативных обёрток
 - **Context**: Необходимо считывать ветку и статус рабочей копии (`Clean`/`Dirty`) на трёх разных ОС без конфликтов нативных библиотек.
 - **Options**: Библиотека LibGit2Sharp, запуск системного процесса `git` через `System.Diagnostics.Process`.
 - **Outcome**: Выбран вариант «Запуск консольного процесса git», потому что он избавляет от проблем с кроссплатформенной сборкой нативных зависимостей `libgit2` и гарантирует полную совместимость с установленным у пользователя Git >= 2.40.
-- **More Information**: Подробный протокол решения зафиксирован в `adr/adr-template.md` (ADR-002).
+- **More Information**: Подробный протокол решения зафиксирован в `../adr/adr-template.md` (ADR-002).
 
 - **ID**: DEC-003-InMemoryStorage
 - **Title**: Хранение результатов сканирования в оперативной памяти без локальной СУБД
 - **Context**: Утилита выполняет разовый аудит актуального состояния файловой системы и не требует ведения исторической базы данных между запусками.
 - **Options**: Встраиваемая БД SQLite, хранение состояния в оперативной памяти (`ObservableCollection<RepositoryInfo>`).
 - **Outcome**: Выбран вариант «Хранение в оперативной памяти», потому что данные о состоянии репозиториев и размере кэша быстро устаревают, а отказ от СУБД сохраняет портативность приложения (Portable) и снижает накладные расходы.
-- **More Information**: Подробный протокол решения зафиксирован в `adr/adr-template.md` (ADR-003).
+- **More Information**: Подробный протокол решения зафиксирован в `../adr/adr-template.md` (ADR-003).
 
 - **ID**: DEC-004-BehaviorAndLayerMechanisms
 - **Title**: Единые механизмы взаимодействия слоёв, асинхронности, безопасности очистки и логирования
 - **Context**: При моделировании динамического поведения (Use Case, Activity, State Machine, Sequence) и согласовании приоритетов с заказчиком потребовалось закрепить единые механизмы работы слоёв `UI`, `Core` и `Infrastructure`, асинхронного выполнения с отменой, защиты `Dirty`-репозиториев, обработки ошибок и записи в `gitpulse.log`.
 - **Options**: Прямые вызовы `Git CLI` и файловой системы из `ViewModel` без изоляции слоёв; многослойная схема с асинхронными сервисами, явными состояниями, модальным подтверждением и логированием в `gitpulse.log`.
 - **Outcome**: Выбран вариант «Многослойная схема с асинхронными сервисами, явными состояниями, модальным подтверждением и логированием в `gitpulse.log`», потому что он обеспечивает отзывчивый UI, безопасное удаление и диагностируемость ошибок без срыва сроков за счёт приоритетов и подключения Junior-разработчика к вспомогательным задачам.
-- **More Information**: Подробный протокол решения зафиксирован в `adr/adr-template.md` (ADR-004).
+- **More Information**: Подробный протокол решения зафиксирован в `../adr/adr-template.md` (ADR-004).
+
+- **ID**: DEC-005-ComponentAssemblyAndDeployment
+- **Title**: Механизмы построения, интерфейсных связей и развёртывания компонентов GitPulse
+- **Context**: При статическом моделировании (диаграммы классов, компонентов и развёртывания в ЛР №6) потребовалось зафиксировать правила сборки слоёв, направления зависимостей через интерфейсы, контроль порога 500 МБ и статуса `Clean`/`Dirty`, обработку ошибок с записью в `gitpulse.log` и переносимую поставку под `.NET 9`.
+- **Options**: Монолитная сборка с прямыми ссылками между слоями и установщиком под конкретную ОС; модульная сборка по слоям `UI`, `Core` и `Infrastructure` на базе интерфейсов, проверка порога/статуса/отмены, логирование в `gitpulse.log` и поставка `GitPulse.zip` (Portable / Self-contained).
+- **Outcome**: Выбран вариант «Модульная сборка по слоям `UI`, `Core` и `Infrastructure` на базе интерфейсов с логированием в `gitpulse.log` и портативной поставкой `GitPulse.zip`», потому что он обеспечивает слабую связанность, тестируемость и единый запуск на Windows, Linux и macOS.
+- **More Information**: Подробное обоснование механизмов построения и связей компонентов приведено в `../adr/adr-template.md` (ADR-005).
 
 ---
 
 ## 5. Приложения {#5-appendixes}
 
-Диаграммы статической архитектуры (`../images/gitpulse-architecture.png` и `../images/gitpulse-classes.png`) и диаграммы динамического поведения (`../images/gitpulse-usecase.png`, `../images/gitpulse-activity.png`, `../images/gitpulse-statemachine.png`, `../images/gitpulse-sequence.png`) интегрированы непосредственно в Раздел 3 настоящего документа. Исходные тексты моделей SysMLv2 и PlantUML размещены в каталоге `../diagrams/`.
+Диаграммы статической архитектуры (`../images/gitpulse-architecture.png`, `../images/gitpulse-classes.png`, `../images/gitpulse-components.png` и `../images/gitpulse-deployment.png`) и диаграммы динамического поведения (`../images/gitpulse-usecase.png`, `../images/gitpulse-activity.png`, `../images/gitpulse-statemachine.png`, `../images/gitpulse-sequence.png`) интегрированы непосредственно в Раздел 3 настоящего документа. Исходные тексты моделей SysMLv2 и PlantUML размещены в каталоге `../diagrams/`.
