@@ -1,0 +1,89 @@
+@startuml components
+' Диаграмма компонентов (рисунок В.1 отчёта ЛР6)
+' SDD: представление 002-modules (соответствует docs/sdd/models/architecture.sysml); ADR-0001, ADR-0002, ADR-0008
+
+skinparam monochrome true
+skinparam componentStyle uml2
+left to right direction
+title cmp FitSchedule 1.0 [компоненты модульного монолита и их интерфейсы]
+
+component "spa\nReact SPA" as spa
+component "PostgreSQL 16\nсхема fitschedule" as pg
+interface JDBC as jdbc
+pg - jdbc
+
+component "FitScheduleApp" <<subsystem>> as app {
+  portin http
+  portout db
+  port mgmt
+
+  component "ops\nActuator, JSON-журнал" as ops
+  component "security\nSpring Security, BCrypt" as security
+  component "api\nREST, DTO, OpenAPI 3.0" as api
+  component "schedule\nзанятия, залы, отмена" as schedule
+  component "booking\nBookingService, Policy" as booking
+  component "slots\nслоты тренеров" as slots
+  component "activity\nистория активности" as activity
+  component "notification\nуведомления, напоминания" as notification
+  component "waitlist\nлист ожидания" as waitlist
+  component "ical\nфайл .ics (RFC 5545)" as ical
+  component "persistence\nSpring Data JPA, Flyway, HikariCP" <<infrastructure>> as persistence
+
+  interface CurrentUser
+  interface ScheduleApi
+  interface BookingApi
+  interface SlotApi
+  interface ActivityApi
+  interface NotificationApi
+  interface WaitlistApi
+  interface IcalApi
+  interface "DataAccess" as DataAccess
+
+  security - CurrentUser
+  schedule - ScheduleApi
+  booking - BookingApi
+  slots - SlotApi
+  activity - ActivityApi
+  notification - NotificationApi
+  waitlist - WaitlistApi
+  ical - IcalApi
+  persistence - DataAccess
+
+  ' сборочные соединители (assembly)
+  api --( CurrentUser
+  api --( ScheduleApi
+  api --( BookingApi
+  api --( SlotApi
+  api --( ActivityApi
+  api --( NotificationApi
+  api --( WaitlistApi
+  api --( IcalApi
+
+  ' зависимости использования между модулями
+  booking ..> ScheduleApi : <<use>>
+  booking ..> WaitlistApi : <<use>>
+  schedule ..> NotificationApi : <<use>>
+  slots ..> NotificationApi : <<use>>
+  waitlist ..> NotificationApi : <<use>>
+  ical ..> BookingApi : <<use>>
+  activity ..> DataAccess : <<use>>
+
+  ' делегирующие соединители
+  http ..> api : <<delegate>>
+  ops ..> mgmt : <<delegate>>
+  persistence ..> db : <<delegate>>
+}
+
+interface "REST API" as rest
+interface "Health / Metrics" as health
+rest - http
+mgmt - health
+spa --( rest : HTTPS, JSON,\nCSRF-токен
+db --( jdbc
+
+note bottom of persistence
+  schedule, booking, slots, waitlist, notification,
+  activity и security обращаются к БД
+  через DataAccess (связи «use» опущены).
+end note
+@enduml

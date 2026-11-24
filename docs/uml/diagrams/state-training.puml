@@ -1,0 +1,39 @@
+@startuml state-training
+' Диаграммы состояний занятия и элемента листа ожидания (рисунки 3.5 и 3.6 отчёта ЛР5)
+' SDD: представление 007-booking-states; REQ-FUNC-005, 006, 008, 023; REQ-REL-003
+
+skinparam monochrome true
+
+state "stm Training [жизненный цикл группового занятия]" as T {
+  [*] --> SCHEDULED : create() [capacity > 0]
+  state SCHEDULED : entry / опубликовать в расписании
+  state SCHEDULED {
+    state "Есть места" as Available : do / запись разрешена
+    state "Мест нет" as Full : do / предлагается лист ожидания
+    [*] --> Available
+    Available --> Full : book() [free_places = 1]
+    Full --> Available : cancel() [очередь пуста или < 30 мин до начала]
+  }
+  SCHEDULED --> SCHEDULED : update() / уведомить участников (UC-19)
+  SCHEDULED --> IN_PROGRESS : when(now ≥ startsAt)
+  IN_PROGRESS --> FINISHED : when(now ≥ endsAt)
+  SCHEDULED --> CANCELLED : cancelTraining()
+  state CANCELLED : entry / записи → CANCELLED_BY_CLUB; очередь → EXPIRED
+  FINISHED --> [*]
+  CANCELLED --> [*]
+}
+
+state "stm WaitlistEntry [элемент листа ожидания]" as W {
+  [*] --> WAITING : join() [мест нет]
+  state WAITING : entry / позиция = последняя + 1
+  state WAITING : do / ждать освобождения места
+  state PROMOTED : entry / уведомить (WAITLIST_PROMOTED)
+  state EXPIRED : entry / позиция освобождается
+  WAITING --> PROMOTED : promoteFirst() [нет пересечений] / создать запись CONFIRMED
+  WAITING --> LEFT : leave()
+  WAITING --> EXPIRED : when(начало занятия) | cancelTraining() | promoteFirst() [пересечение у посетителя]
+  PROMOTED --> [*]
+  LEFT --> [*]
+  EXPIRED --> [*]
+}
+@enduml

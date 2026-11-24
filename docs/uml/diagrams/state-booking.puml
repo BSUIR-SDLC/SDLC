@@ -1,0 +1,36 @@
+@startuml state-booking
+' Диаграмма состояний записи (рисунок 3.4 отчёта ЛР5)
+' SDD: представление 007-booking-states; REQ-FUNC-006, 011-013, 023; ADR-0006
+
+skinparam monochrome true
+title stm Booking [жизненный цикл записи на занятие]
+
+[*] --> CONFIRMED : create(source) / сохранить запись
+
+state CONFIRMED : entry / free_places − 1; запланировать напоминание за 2 ч (UC-20)
+state CONFIRMED {
+  state "Свободная отмена" as FreeCancel : do / кнопка «Отменить» доступна посетителю
+  state "Поздняя отмена" as LateCancel : do / отменить может только администратор
+  [*] --> FreeCancel
+  FreeCancel --> LateCancel : when(now ≥ startsAt − cancelDeadline)
+}
+
+state CANCELLED : entry / free_places + 1; promoteFirst() (UC-09)
+state CANCELLED_BY_CLUB : entry / уведомить посетителя (UC-19)
+state ATTENDED : entry / учитывается в истории (после 1.0)
+
+CONFIRMED --> CANCELLED : adminCancel()
+FreeCancel --> CANCELLED : cancel() [посетитель]
+CONFIRMED --> CANCELLED_BY_CLUB : cancelTraining()
+LateCancel --> ATTENDED : when(now ≥ endsAt)
+
+CANCELLED --> [*]
+CANCELLED_BY_CLUB --> [*]
+ATTENDED --> [*]
+
+note bottom of CONFIRMED
+  Посетитель отменяет запись только в подсостоянии «Свободная отмена» (REQ-FUNC-011),
+  администратор — в любом подсостоянии CONFIRMED (REQ-FUNC-013).
+  При отмене занятия все записи переходят в CANCELLED_BY_CLUB (REQ-REL-003).
+end note
+@enduml

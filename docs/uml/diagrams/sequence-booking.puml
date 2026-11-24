@@ -1,0 +1,76 @@
+@startuml sequence-booking
+' Диаграмма последовательности «Записаться на занятие» (приложение В отчёта ЛР5, лист 1 формата А3)
+' Прецеденты UC-05, UC-07; REQ-FUNC-007-009, REQ-PERF-002, REQ-REL-001; ADR-0004
+
+skinparam monochrome true
+autonumber
+title sd Записаться на занятие (UC-05, UC-07)
+
+actor "Посетитель" as V
+boundary ":SPA" as SPA
+control ":BookingController" as C <<controller>>
+control ":BookingService" as S <<service>>
+entity ":BookingPolicy" as P <<policy>>
+participant ":BookingRepository" as R <<repository>>
+database "PostgreSQL" as DB
+
+activate V
+V -> SPA : нажать «Записаться»
+activate SPA
+SPA -> C : POST /api/trainings/{id}/bookings
+activate C
+C -> C : проверить сессию и CSRF
+C -> S : book(visitorId, trainingId)
+activate S
+S -> R : findByIdForUpdate(trainingId)
+activate R
+R -> DB : SELECT … FOR UPDATE
+activate DB
+DB --> R : training
+deactivate DB
+R --> S : training
+deactivate R
+S -> R : findOverlapping(visitorId, startsAt, endsAt)
+activate R
+R -> DB : SELECT записи посетителя
+activate DB
+DB --> R : conflicts
+deactivate DB
+R --> S : conflicts
+deactivate R
+S -> P : check(training, conflicts, now)
+activate P
+P --> S : decision
+deactivate P
+
+create entity ":Booking" as B <<entity>>
+S --> B : <<create>>
+S -> R : save(booking)
+activate R
+R -> DB : INSERT booking; free_places − 1
+activate DB
+DB --> R : ok
+deactivate DB
+R --> S : booking
+deactivate R
+S --> C : BookingDto
+C --> SPA : 201 Created {status, freePlaces}
+SPA --> V : «Запись подтверждена», новое число мест
+S --> C : BookingRejectedException(reason)
+deactivate S
+C --> SPA : 409 {reason, waitlist}
+deactivate C
+SPA --> V : показать причину и «Встать в очередь»
+deactivate SPA
+deactivate V
+
+' уничтожение линий жизни в конце взаимодействия (крест)
+destroy V
+destroy SPA
+destroy C
+destroy S
+destroy P
+destroy R
+destroy DB
+destroy B
+@enduml

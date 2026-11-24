@@ -1,0 +1,84 @@
+@startuml sequence-cancel
+' Диаграмма последовательности «Отменить запись» (приложение В отчёта ЛР5, лист 2 формата А3)
+' Прецеденты UC-08, UC-09, UC-19; REQ-FUNC-011, 021, 023; ADR-0004, ADR-0006
+
+skinparam monochrome true
+autonumber
+title sd Отменить запись (UC-08, UC-09, UC-19)
+
+actor "Посетитель" as V
+boundary ":SPA" as SPA
+control ":BookingController" as C <<controller>>
+control ":BookingService" as S <<service>>
+control ":WaitlistService" as W <<service>>
+database "PostgreSQL" as DB
+control ":NotificationService" as N <<service>>
+
+activate V
+V -> SPA : нажать «Отменить»
+activate SPA
+SPA -> C : DELETE /api/bookings/{id}
+activate C
+C -> S : cancel(bookingId, visitorId)
+activate S
+S -> DB : BEGIN; SELECT training … FOR UPDATE
+activate DB
+DB --> S : training
+deactivate DB
+S -> S : canCancel(now)
+
+S -> DB : ROLLBACK
+activate DB
+DB --> S : ok
+deactivate DB
+S --> C : CancellationDeadlineException
+C --> SPA : 409 Conflict
+SPA --> V : «Отмена недоступна»
+S -> DB : UPDATE booking → CANCELLED; free_places + 1
+activate DB
+DB --> S : ok
+deactivate DB
+S -> W : promoteFirst(training, now)
+activate W
+W -> DB : SELECT первый WAITING
+activate DB
+DB --> W : entry
+deactivate DB
+W -> DB : INSERT booking; entry → PROMOTED
+activate DB
+DB --> W : ok
+deactivate DB
+W ->> N : notify(WAITLIST_PROMOTED)
+activate N
+N -> DB : INSERT notification
+activate DB
+DB --> N : ok
+deactivate DB
+deactivate N
+W -> DB : UPDATE entry → EXPIRED
+activate DB
+DB --> W : ok
+deactivate DB
+W --> S : result
+deactivate W
+S -> DB : COMMIT
+activate DB
+DB --> S : ok
+deactivate DB
+S --> C : BookingDto
+deactivate S
+C --> SPA : 200 OK {status: CANCELLED}
+deactivate C
+SPA --> V : «Запись отменена»
+deactivate SPA
+deactivate V
+
+' уничтожение линий жизни в конце взаимодействия (крест)
+destroy V
+destroy SPA
+destroy C
+destroy S
+destroy W
+destroy DB
+destroy N
+@enduml

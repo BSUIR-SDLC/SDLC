@@ -1,0 +1,33 @@
+@startuml
+package SinCalculatorApp {
+
+    class SinModel {
+        +lastBirthDate
+        +sinsCount
+        -- ports --
+        +notify
+    }
+
+    class DateValidator {
+        +validate(rawInput)
+    }
+
+    class MainFrame {
+        -- ports --
+        +listen
+        +userAction
+    }
+
+    class InputDialog {
+    }
+
+    class MainController {
+        -- ports --
+        +handle
+    }
+
+    MainFrame::userAction --> MainController::handle : connect
+    SinModel::notify --> MainFrame::listen : connect
+
+}
+@enduml
