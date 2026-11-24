@@ -1,0 +1,21 @@
+digraph Activity {
+  rankdir=TB; nodesep=0.45; ranksep=0.32; bgcolor=white; labelloc=t; fontname="DejaVu Sans Bold"; fontsize=15;
+  label="Activity diagram, часть 1: постановка задачи и выбор исполнителя\n ";
+  node [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#E8F0FE", color="#334466", margin="0.18,0.08"];
+  edge [fontname="DejaVu Sans", fontsize=10, color="#222222"];
+
+  start [shape=circle, label="", style=filled, fillcolor=black, width=0.28];
+  conn [shape=circle, label="A", style=filled, fillcolor=white, width=0.35, fontsize=12];
+  node [shape=diamond, style=filled, fillcolor="#FFF8E1", margin="0.05,0.03"];
+  D1 [label="Данные\nкорректны?"]; D2 [label="Есть подходящий\nкандидат?"]; D3 [label="Резервирование\nуспешно?"];
+  node [shape=box, style="rounded,filled", fillcolor="#E8F0FE", margin="0.18,0.08"];
+  A1 [label="Создать задачу"]; A2 [label="Опубликовать задачу"];
+  A3 [label="Исполнители присылают отклики"]; A4 [label="Просмотреть кандидатов"];
+  A5 [label="Выбрать кандидата"]; A6 [label="Зарезервировать средства"];
+  start -> A1 -> D1;
+  D1 -> A1 [label="[нет]"]; D1 -> A2 [label="[да]"];
+  A2 -> A3 -> A4 -> D2;
+  D2 -> A3 [label="[нет]"]; D2 -> A5 [label="[да]"];
+  A5 -> A6 -> D3;
+  D3 -> A5 [label="[нет]"]; D3 -> conn [label="[да]"];
+}

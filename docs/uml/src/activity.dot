@@ -1,0 +1,39 @@
+digraph Activity {
+  rankdir=TB; nodesep=0.45; ranksep=0.32; bgcolor=white; labelloc=t; fontname="DejaVu Sans Bold"; fontsize=15;
+  label="Activity diagram: жизненный цикл задачи DoneDeal\n ";
+  node [fontname="DejaVu Sans", fontsize=12, shape=box, style="rounded,filled", fillcolor="#E8F0FE", color="#334466", margin="0.18,0.08"];
+  edge [fontname="DejaVu Sans", fontsize=10, color="#222222"];
+
+  start [shape=circle, label="", style=filled, fillcolor=black, width=0.28];
+  end1 [shape=doublecircle, label="", style=filled, fillcolor=black, width=0.22];
+  end2 [shape=doublecircle, label="", style=filled, fillcolor=black, width=0.22];
+  node [shape=diamond, style=filled, fillcolor="#FFF8E1", margin="0.05,0.03"];
+  D1 [label="Данные\nкорректны?"]; D2 [label="Есть подходящий\nкандидат?"]; D3 [label="Резервирование\nуспешно?"];
+  D4 [label="Решение\nзаказчика"]; D5 [label="Решение\nадминистратора"];
+  node [shape=box, style="rounded,filled", fillcolor="#E8F0FE", margin="0.18,0.08"];
+  A1 [label="Создать задачу"]; A2 [label="Опубликовать задачу"];
+  A3 [label="Исполнители присылают отклики"]; A4 [label="Просмотреть кандидатов"];
+  A5 [label="Выбрать кандидата"]; A6 [label="Зарезервировать средства"];
+  A7 [label="Исполнитель выполняет работу"]; A8 [label="Исполнитель сдаёт работу"];
+  A9 [label="Заказчик проверяет результат"]; A10 [label="Администратор разрешает спор"];
+  A11 [label="Выплатить исполнителю"]; A12 [label="Вернуть деньги заказчику"];
+  R1 [label="Запросить отзыв\nу заказчика"]; R2 [label="Запросить отзыв\nу исполнителя"];
+  node [shape=box, style=filled, fillcolor=black, label="", height=0.07, width=3.2];
+  F1; J1;
+
+  start -> A1 -> D1;
+  D1 -> A1 [label="[нет]"]; D1 -> A2 [label="[да]"];
+  A2 -> A3 -> A4 -> D2;
+  D2 -> A3 [label="[нет]"]; D2 -> A5 [label="[да]"];
+  A5 -> A6 -> D3;
+  D3 -> A5 [label="[нет]"]; D3 -> A7 [label="[да]"];
+  A7 -> A8 -> A9 -> D4;
+  D4 -> A7 [label="[вернуть на доработку]"];
+  D4 -> A10 [label="[открыть спор]"];
+  D4 -> A11 [label="[одобрить]"];
+  A10 -> D5;
+  D5 -> A11 [label="[выплатить]"];
+  D5 -> A12 [label="[вернуть деньги]"];
+  A12 -> end2;
+  A11 -> F1; F1 -> R1; F1 -> R2; R1 -> J1; R2 -> J1; J1 -> end1;
+}

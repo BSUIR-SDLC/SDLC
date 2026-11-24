@@ -1,0 +1,39 @@
+sequenceDiagram
+    autonumber
+    actor C as Заказчик
+    participant UI as Браузер (React SPA)
+    participant API as API: модуль Tasks
+    participant PAY as Модуль Payments
+    participant GW as Платёжный шлюз
+    participant NTF as Модуль Notifications
+    participant ML as Почтовый сервис
+    C->>UI: нажать «Одобрить работу»
+    UI->>API: POST /tasks/{id}/approve
+    activate API
+    API->>API: проверить роль и статус ON_REVIEW
+    API->>PAY: payout(taskId, idempotencyKey)
+    activate PAY
+    create participant RQ as :PayoutRequest
+    PAY->>RQ: создать запрос выплаты
+    PAY->>GW: выплата (idempotencyKey)
+    activate GW
+    Note over PAY,GW: {ожидание ответа ≤ 3 с}
+    alt выплата выполнена
+        GW-->>PAY: подтверждение
+        PAY-->>API: PAID
+        API->>API: статус задачи COMPLETED
+        API-)NTF: запросить отзывы (асинхронно)
+        NTF-)ML: отправить письма
+        API-->>UI: 200 OK
+        UI-->>C: «Работа принята, выплата выполнена»
+    else ошибка шлюза или таймаут
+        GW-->>PAY: ошибка
+        PAY-->>API: FAILED
+        API-->>UI: 502, задача остаётся ON_REVIEW
+        UI-->>C: «Выплата не прошла, повторите позже»
+    end
+    deactivate GW
+    deactivate PAY
+    deactivate API
+    destroy RQ
+    PAY-xRQ: завершить запрос

@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> CREATED: создан платёж
+    CREATED --> RESERVED: шлюз подтвердил резервирование
+    CREATED --> FAILED: отказ шлюза или таймаут
+    RESERVED --> PAID: выплата исполнителю
+    RESERVED --> REFUNDED: возврат заказчику
+    PAID --> [*]
+    REFUNDED --> [*]
+    FAILED --> [*]
