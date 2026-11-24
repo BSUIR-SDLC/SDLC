@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>body{margin:0}svg{font-family:"Balsamiq Sans","Comic Sans MS",cursive}</style>
+<script src="wire.js"></script></head>
+<body data-size="1300x830"><script>
+document.fonts.ready.then(() => {});
+init(1300, 830);
+
+// ---------- вход ----------
+let p = phone(30, 50, '«part» login : Screen');
+t(p.x + p.w / 2, p.y + 70, 'Авторизация', 32, { anchor: 'middle', bold: true });
+r(p.x + 60, p.y + 100, 224, 40, { rx: 20, sw: 2 });
+r(p.x + 64, p.y + 104, 108, 32, { rx: 16, fill: '#111', sw: 2 });
+t(p.x + 118, p.y + 126, 'Вход', 15, { anchor: 'middle', color: '#fff' });
+t(p.x + 228, p.y + 126, 'Регистрация', 15, { anchor: 'middle' });
+field(p.x + 20, p.y + 200, 304, 'Телефон:', '+375 29 123-45', { error: 'В номере не хватает цифр' });
+field(p.x + 20, p.y + 300, 304, 'Пароль:', '••••••••');
+btn(p.x + 80, p.y + 380, 184, 46, 'Войти');
+t(p.x + p.w / 2, p.y + 470, 'Войти по коду из Telegram', 15, { anchor: 'middle' });
+line(p.x + 70, p.y + 475, p.x + 274, p.y + 475, 1.5);
+t(p.x + 10, p.y + 640, 'Продолжая, вы соглашаетесь', 13);
+t(p.x + 10, p.y + 658, 'с условиями и политикой', 13);
+t(p.x + 10, p.y + 676, 'конфиденциальности', 13);
+
+// ---------- главная ----------
+p = phone(460, 50, '«part» home : Screen');
+img(p.x, p.y + 6, 44, 44);
+t(p.x + 54, p.y + 38, 'FlowerBox', 24, { bold: true });
+r(p.x + 252, p.y + 8, 40, 40, { rx: 20, sw: 2 }); bell(p.x + 272, p.y + 29);
+r(p.x + 302, p.y + 8, 40, 40, { rx: 20, sw: 2 }); t(p.x + 322, p.y + 34, '♡', 20, { anchor: 'middle' });
+search(p.x, p.y + 64, p.w, 'Найти букет или цветок');
+r(p.x, p.y + 118, p.w, 120, { rx: 14, sw: 2.5 });
+t(p.x + 16, p.y + 150, 'ПРОМОКОД', 13, { bold: true });
+t(p.x + 16, p.y + 182, 'FLOWER10', 24, { bold: true });
+t(p.x + 16, p.y + 210, '−10% на заказ', 15);
+img(p.x + 220, p.y + 128, 110, 100);
+t(p.x, p.y + 272, 'По поводу', 19, { bold: true }); t(p.x + p.w, p.y + 272, 'Все', 15, { anchor: 'end' });
+['День рожд.', '8 Марта', 'Свидание', 'Свадьба'].forEach((s, i) => { r(p.x + i * 88, p.y + 288, 72, 64, { rx: 14, sw: 2 }); t(p.x + 36 + i * 88, p.y + 372, s, 12, { anchor: 'middle' }); });
+t(p.x, p.y + 414, 'Хиты продаж', 19, { bold: true }); t(p.x + p.w, p.y + 414, 'Все', 15, { anchor: 'end' });
+for (let i = 0; i < 2; i++) {
+  const x = p.x + i * 176;
+  r(x, p.y + 428, 166, 208, { rx: 12, sw: 2 });
+  img(x + 8, p.y + 436, 150, 110);
+  t(x + 10, p.y + 570, i ? 'Белое облако' : 'Малиновый вечер', 14, { bold: true });
+  t(x + 10, p.y + 600, i ? '120 BYN' : '95 BYN', 16, { bold: true });
+  btn(x + 124, p.y + 582, 30, 30, '+', 18);
+}
+carousel(p, 0);
+
+// ---------- каталог ----------
+p = phone(890, 50, '«part» catalog : Screen');
+t(p.x, p.y + 34, 'Каталог', 26, { bold: true });
+search(p.x, p.y + 52, 290, 'Найти букет или цветок');
+btn(p.x + 300, p.y + 52, 42, 40, '☰', 18);
+let cx = p.x;
+['Все', 'Розы', 'Пионы', 'Тюльпаны'].forEach((s, i) => { cx += chip(cx, p.y + 108, s, i === 0) + 8; });
+t(p.x, p.y + 166, '4 букета', 14);
+r(p.x + 196, p.y + 146, 148, 30, { rx: 15, sw: 2 }); t(p.x + 270, p.y + 166, '↕ Популярные', 14, { anchor: 'middle' });
+for (let k = 0; k < 4; k++) {
+  const x = p.x + (k % 2) * 176, y = p.y + 190 + Math.floor(k / 2) * 228;
+  r(x, y, 166, 218, { rx: 12, sw: 2 });
+  img(x + 8, y + 8, 150, 120);
+  r(x + 124, y + 14, 26, 26, { rx: 13, sw: 1.8 }); t(x + 137, y + 33, '♡', 15, { anchor: 'middle' });
+  t(x + 10, y + 152, ['Малиновый вечер', 'Белое облако', 'Розовый сад', 'Персиковый'][k], 14, { bold: true });
+  t(x + 10, y + 172, 'пока без отзывов', 12, { color: '#666' });
+  t(x + 10, y + 202, ['95', '120', '85', '140'][k] + ' BYN', 16, { bold: true });
+  btn(x + 124, y + 182, 30, 30, '+', 18);
+}
+carousel(p, 1);
+</script></body></html>

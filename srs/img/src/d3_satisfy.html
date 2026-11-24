@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x1330"><script>
+init(1960, 1330, 'package Realization — какие части системы выполняют требования (satisfy)');
+
+// требования: слева
+const reqs = [
+  ['REQ-FUNC-001', 'signIn', 'Вход по паролю или коду из Telegram', 'login'],
+  ['REQ-FUNC-003', 'catalogFilters', 'Каталог: поиск, сортировка, фильтры', 'catalog'],
+  ['REQ-FUNC-004', 'productCard', 'Фото, размер S/M/L, дополнения', 'product'],
+  ['REQ-FUNC-005', 'builderFlowers', 'Цветы и количество, мозаика сверху', 'builder'],
+  ['REQ-FUNC-006', 'builderArrangement', 'Расположение — при 2+ видах цветов', 'builder'],
+  ['REQ-FUNC-007', 'builderPackaging', 'require constraint paper : EnoughPaper', 'builderLogic'],
+  ['REQ-FUNC-008', 'cartTotals', 'Промокод, доставка бесплатна от 100 BYN', 'cart'],
+  ['REQ-FUNC-009', 'checkoutOrder', 'Получатель, адрес, интервал, оплата', 'checkout'],
+  ['REQ-FUNC-017', 'inputValidation', 'Причина ошибки под каждым полем', 'checkout'],
+  ['REQ-FUNC-010', 'orderTracking', 'Статусы заказа с сервера', 'tracking'],
+  ['REQ-FUNC-011', 'dateReminders', 'Важные даты и подбор букета', 'profile'],
+  ['REQ-INT-002', 'liveCarousel', '{ totalTabs == 5 and visibleTabs == 3 }', 'nav'],
+  ['REQ-SRV-001', 'floristCatalog', 'Цветы и букеты с фото в панели', 'floristPanel'],
+  ['REQ-SRV-002', 'serverPricing', 'Сумму заказа считает сервер', 'server'],
+  ['REQ-SEC-001', 'loginProtection', '{ loginTries <= 5 and sessionDays <= 30 }', 'server'],
+];
+const RX = 24, RW = 520, RH = 80, RY0 = 60;
+const rb = reqs.map((r, i) => box(RX, RY0 + i * RH, RW, { kw: 'requirement', name: `<'${r[0]}'> ${r[1]}`,
+  sections: [{ lines: [r[2]] }], minH: RH - 8 }));
+
+// части: справа, вложенные в app и server
+const parts = {};
+const appBox = { x: 1040, y: 50, w: 880, h: 950 };
+el('rect', { x: appBox.x, y: appBox.y, width: appBox.w, height: appBox.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(appBox.x + 640, appBox.y + 30, '«part»', { cls: 'kw', anchor: 'middle' });
+text(appBox.x + 640, appBox.y + 52, 'flowerBox.app : FlowerBoxApp', { cls: 'nm', anchor: 'middle' });
+const appParts = [['login', 'Screen'], ['catalog', 'Screen'], ['product', 'Screen'], ['builder', 'Screen'],
+  ['builderLogic', 'BouquetBuilder'], ['cart', 'Screen'], ['checkout', 'Screen'], ['tracking', 'Screen'],
+  ['profile', 'Screen'], ['nav', 'BottomCarousel']];
+// каждую часть ставим на уровень первого требования, которое она выполняет
+appParts.forEach(([n, t]) => {
+  const first = reqs.findIndex(r => r[3] === n);
+  const y = RY0 + first * RH + 4;
+  parts[n] = box(appBox.x + 40, y, 380, { kw: 'part', name: `${n} : ${t}`, minH: 60 });
+});
+const srvBox = { x: 1040, y: 1012, w: 880, h: 290 };
+el('rect', { x: srvBox.x, y: srvBox.y, width: srvBox.w, height: srvBox.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(srvBox.x + 640, srvBox.y + 30, '«part»', { cls: 'kw', anchor: 'middle' });
+text(srvBox.x + 640, srvBox.y + 52, 'flowerBox.server : ShopServer', { cls: 'nm', anchor: 'middle' });
+text(srvBox.x + 520, srvBox.y + 92, 'attributes', { cls: 'sec' });
+text(srvBox.x + 520, srvBox.y + 114, 'sessionDays : Integer = 30', { cls: 'body' });
+text(srvBox.x + 520, srvBox.y + 134, 'loginTries : Integer = 5', { cls: 'body' });
+parts.floristPanel = box(srvBox.x + 40, RY0 + 12 * RH + 4, 380, { kw: 'part', name: 'floristPanel : Screen', minH: 60 });
+parts.server = { x: srvBox.x, y: srvBox.y, r: srvBox.x + srvBox.w, cy: srvBox.y + 150 };
+
+// satisfy: от части к требованию
+reqs.forEach((r, i) => {
+  const p = parts[r[3]];
+  const y = rb[i].cy;
+  const px = p.x;
+  const py = r[3] === 'server' ? y : Math.min(Math.max(y, p.y + 10), p.y + p.h - 10);
+  link(`M${px},${py} C${px - 160},${py} ${rb[i].r + 160},${y} ${rb[i].r},${y}`, { dash: true, head: 'open' });
+  text(rb[i].r + 90, y - 6, '«satisfy»', { cls: 'lbl', anchor: 'middle' });
+});
+text(RX, 1300, 'Пунктир «satisfy» — часть системы выполняет требование (satisfy … by … в модели flowerbox.sysml).', { cls: 'small' });
+</script></body></html>

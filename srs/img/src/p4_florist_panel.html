@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>body{margin:0}svg{font-family:"Balsamiq Sans","Comic Sans MS",cursive}</style>
+<script src="wire.js"></script></head>
+<body data-size="1300x840"><script>
+init(1300, 840);
+t(650, 34, '«part» server.floristPanel : Screen', 15, { anchor: 'middle' });
+// окно панели
+r(20, 50, 1260, 770, { rx: 6, sw: 3 });
+r(20, 50, 1260, 64, { rx: 6, sw: 3 });
+t(44, 92, 'FlowerBox — панель флориста', 22, { bold: true });
+let x = 390;
+['Заказы 2', 'Чаты', 'Отзывы', 'Каталог', 'Конструктор', 'Клиенты', 'Сервер'].forEach((s, i) => {
+  const w = s.length * 9 + 30;
+  r(x, 64, w, 36, { rx: 18, fill: i === 3 ? '#111' : '#fff', sw: 2 });
+  t(x + w / 2, 88, s, 15, { anchor: 'middle', color: i === 3 ? '#fff' : '#111' });
+  x += w + 10;
+});
+el('circle', { cx: 1210, cy: 82, r: 6, fill: '#111' }); t(1222, 88, 'работает', 13);
+
+// вкладка «Каталог»: список букетов
+btn(44, 136, 210, 40, '＋ Добавить букет', 16);
+['', 'Букет', 'Цена', 'Старая цена', 'Сегодня', 'На главной', ''].forEach((s, i) => t([44, 130, 440, 560, 690, 780, 900][i], 210, s, 14, { bold: true }));
+const rows = [['Малиновый вечер', '95', '0', true, true], ['Белое облако', '120', '0', true, true], ['Розовый сад', '85', '99', true, false], ['Персиковый рассвет', '140', '0', false, true]];
+rows.forEach(([n, pr, old, today, home], i) => {
+  const y = 226 + i * 72;
+  r(44, y, 760, 62, { rx: 10, sw: 2 });
+  img(54, y + 8, 46, 46);
+  t(130, y + 28, n, 16, { bold: true }); t(130, y + 48, i === 3 ? 'без фото — нажмите на картинку' : '11 роз', 12, { color: '#666' });
+  r(440, y + 14, 90, 34, { sw: 2 }); t(452, y + 37, pr, 15);
+  r(560, y + 14, 100, 34, { sw: 2 }); t(572, y + 37, old, 15);
+  r(696, y + 20, 22, 22, { sw: 2, rx: 4 }); if (today) t(707, y + 37, '✓', 15, { anchor: 'middle' });
+  r(778, y + 20, 22, 22, { sw: 2, rx: 4 }); if (home) t(789, y + 37, '✓', 15, { anchor: 'middle' });
+});
+rows.forEach((_, i) => { const y = 226 + i * 72; btn(830, y + 12, 110, 36, 'Сохранить', 14); btn(956, y + 12, 96, 36, 'Удалить', 14); });
+
+// диалог «Новый цветок»
+r(1060, 136, 200, 30, { rx: 4, sw: 0, fill: '#fff' });
+const dx = 600, dy = 520;
+r(44, dy, 1210, 280, { rx: 14, sw: 2.5 });
+t(68, dy + 36, 'Новый цветок', 22, { bold: true });
+field(68, dy + 80, 300, 'Название', 'Роза малиновая');
+field(68, dy + 150, 140, 'Цена за стебель, BYN', '7');
+check(68, dy + 210, 'Это зелень', false);
+btn(420, dy + 72, 170, 40, 'Другое фото', 15);
+check(420, dy + 132, 'Убрать фон', true);
+r(640, dy + 60, 120, 120, { rx: 12, sw: 2 }); img(650, dy + 70, 100, 100); t(700, dy + 200, 'в списке', 13, { anchor: 'middle' });
+r(790, dy + 60, 90, 120, { rx: 12, sw: 2 });
+el('path', { d: `M835,${dy + 78} q-14,10 0,22 q14,-12 0,-22 M835,${dy + 100} V${dy + 168} M835,${dy + 130} q-16,-6 -20,8 M835,${dy + 145} q16,-6 20,8`, fill: 'none', stroke: '#111', 'stroke-width': 2 });
+t(835, dy + 200, 'в букете', 13, { anchor: 'middle' });
+t(910, dy + 80, 'Насколько смело убирать фон', 14, { bold: true });
+line(910, dy + 108, 1220, dy + 108, 3); el('circle', { cx: 1010, cy: dy + 108, r: 11, fill: '#fff', stroke: '#111', 'stroke-width': 2.5 });
+t(910, dy + 142, 'Остался фон — двигайте вправо,', 13); t(910, dy + 160, 'пропали лепестки — влево', 13);
+btn(1000, dy + 214, 110, 40, 'Отмена', 15);
+btn(1124, dy + 214, 110, 40, 'Добавить', 15);
+</script></body></html>

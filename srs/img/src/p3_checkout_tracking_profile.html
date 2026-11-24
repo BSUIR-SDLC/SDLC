@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>body{margin:0}svg{font-family:"Balsamiq Sans","Comic Sans MS",cursive}</style>
+<script src="wire.js"></script></head>
+<body data-size="1300x830"><script>
+init(1300, 830);
+
+// ---------- оформление ----------
+let p = phone(30, 50, '«part» checkout : Screen');
+t(p.x, p.y + 30, 'Оформление', 24, { bold: true });
+field(p.x, p.y + 70, p.w, 'Кому', 'Мама');
+field(p.x, p.y + 140, p.w, 'Телефон получателя', '+375 17 123-45-67', { error: 'Неверный код оператора' });
+t(p.x, p.y + 230, 'Куда', 15);
+let cx = p.x; ['Дом', 'Работа', '✎ Другой'].forEach((s, i) => { cx += chip(cx, p.y + 240, s, i === 2) + 8; });
+field(p.x, p.y + 286, p.w, '', 'ул. Лесная', {});
+t(p.x, p.y + 340, '⚠ Укажите номер дома', 14);
+check(p.x, p.y + 356, 'Уточнить адрес у получателя', false);
+t(p.x, p.y + 410, 'Когда доставить', 15);
+cx = p.x; ['Сегодня 18–20', 'Сегодня 20–22'].forEach((s, i) => { cx += chip(cx, p.y + 420, s, i === 0) + 8; });
+field(p.x, p.y + 484, p.w, 'Открытка', 'С днём рождения!');
+t(p.x, p.y + 548, 'Оплата', 15);
+cx = p.x; ['Картой курьеру', 'Наличными'].forEach((s, i) => { cx += chip(cx, p.y + 558, s, i === 1) + 8; });
+t(p.x, p.y + 614, 'Проверьте поля, отмеченные ⚠', 14, { bold: true });
+btn(p.x, p.y + 630, p.w, 46, 'Заказать · 152,10 BYN', 17);
+
+// ---------- отслеживание ----------
+p = phone(460, 50, '«part» tracking : Screen');
+r(p.x, p.y, 40, 40, { rx: 20, sw: 2 }); t(p.x + 20, p.y + 27, '‹', 22, { anchor: 'middle' });
+t(p.x + 56, p.y + 28, 'Заказ № 2001', 22, { bold: true });
+t(p.x, p.y + 74, 'Доставим сегодня 18–20 · для Мамы', 14);
+const steps = ['Заказ принят', 'Собираем букет', 'Курьер в пути · 18 мин', 'Доставлен'];
+steps.forEach((s, i) => {
+  const y = p.y + 110 + i * 64;
+  el('circle', { cx: p.x + 20, cy: y + 14, r: 14, fill: i < 3 ? '#111' : '#fff', stroke: '#111', 'stroke-width': 2.5 });
+  if (i < 2) t(p.x + 20, y + 20, '✓', 15, { anchor: 'middle', color: '#fff' });
+  if (i < 3) line(p.x + 20, y + 28, p.x + 20, y + 64, 2.5);
+  t(p.x + 48, y + 20, s, 16, { bold: i === 2 });
+});
+t(p.x, p.y + 388, 'Ваш букет', 17, { bold: true });
+r(p.x, p.y + 400, p.w, 120, { rx: 14, sw: 2 });
+img(p.x + 10, p.y + 410, 100, 100);
+t(p.x + 124, p.y + 438, 'Малиновый вечер', 15, { bold: true });
+t(p.x + 124, p.y + 462, 'Размер M · открытка', 13, { color: '#666' });
+t(p.x + 124, p.y + 494, '152,10 BYN', 16, { bold: true });
+btn(p.x, p.y + 548, p.w, 44, 'Написать флористу', 16);
+t(p.x, p.y + 628, 'Статус меняет флорист в панели;', 13, { color: '#666' });
+t(p.x, p.y + 646, 'новый статус приходит уведомлением', 13, { color: '#666' });
+
+// ---------- профиль ----------
+p = phone(890, 50, '«part» profile : Screen');
+el('circle', { cx: p.x + 32, cy: p.y + 30, r: 30, fill: '#fff', stroke: '#111', 'stroke-width': 2.5 });
+t(p.x + 32, p.y + 40, 'А', 24, { anchor: 'middle', bold: true });
+t(p.x + 76, p.y + 26, 'Анна', 20, { bold: true });
+t(p.x + 76, p.y + 50, '+375 29 123-45-67', 14, { color: '#666' });
+r(p.x + 304, p.y + 10, 40, 40, { rx: 20, sw: 2 }); t(p.x + 324, p.y + 36, '✎', 18, { anchor: 'middle' });
+r(p.x, p.y + 80, p.w, 96, { rx: 16, sw: 2.5 });
+t(p.x + 16, p.y + 106, 'МОИ ПОКУПКИ', 13, { bold: true });
+t(p.x + 16, p.y + 140, '152,10 BYN', 24, { bold: true });
+t(p.x + 16, p.y + 164, 'Промокод FLOWER10 даёт −10%', 13);
+r(p.x, p.y + 192, p.w, 40, { rx: 14, sw: 2 });
+r(p.x + 4, p.y + 196, 112, 32, { rx: 11, fill: '#111', sw: 2 });
+t(p.x + 60, p.y + 218, 'Избранное 2', 14, { anchor: 'middle', color: '#fff' });
+t(p.x + 172, p.y + 218, 'Даты 1', 14, { anchor: 'middle' });
+t(p.x + 286, p.y + 218, 'Заказы 1', 14, { anchor: 'middle' });
+for (let i = 0; i < 2; i++) { r(p.x + i * 176, p.y + 246, 166, 120, { rx: 12, sw: 2 }); img(p.x + 8 + i * 176, p.y + 254, 150, 70); t(p.x + 10 + i * 176, p.y + 352, i ? 'Белое облако' : 'Малиновый вечер', 13, { bold: true }); }
+r(p.x, p.y + 380, p.w, 262, { rx: 16, sw: 2 });
+['Мои адреса', 'Способы оплаты', 'Уведомления', 'Поддержка', 'Политика конфиденциальности', 'Удалить аккаунт'].forEach((s, i) => {
+  const y = p.y + 412 + i * 42;
+  t(p.x + 16, y, s, 15); t(p.x + p.w - 16, y, '›', 18, { anchor: 'end' });
+  if (i < 5) line(p.x + 10, y + 16, p.x + p.w - 10, y + 16, 1);
+});
+carousel(p, 4);
+</script></body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x1020"><script>
+init(1960, 1020, 'VIEW-02: Логическая архитектура C++17 / Qt 6 классов и зависимостей (SysML v2 tree view)');
+
+// ===== Слой 1: QML UI =====
+el('rect', { x: 24, y: 48, width: 1912, height: 150, rx: 10, fill: '#fafafa', stroke: '#bbb', 'stroke-width': 1.2 });
+text(42, 70, 'Слой представления (Qt Quick / QML)', { cls: 'sec' });
+
+const uiNav = box(46, 82, 340, { kw: 'part', name: 'Nav & BottomCarousel', sections: [
+  { lines: ['5 tabs (3 visible), stack pages'] }
+] });
+const uiPages = box(420, 82, 460, { kw: 'part', name: 'Client Pages (21 QML)', sections: [
+  { lines: ['Home, Catalog, Builder, Cart, Checkout, Tracking, Profile'] }
+] });
+const uiUser = box(914, 82, 380, { kw: 'part', name: 'UserData (Settings)', sections: [
+  { lines: ['token, phone, dates, addresses, offline cache'] }
+] });
+const uiPanel = box(1360, 82, 550, { kw: 'part', name: 'Florist Panel (qml/server/Panel.qml)', sections: [
+  { lines: ['Orders, Chats, Reviews, Catalog CRUD, Builder settings, Bot'] }
+] });
+
+// ===== Слой 2: Qt Models & Controllers =====
+el('rect', { x: 24, y: 224, width: 1912, height: 320, rx: 10, fill: '#fff', stroke: '#bbb', 'stroke-width': 1.2 });
+text(42, 246, 'Слой моделей и контроллеров (QObject / QAbstractListModel)', { cls: 'sec' });
+
+const shop = box(46, 260, 320, { kw: 'part def', name: 'Shop', def: true, sections: [
+  { title: 'properties', lines: ['api : ApiClient*', 'builder : BouquetBuilder*', 'catalog, hits, favorites', 'cart : CartModel*'] },
+  { title: 'operations', lines: ['addToCart(), toggleFavorite()'] }
+] });
+const builder = box(400, 260, 330, { kw: 'part def', name: 'BouquetBuilder', def: true, sections: [
+  { title: 'properties', lines: ['flowers : FlowerListModel*', 'stems, total, step, canGoNext', 'pack, sheets, minSheets', 'mosaic, preview : QVariantMap'] },
+  { title: 'operations', lines: ['next(), back(), reset()'] }
+] });
+const cart = box(764, 260, 280, { kw: 'part def', name: 'CartModel', def: true, sections: [
+  { title: 'properties', lines: ['count, goods, discount', 'delivery, total, promo'] },
+  { title: 'operations', lines: ['addBouquet(), applyPromo()'] }
+] });
+const api = box(1078, 260, 250, { kw: 'part def', name: 'ApiClient', def: true, sections: [
+  { title: 'properties', lines: ['serverUrl : QString', 'online, searching, telegram'] },
+  { title: 'operations', lines: ['reconnect(), discover()'] }
+] });
+
+// Серверные классы справа
+const srv = box(1360, 260, 310, { kw: 'part def', name: 'ShopServer', def: true, sections: [
+  { title: 'properties', lines: ['orders, chats, reviews', 'products, builder, users'] },
+  { title: 'operations', lines: ['setStatus(), addProduct()', 'addFlower(), reply()'] }
+] });
+const http = box(1700, 260, 210, { kw: 'part def', name: 'HttpServer', def: true, sections: [
+  { title: 'base', lines: ['QTcpServer (:8080)'] },
+  { title: 'types', lines: ['HttpRequest', 'HttpResponse'] }
+] });
+const tg = box(1700, 420, 210, { kw: 'part def', name: 'TelegramBot', def: true, sections: [
+  { title: 'protocol', lines: ['HTTPS long-poll'] }
+] });
+
+// ===== Слой 3: Pure C++17 Core =====
+el('rect', { x: 24, y: 576, width: 1912, height: 420, rx: 10, fill: '#fafafa', stroke: '#bbb', 'stroke-width': 1.2 });
+text(42, 598, 'Слой предметного ядра (src/core — чистый C++17, общий для клиента, сервера и автотестов)', { cls: 'sec' });
+
+const cPricing = box(46, 616, 290, { kw: 'part def', name: 'fb::Pricing', def: true, sections: [
+  { title: 'types & calc', lines: ['BouquetRecipe', 'calcCartTotals()', 'applyPromo("FLOWER10")', 'freeDelivery >= 100 BYN'] }
+] });
+const cPack = box(366, 616, 300, { kw: 'part def', name: 'fb::Packaging', def: true, sections: [
+  { title: 'rules', lines: ['PackSize, PackColor', 'minPaperSheets(stems)', 'availableBoxes(stems)', 'autoBasketSize(stems)'] }
+] });
+const cLayout = box(696, 616, 300, { kw: 'part def', name: 'fb::BouquetLayout', def: true, sections: [
+  { title: 'geometry', lines: ['StemGroup, Placed, Dot', 'buildMosaic(stems, arr)', 'mix / center / sides / rows'] }
+] });
+const cVal = box(1026, 616, 290, { kw: 'part def', name: 'fb::Validation', def: true, sections: [
+  { title: 'validators', lines: ['phone(), password()', 'address(), name(), email()', 'promo(), price(), code()'] }
+] });
+const cCat = box(1346, 616, 265, { kw: 'part def', name: 'fb::Catalog & Flowers', def: true, sections: [
+  { title: 'entities', lines: ['Product, SizeOption', 'Extra, FlowerKind', 'BuilderSettings'] }
+] });
+const cImg = box(1640, 616, 270, { kw: 'part def', name: 'fb::FlowerImage', def: true, sections: [
+  { title: 'server utility', lines: ['FlowerPictures', 'removeBackground()', 'spriteUrl(), thumbUrl()'] }
+] });
+
+// Тестовые наборы внизу
+const t1 = box(46, 840, 440, { kw: 'verification def', name: 'tst_packaging (Qt Test)', def: true, sections: [
+  { lines: ['Проверяет EnoughPaper, размеры коробок и корзин'] }
+] });
+const t2 = box(526, 840, 440, { kw: 'verification def', name: 'tst_shop (Qt Test)', def: true, sections: [
+  { lines: ['Проверяет фильтры каталога, корзину, промокод, валидацию'] }
+] });
+const t3 = box(1006, 840, 500, { kw: 'verification def', name: 'tst_network (Qt Test, 7/7)', def: true, sections: [
+  { lines: ['Проверяет HTTP API, пересчёт цены сервером, блокировку входа'] }
+] });
+
+// Связи слоёв (проложены в чистых зазорах между слоями)
+link(`M${uiPages.cx},${uiPages.b} V210 H${shop.cx} V${shop.y}`, { dash: true, head: 'open' });
+link(`M${uiPages.cx},${uiPages.b} V210 H${builder.cx} V${builder.y}`, { dash: true, head: 'open' });
+link(`M${uiPanel.cx},${uiPanel.b} V210 H${srv.cx} V${srv.y}`, { dash: true, head: 'open' });
+
+link(`M${shop.r},320 H${builder.x}`, { tail: 'diaf' });
+link(`M${builder.r},320 H${cart.x}`, { dash: true, head: 'open' });
+link(`M${cart.r},320 H${api.x}`, { dash: true, head: 'open' });
+link(`M${srv.r},320 H${http.x}`, { tail: 'diaf' });
+link(`M${srv.r},460 H${tg.x}`, { tail: 'diaf' });
+
+link(`M${builder.cx},${builder.b} V558 H${cPack.cx} V${cPack.y}`, { dash: true, head: 'open' });
+link(`M${builder.cx},${builder.b} V558 H${cLayout.cx} V${cLayout.y}`, { dash: true, head: 'open' });
+link(`M${cart.cx},${cart.b} V558 H${cPricing.cx} V${cPricing.y}`, { dash: true, head: 'open' });
+link(`M${srv.cx},${srv.b} V558 H${cCat.cx} V${cCat.y}`, { dash: true, head: 'open' });
+link(`M${srv.cx},${srv.b} V558 H${cImg.cx} V${cImg.y}`, { dash: true, head: 'open' });
+
+link(`M${t1.cx},${t1.y} V${cPack.b}`, { dash: true, head: 'open', label: '«verify»', lx: t1.cx + 36, ly: 822 });
+link(`M${t2.cx},${t2.y} V${cLayout.b}`, { dash: true, head: 'open', label: '«verify»', lx: t2.cx + 36, ly: 822 });
+link(`M${t3.cx},${t3.y} V810 H1330 V558 H${srv.cx - 40} V${srv.b}`, { dash: true, head: 'open', label: '«verify»', lx: 1295, ly: 800 });
+</script></body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x980"><script>
+init(1960, 980, 'VIEW-04: Взаимодействие при оформлении заказа и критические алгоритмы (SysML v2)');
+
+// ========== Левая часть: action def CheckoutWithServerPricing ==========
+el('rect', { x: 24, y: 48, width: 960, height: 908, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(504, 72, '«action def»', { cls: 'kw', anchor: 'middle' });
+text(504, 94, 'CheckoutWithServerPricing (ADR-0004, REQ-SRV-002)', { cls: 'nm', anchor: 'middle' });
+
+function act(x, y, name, sub, w = 360) {
+  return box(x, y, w, { kw: 'action', name, sections: sub ? [{ lines: sub }] : [], minH: 56 });
+}
+
+startNode(310, 134);
+const a1 = act(130, 168, 'validate : ValidateOrderInput', ['fb::Validation: телефон, адрес, интервал']);
+link(`M310,145 V${a1.y}`, { head: 'fill' });
+
+const a2 = act(130, 294, 'sendHttp : PostOrderHttp', ['POST /api/orders + Bearer token + clientTotal']);
+link(`M310,${a1.b} V${a2.y}`, { head: 'fill' });
+
+const a3 = act(130, 420, 'recalc : RecalculateServerPrice', ['Сервер считает цены из актуального каталога и промокода']);
+link(`M310,${a2.b} V${a3.y}`, { head: 'fill' });
+
+decideNode(310, 566, '');
+text(270, 570, 'decide checkPrice', { cls: 'small', anchor: 'end' });
+link(`M310,${a3.b} V542`, { head: 'fill' });
+
+// Ветка отказа (устаревшая цена)
+const aRej = act(580, 520, 'reject : RejectOutdatedPrice', ['HTTP 409 Conflict: цена изменилась,', 'клиент обновляет каталог'], 370);
+link(`M340,566 H${aRej.x}`, { head: 'fill' });
+text(460, 554, '[!priceMatches]', { cls: 'guard', anchor: 'middle' });
+doneNode(765, 690);
+link(`M765,${aRej.b} V677`, { head: 'fill' });
+
+// Ветка успеха
+const a4 = act(130, 646, 'saveOrder : PersistOrderAtomic', ['Запись data.json.tmp -> backup -> atomic rename']);
+link(`M310,590 V${a4.y}`, { head: 'fill' });
+text(320, 622, '[priceMatches]', { cls: 'guard' });
+
+const a5 = act(130, 772, 'notify : NotifyTelegramAndPanel', ['Обновление панели флориста + push в TelegramBot']);
+link(`M310,${a4.b} V${a5.y}`, { head: 'fill' });
+
+doneNode(310, 916);
+link(`M310,${a5.b} V903`, { head: 'fill' });
+
+// ========== Правая часть: Ключевые алгоритмы и ограничения ==========
+// Блок 1: Упаковка и мозаика
+el('rect', { x: 1016, y: 48, width: 920, height: 430, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(1476, 72, '«package»', { cls: 'kw', anchor: 'middle' });
+text(1476, 94, 'Алгоритмы ядра (fb::Packaging, fb::BouquetLayout)', { cls: 'nm', anchor: 'middle' });
+
+box(1046, 118, 415, { kw: 'constraint def', name: 'EnoughPaperConstraint', def: true, sections: [
+  { title: 'parameters', lines: ['in stems : Integer', 'in sheets : Integer'] },
+  { title: 'constraint', lines: ['sheets >= 2 and sheets * 5 >= stems'] }
+] });
+
+box(1490, 118, 415, { kw: 'calc def', name: 'MinPaperSheets', def: true, sections: [
+  { title: 'formula', lines: ['minSheets = max(2, ceil(stems / 5))', 'Коробки: S(<=9), M(<=19), L(<=35), XL(<=51)', 'Корзина: автоподбор по числу стеблей'] }
+] });
+
+box(1046, 300, 859, { kw: 'action def', name: 'BouquetLayout::buildMosaic (вид сверху)', def: true, sections: [
+  { title: 'algorithm (O(N), N <= 51, обновление < 5 мс << 200 мс REQ-PERF-001)', lines: [
+    '1. Размещение точек по концентрическим кольцам спирали Фибоначчи (золотой угол 137.5°)',
+    '2. Режимы: mix (равномерно), center (главный вид в центре), sides (лево/право), rows (ярусы)',
+    '3. Зелень выносится на внешний контур; QML рисует QVariantMap без перерисовки битмапов'
+  ] }
+] });
+
+// Блок 2: Защита входа и UDP-автопоиск
+el('rect', { x: 1016, y: 506, width: 920, height: 450, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(1476, 530, '«package»', { cls: 'kw', anchor: 'middle' });
+text(1476, 552, 'Безопасность входа и автопоиск сервера (ADR-0002, ADR-0004)', { cls: 'nm', anchor: 'middle' });
+
+box(1046, 578, 859, { kw: 'constraint def', name: 'RateLimitConstraint (REQ-SEC-001)', def: true, sections: [
+  { title: 'rule', lines: [
+    'allowed == (failedAttempts < 5);  при 5 ошибках -> блокировка аккаунта на 10 минут',
+    'Пароль: соль 16 байт + хеш SHA-256; сессия: случайный 256-бит Bearer-токен на 30 дней'
+  ] }
+] });
+
+box(1046, 738, 859, { kw: 'action def', name: 'UdpDiscoveryFlow (ApiClient <-> ShopServer)', def: true, sections: [
+  { title: 'steps', lines: [
+    '1. При старте ApiClient шлёт UDP broadcast "FLOWERBOX_DISCOVER" на порт 45454',
+    '2. ShopServer отвечает "FLOWERBOX_SERVER:8080", клиент сохраняет IP и вызывает GET /api/health',
+    '3. При отсутствии ответа в течение 2 с клиент переходит в оффлайн-режим (кэш UserData)'
+  ] }
+] });
+</script></body></html>

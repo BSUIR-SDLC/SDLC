@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x1020"><script>
+init(1960, 1020, 'VIEW-03: Контракты HTTP/UDP API и информационная модель хранилища (SysML v2)');
+
+// ========== Левая часть: Контракты API ==========
+el('rect', { x: 24, y: 48, width: 760, height: 948, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(404, 72, '«interface def»', { cls: 'kw', anchor: 'middle' });
+text(404, 94, 'ShopApiPort — REST HTTP/1.1 (:8080) & UDP (:45454)', { cls: 'nm', anchor: 'middle' });
+
+box(52, 118, 704, { kw: 'item def', name: 'Публичные эндпоинты (без токена)', def: true, sections: [
+  { title: 'GET', lines: [
+    'GET  /api/health          — статус сервера, флаг telegram',
+    'GET  /api/catalog         — букеты, хиты, категории, инфо магазина',
+    'GET  /api/builder         — цветы, цены, упаковки, цвета',
+    'GET  /api/reviews?pid=N   — отзывы по букету с ответами флориста',
+    'GET  /img/<file>          — фото букетов и спрайты цветов'
+  ] }
+] });
+
+box(52, 330, 704, { kw: 'item def', name: 'Аутентификация и защита (REQ-SEC-001)', def: true, sections: [
+  { title: 'POST', lines: [
+    'POST /api/auth/register   — phone, name, password -> PBKDF2/SHA-256 + token',
+    'POST /api/auth/login      — проверка пароля (5 попыток -> бан 10 мин)',
+    'POST /api/auth/tg-code    — отправка 6-значного кода через TelegramBot',
+    'POST /api/auth/tg-verify  — обмен кода на Bearer-токен (30 дней)'
+  ] }
+] });
+
+box(52, 520, 704, { kw: 'item def', name: 'Защищённые эндпоинты (Authorization: Bearer <token>)', def: true, sections: [
+  { title: 'GET / POST', lines: [
+    'GET  /api/orders          — заказы текущего пользователя и их статусы',
+    'POST /api/orders          — создание заказа + пересчёт суммы на сервере',
+    'GET  /api/chat            — история чата с флористом',
+    'POST /api/chat            — отправка сообщения флористу',
+    'POST /api/reviews         — публикация отзыва (оценка 1..5, текст)'
+  ] }
+] });
+
+box(52, 742, 704, { kw: 'item def', name: 'UDP-автопоиск в локальной сети (UdpDiscoveryPort :45454)', def: true, sections: [
+  { title: 'datagram', lines: [
+    'Client -> 255.255.255.255:45454 : "FLOWERBOX_DISCOVER"',
+    'Server -> Client                : "FLOWERBOX_SERVER:8080"',
+    'Позволяет подключаться без ручного ввода IP в локальной Wi-Fi сети'
+  ] }
+] });
+
+// ========== Правая часть: Информационная модель ==========
+el('rect', { x: 816, y: 48, width: 1120, height: 948, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(1376, 72, '«package»', { cls: 'kw', anchor: 'middle' });
+text(1376, 94, 'InformationModel — сущности атомарного хранилища (data.json)', { cls: 'nm', anchor: 'middle' });
+
+const u = box(846, 122, 320, { kw: 'item def', name: 'UserRecord', def: true, sections: [
+  { title: 'attributes', lines: ['phone : String [PK]', 'name : String', 'passwordHash : String', 'salt : String', 'telegramChatId : String'] }
+] });
+const ses = box(1220, 122, 310, { kw: 'item def', name: 'SessionRecord', def: true, sections: [
+  { title: 'attributes', lines: ['token : String [PK]', 'phone : String [FK]', 'expiresAt : Integer (30d)'] }
+] });
+const att = box(1584, 122, 320, { kw: 'item def', name: 'LoginAttempts', def: true, sections: [
+  { title: 'attributes', lines: ['phone : String [PK]', 'count : Integer (max 5)', 'lockedUntil : Integer (10m)'] }
+] });
+
+const ord = box(846, 392, 340, { kw: 'item def', name: 'OrderRecord', def: true, sections: [
+  { title: 'attributes', lines: ['number : Integer [PK]', 'clientPhone : String [FK]', 'itemsJson : String', 'promoCode : String', 'serverTotal : Real', 'status : OrderStatus (0..3)', 'createdAt : String'] }
+] });
+const prod = box(1240, 392, 320, { kw: 'item def', name: 'ProductRecord', def: true, sections: [
+  { title: 'attributes', lines: ['id : Integer [PK]', 'title : String', 'price, oldPrice : Integer', 'todayDelivery : Boolean', 'hidden : Boolean', 'photoPath : String'] }
+] });
+const flw = box(1614, 392, 290, { kw: 'item def', name: 'FlowerRecord', def: true, sections: [
+  { title: 'attributes', lines: ['id : String [PK]', 'name : String', 'pricePerStem : Integer', 'isGreen : Boolean', 'enabled : Boolean', 'dotColor : String'] }
+] });
+
+const chat = box(846, 710, 340, { kw: 'item def', name: 'ChatMessageRecord', def: true, sections: [
+  { title: 'attributes', lines: ['clientPhone : String [FK]', 'fromFlorist : Boolean', 'text : String', 'timestamp : String'] }
+] });
+const rev = box(1240, 710, 320, { kw: 'item def', name: 'ReviewRecord', def: true, sections: [
+  { title: 'attributes', lines: ['id : Integer [PK]', 'productId : Integer [FK]', 'author : String', 'rating : Integer (1..5)', 'text, floristReply : String'] }
+] });
+const storeBox = box(1614, 710, 290, { kw: 'part', name: 'AtomicJsonStore', sections: [
+  { title: 'strategy (ADR-0003)', lines: ['1. Write data.json.tmp', '2. Flush & fsync', '3. Backup -> data.json.bak', '4. Atomic rename -> data.json'] }
+] });
+
+// Связи сущностей
+link(`M${ses.x},190 H${u.r}`, { head: 'open', label: '0..* : 1', lx: (ses.x + u.r) / 2, ly: 180 });
+link(`M${u.cx},${u.b} V${ord.y}`, { tail: 'dia', head: 'open', label: '1 : 0..*', lx: u.cx + 34, ly: (u.b + ord.y) / 2 });
+link(`M${ord.cx},${ord.b} V${chat.y}`, { dash: true, head: 'open', label: 'clientPhone', lx: ord.cx + 46, ly: (ord.b + chat.y) / 2 });
+link(`M${prod.cx},${prod.b} V${rev.y}`, { tail: 'dia', head: 'open', label: '1 : 0..*', lx: prod.cx + 34, ly: (prod.b + rev.y) / 2 });
+</script></body></html>

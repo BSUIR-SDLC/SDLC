@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x1060"><script>
+init(1960, 1060, 'VIEW-01: package Architecture — композиция подсистем, порты и интерфейсы (SysML v2 interconnection view)');
+
+// Контейнер системы целиком
+el('rect', { x: 24, y: 48, width: 1912, height: 988, rx: 14, fill: '#fff', stroke: '#333', 'stroke-width': 1.8 });
+text(980, 72, '«part»', { cls: 'kw', anchor: 'middle' });
+text(980, 94, 'system : FlowerBoxSystem', { cls: 'nm', anchor: 'middle' });
+
+// ========== Android-клиент ==========
+const C = { x: 56, y: 120, w: 790, h: 660 };
+el('rect', { x: C.x, y: C.y, width: C.w, height: C.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(C.x + C.w / 2, C.y + 22, '«part»', { cls: 'kw', anchor: 'middle' });
+text(C.x + C.w / 2, C.y + 44, 'client : FlowerBoxApp (Android, C++17 / Qt 6 Quick)', { cls: 'nm', anchor: 'middle' });
+
+const qml = box(C.x + 36, C.y + 72, 718, { kw: 'part', name: 'qml : QmlUiModule', sections: [
+  { title: 'parts', lines: ['Nav.qml (BottomCarousel 5/3), UserData.qml, 21 Page, 14 Components'] }
+] });
+const models = box(C.x + 36, C.y + 210, 340, { kw: 'part', name: 'models : ModelsModule', sections: [
+  { title: 'classes (QObject / QAbstractListModel)', lines: ['Shop, BouquetBuilder, CartModel', 'ProductListModel, FlowerListModel', 'Validator (Q_INVOKABLE)'] }
+] });
+const net = box(C.x + 414, C.y + 210, 340, { kw: 'part', name: 'net : NetModule', sections: [
+  { title: 'classes (Qt Network)', lines: ['ApiClient (QNetworkAccessManager)', 'UDP broadcast discovery (:45454)', 'Bearer-token auth, JSON parser'] }
+] });
+const core = box(C.x + 36, C.y + 430, 718, { kw: 'part', name: 'core : CoreModule (pure C++17, no Qt UI)', sections: [
+  { title: 'domain modules', lines: ['Pricing, Packaging (EnoughPaper), BouquetLayout (mosaic), Validation, Catalog, Flowers, Delivery'] }
+] });
+
+// Внутренние связи клиента
+link(`M${models.cx},${models.y} V${qml.b}`, { head: 'open', label: 'QmlBindingPort', lx: models.cx + 70, ly: (models.y + qml.b) / 2 + 4 });
+link(`M${models.r},${models.cy} H${net.x}`, { head: 'open' });
+link(`M${models.cx},${models.b} V${core.y}`, { dash: true, head: 'open', label: '«dependency»', lx: models.cx + 55, ly: (models.b + core.y) / 2 + 4 });
+
+// Порты клиента (в свободном зазоре между слоями)
+port(C.x + C.w, C.y + 404, 'api : ShopApiPort', { dx: -14, dy: -10, anchor: 'end' });
+port(C.x + C.w, C.y + 624, 'udp : UdpDiscoveryPort', { dx: -14, dy: -10, anchor: 'end' });
+
+// ========== Сервер магазина ==========
+const S = { x: 1030, y: 120, w: 620, h: 660 };
+el('rect', { x: S.x, y: S.y, width: S.w, height: S.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(S.x + S.w / 2, S.y + 22, '«part»', { cls: 'kw', anchor: 'middle' });
+text(S.x + S.w / 2, S.y + 44, 'server : ShopServerApp (Windows, C++17 / Qt 6)', { cls: 'nm', anchor: 'middle' });
+
+const panel = box(S.x + 36, S.y + 72, 548, { kw: 'part', name: 'panel : FloristPanelUi', sections: [
+  { title: 'doc', lines: ['qml/server/Panel.qml: заказы, чаты, отзывы, каталог, конструктор, клиенты'] }
+] });
+const http = box(S.x + 36, S.y + 206, 250, { kw: 'part', name: 'http : HttpServerModule', sections: [
+  { title: 'classes', lines: ['HttpServer (QTcpServer)', 'HTTP/1.1 router (:8080)'] }
+] });
+const engine = box(S.x + 324, S.y + 206, 260, { kw: 'part', name: 'engine : ShopServerEngine', sections: [
+  { title: 'attributes', lines: ['listenPort = 8080', 'udpPort = 45454', 'maxLoginTries = 5', 'sessionDays = 30'] }
+] });
+const store = box(S.x + 36, S.y + 454, 260, { kw: 'part', name: 'store : AtomicFileStore', sections: [
+  { title: 'persistence', lines: ['data.json (.tmp -> rename)', 'data.json.bak + sprites'] }
+] });
+const bot = box(S.x + 324, S.y + 454, 260, { kw: 'part', name: 'bot : TelegramBotModule', sections: [
+  { title: 'classes', lines: ['TelegramBot (long-poll)', 'login codes & order status'] }
+] });
+
+link(`M${engine.cx},${engine.y} V${panel.b}`, { head: 'open', label: 'QmlBindingPort', lx: engine.cx + 68, ly: (engine.y + panel.b) / 2 + 4 });
+link(`M${http.r},${http.cy} H${engine.x}`, { head: 'open' });
+link(`M${engine.cx - 40},${engine.b} V${store.y + 20} H${store.r}`, { head: 'open', label: 'StoragePort', lx: engine.cx - 108, ly: 550 });
+link(`M${engine.cx + 40},${engine.b} V${bot.y}`, { head: 'open' });
+
+// Порты сервера (в свободном зазоре между слоями)
+port(S.x, S.y + 404, 'api : ~ShopApiPort', { dx: 14, dy: -10 });
+port(S.x, S.y + 624, 'udp : ~UdpDiscoveryPort', { dx: 14, dy: -10 });
+port(S.x + S.w, S.y + 420, 'tg : TelegramPort', { dx: -14, dy: -10, anchor: 'end' });
+
+// ========== Telegram Cloud ==========
+const T = { x: 1730, y: 470, w: 180, h: 130 };
+el('rect', { x: T.x, y: T.y, width: T.w, height: T.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(T.x + T.w / 2, T.y + 26, '«part»', { cls: 'kw', anchor: 'middle' });
+text(T.x + T.w / 2, T.y + 48, 'telegram :', { cls: 'nm', anchor: 'middle' });
+text(T.x + T.w / 2, T.y + 70, 'TelegramCloud', { cls: 'nm', anchor: 'middle' });
+text(T.x + T.w / 2, T.y + 98, 'api.telegram.org', { cls: 'small', anchor: 'middle' });
+port(T.x, T.y + 70, 'botApi : ~TelegramPort', { dx: 12, dy: 44 });
+
+// ========== Внешние интерфейсные связи ==========
+link(`M${C.x + C.w + 8},${C.y + 404} H${S.x - 8}`);
+text((C.x + C.w + S.x) / 2, C.y + 390, 'restLink : HttpRestLink', { cls: 'lbl', anchor: 'middle' });
+text((C.x + C.w + S.x) / 2, C.y + 422, 'HTTP/1.1 JSON :8080', { cls: 'small', anchor: 'middle' });
+
+link(`M${C.x + C.w + 8},${C.y + 624} H${S.x - 8}`);
+text((C.x + C.w + S.x) / 2, C.y + 610, 'lanLink : UdpLanLink', { cls: 'lbl', anchor: 'middle' });
+text((C.x + C.w + S.x) / 2, C.y + 642, 'UDP broadcast :45454', { cls: 'small', anchor: 'middle' });
+
+link(`M${S.x + S.w + 8},${S.y + 420} H${T.x - 8}`);
+text((S.x + S.w + T.x) / 2, S.y + 406, 'tgLink', { cls: 'lbl', anchor: 'middle' });
+text((S.x + S.w + T.x) / 2, S.y + 438, 'HTTPS', { cls: 'small', anchor: 'middle' });
+
+// ========== Определения портов и интерфейсов внизу ==========
+box(56, 816, 420, { kw: 'port def', name: 'ShopApiPort', def: true, sections: [
+  { title: 'directed features', lines: ['out item req : HttpPacket', 'in  item res : HttpPacket'] }
+] });
+box(504, 816, 420, { kw: 'port def', name: 'UdpDiscoveryPort', def: true, sections: [
+  { title: 'directed features', lines: ['out item probe : UdpBeacon', 'in  item reply : UdpBeacon'] }
+] });
+box(952, 816, 460, { kw: 'interface def', name: 'HttpRestLink', def: true, sections: [
+  { title: 'ends', lines: ['end client : ShopApiPort', 'end server : ~ShopApiPort'] }
+] });
+box(1440, 816, 470, { kw: 'interface def', name: 'TelegramHttpsLink', def: true, sections: [
+  { title: 'ends', lines: ['end bot : TelegramPort', 'end api : ~TelegramPort'] }
+] });
+</script></body></html>

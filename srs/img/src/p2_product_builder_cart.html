@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=block" rel="stylesheet">
+<style>body{margin:0}svg{font-family:"Balsamiq Sans","Comic Sans MS",cursive}</style>
+<script src="wire.js"></script></head>
+<body data-size="1300x830"><script>
+init(1300, 830);
+
+// ---------- карточка букета ----------
+let p = phone(30, 50, '«part» product : Screen');
+img(p.x - 18, p.y - 22, 380, 270);
+r(p.x, p.y, 40, 40, { rx: 20, sw: 2 }); t(p.x + 20, p.y + 27, '‹', 22, { anchor: 'middle' });
+r(p.x + 304, p.y, 40, 40, { rx: 20, sw: 2 }); t(p.x + 324, p.y + 27, '♡', 20, { anchor: 'middle' });
+t(p.x, p.y + 290, 'Малиновый вечер', 24, { bold: true });
+t(p.x, p.y + 316, 'Пока без отзывов · оставить отзыв ›', 13, { color: '#666' });
+t(p.x, p.y + 354, '95 BYN', 26, { bold: true });
+t(p.x, p.y + 392, 'Размер букета', 16, { bold: true });
+[['S', '71'], ['M', '95'], ['L', '133']].forEach(([s, v], i) => {
+  r(p.x + i * 116, p.y + 404, 106, 66, { rx: 12, sw: i === 1 ? 4 : 2 });
+  t(p.x + 53 + i * 116, p.y + 430, s, 18, { anchor: 'middle', bold: true });
+  t(p.x + 53 + i * 116, p.y + 456, v + ' BYN', 14, { anchor: 'middle' });
+});
+t(p.x, p.y + 500, 'Состав', 16, { bold: true });
+t(p.x, p.y + 522, '11 малиновых роз', 14);
+t(p.x, p.y + 556, 'Добавить к букету', 16, { bold: true });
+check(p.x, p.y + 568, 'Открытка  +5 BYN', true);
+check(p.x + 180, p.y + 568, 'Ваза  +15 BYN', false);
+line(p.x - 18, p.y + 616, p.x + 362, p.y + 616, 2);
+stepper(p.x, p.y + 640, '1');
+btn(p.x + 128, p.y + 636, 216, 44, 'В корзину · 95 BYN', 16);
+
+// ---------- конструктор ----------
+p = phone(460, 50, '«part» builder : Screen');
+t(p.x, p.y + 30, 'Собери свой букет', 22, { bold: true });
+r(p.x + 252, p.y + 10, 92, 28, { rx: 14, sw: 2 }); t(p.x + 298, p.y + 29, 'Шаг 1 из 4', 13, { anchor: 'middle' });
+[0, 1, 2, 3].forEach(i => r(p.x + i * 88, p.y + 48, 80, 6, { rx: 3, sw: 1.5, fill: i === 0 ? '#111' : '#fff' }));
+r(p.x, p.y + 66, p.w, 190, { rx: 16, sw: 2.5 });
+// мозаика: букет сверху, стебель — точка своего цвета (оттенки серого на эскизе)
+el('circle', { cx: p.x + 172, cy: p.y + 158, r: 78, fill: '#fff', stroke: '#111', 'stroke-width': 2.5 });
+el('circle', { cx: p.x + 172, cy: p.y + 158, r: 66, fill: 'none', stroke: '#111', 'stroke-width': 1.2, 'stroke-dasharray': '4 4' });
+const dots = [[0, 0], [-22, -14], [22, -14], [0, -30], [-30, 12], [30, 12], [-12, 30], [14, 30], [-40, -22], [40, -22], [0, 48], [-46, 26]];
+dots.forEach(([dx, dy], i) => el('circle', { cx: p.x + 172 + dx, cy: p.y + 158 + dy, r: 12, fill: i % 3 === 0 ? '#bbb' : '#444', stroke: '#111', 'stroke-width': 2 }));
+t(p.x + 12, p.y + 86, '↻ поверни пальцем', 12);
+r(p.x + 10, p.y + 214, 92, 30, { rx: 15, sw: 2 }); t(p.x + 56, p.y + 234, '12 стеблей', 13, { anchor: 'middle' });
+r(p.x + 254, p.y + 204, 82, 44, { rx: 10, sw: 2 }); t(p.x + 295, p.y + 222, 'Итого', 12, { anchor: 'middle' }); t(p.x + 295, p.y + 241, '74 BYN', 15, { anchor: 'middle', bold: true });
+t(p.x, p.y + 290, 'Цветы и количество', 17, { bold: true });
+[['Роза малиновая', '7 BYN за шт.', '8', '#444'], ['Роза белая', '6 BYN за шт.', '4', '#bbb'], ['Роза кустовая', '9 BYN за шт.', '0', '#888']].forEach(([n, pr, c, col], i) => {
+  const y = p.y + 304 + i * 84;
+  r(p.x, y, p.w, 74, { rx: 14, sw: 2 });
+  img(p.x + 8, y + 8, 58, 58);
+  el('circle', { cx: p.x + 82, cy: y + 26, r: 6, fill: col, stroke: '#111', 'stroke-width': 1.5 });
+  t(p.x + 94, y + 31, n, 15, { bold: true });
+  t(p.x + 76, y + 54, pr, 13, { color: '#666' });
+  stepper(p.x + 224, y + 20, c);
+});
+btn(p.x, p.y + 568, p.w, 46, 'Далее', 18);
+carousel(p, 2);
+
+// ---------- корзина ----------
+p = phone(890, 50, '«part» cart : Screen');
+t(p.x, p.y + 34, 'Корзина', 26, { bold: true });
+[['Малиновый вечер', 'Размер M', '95'], ['Мой букет', '8 роз + 4 белых · бумага', '74']].forEach(([n, d, v], i) => {
+  const y = p.y + 54 + i * 112;
+  r(p.x, y, p.w, 102, { rx: 14, sw: 2 });
+  img(p.x + 10, y + 10, 82, 82);
+  t(p.x + 104, y + 30, n, 15, { bold: true });
+  t(p.x + 104, y + 52, d, 12, { color: '#666' });
+  t(p.x + 104, y + 84, v + ' BYN', 16, { bold: true });
+  stepper(p.x + 224, y + 60, '1');
+  t(p.x + 330, y + 26, '✕', 16, { anchor: 'end' });
+});
+field(p.x, p.y + 300, 220, 'Промокод', 'FLOWER10');
+btn(p.x + 232, p.y + 300, 112, 36, 'Применить', 14);
+t(p.x, p.y + 360, '✓ Скидка 10% применена', 14);
+r(p.x, p.y + 380, p.w, 150, { rx: 14, sw: 2 });
+[['Букеты', '169 BYN'], ['Скидка', '−16,90 BYN'], ['Доставка', 'бесплатно'], ['Итого', '152,10 BYN']].forEach(([a, b], i) => {
+  t(p.x + 14, p.y + 412 + i * 32, a, 15, { bold: i === 3 }); t(p.x + p.w - 14, p.y + 412 + i * 32, b, 15, { anchor: 'end', bold: i === 3 });
+});
+btn(p.x, p.y + 560, p.w, 46, 'Оформить · 152,10 BYN', 17);
+carousel(p, 3);
+</script></body></html>

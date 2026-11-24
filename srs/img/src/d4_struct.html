@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x1100"><script>
+init(1960, 1100, 'package Structure — состав системы, порты и связи (interconnection view)');
+
+// контейнер: система целиком
+el('rect', { x: 24, y: 50, width: 1910, height: 1000, rx: 14, fill: '#fff', stroke: '#333', 'stroke-width': 1.8 });
+text(980, 74, '«part»', { cls: 'kw', anchor: 'middle' });
+text(980, 96, 'flowerBox : FlowerBoxSystem', { cls: 'nm', anchor: 'middle' });
+
+// приложение
+const A = { x: 60, y: 130, w: 1060, h: 880 };
+el('rect', { x: A.x, y: A.y, width: A.w, height: A.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(A.x + A.w / 2, A.y + 22, '«part»', { cls: 'kw', anchor: 'middle' });
+text(A.x + A.w / 2, A.y + 44, 'app : FlowerBoxApp', { cls: 'nm', anchor: 'middle' });
+port(A.x, A.y + 455, 'touch : TouchPort', { dx: 14, dy: 4 });
+port(A.x + A.w, A.y + 455, 'api : ShopApiPort', { dx: -14, dy: 4, anchor: 'end' });
+
+const nav = box(A.x + 40, A.y + 70, 300, { kw: 'part', name: 'nav : BottomCarousel', sections: [
+  { title: 'attributes', lines: ['totalTabs : Integer = 5', 'visibleTabs : Integer = 3'] }] });
+const logic = box(A.x + 380, A.y + 70, 340, { kw: 'part', name: 'builderLogic : BouquetBuilder', sections: [
+  { title: 'attributes', lines: ['stems, kinds, sheets, total : Integer'] },
+  { title: 'assert constraints', lines: ['paperRule : EnoughPaper'] }] });
+const calc = box(A.x + 760, A.y + 70, 260, { kw: 'calc def', name: 'CartTotal', def: true, sections: [
+  { title: 'parameters', lines: ['in goods : Integer', 'in promoPercent : Integer', 'return total : Real'] }] });
+
+// экраны: вкладки и экраны поверх вкладок
+text(A.x + 40, A.y + 290, 'вкладки карусели', { cls: 'sec' });
+const tabs = [['home', ['search : TextField', 'hits : CardList']], ['catalog', ['grid : CardList', 'sortButton : Button']],
+  ['builder', ['mosaic : Widget', 'count : Stepper']], ['cart', ['items : CardList', 'promo : TextField']],
+  ['profile', ['favorites : CardList', 'dates : CardList']]];
+tabs.forEach(([n, ps], i) => box(A.x + 40 + i * 200, A.y + 300, 186, { kw: 'part', name: `${n} : Screen`, sections: [{ title: 'parts', lines: ps }] }));
+text(A.x + 40, A.y + 510, 'экраны поверх вкладок', { cls: 'sec' });
+const over = [['login', ['phone : TextField', 'password : TextField']], ['product', ['photo : Widget', 'sizes : Widget']],
+  ['checkout', ['recipient : TextField', 'address : TextField']], ['tracking', []], ['support', []]];
+over.forEach(([n, ps], i) => box(A.x + 40 + i * 200, A.y + 520, 186, { kw: 'part', name: `${n} : Screen`,
+  sections: ps.length ? [{ title: 'parts', lines: ps }] : [], minH: ps.length ? 0 : 66 }));
+
+// навигация владеет экранами (линия с ромбом у владельца)
+text(A.x + 40, A.y + 760, 'Каждый экран — использование part def Screen с вложенными элементами (Button, TextField, CardList, Stepper);', { cls: 'small' });
+text(A.x + 40, A.y + 780, 'эти же части нарисованы на прототипах интерфейса (рисунки 3.7–3.12).', { cls: 'small' });
+
+// сервер магазина
+const S = { x: 1240, y: 130, w: 420, h: 560 };
+el('rect', { x: S.x, y: S.y, width: S.w, height: S.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(S.x + S.w / 2, S.y + 22, '«part»', { cls: 'kw', anchor: 'middle' });
+text(S.x + S.w / 2, S.y + 44, 'server : ShopServer', { cls: 'nm', anchor: 'middle' });
+port(S.x, S.y + 455, 'api : ~ShopApiPort', { dx: 14, dy: 4 });
+port(S.x + S.w, S.y + 390, 'telegram : TelegramPort', { dx: -14, dy: 4, anchor: 'end' });
+box(S.x + 40, S.y + 70, 340, { kw: 'part', name: 'floristPanel : Screen', sections: [{ title: 'doc', lines: ['Заказы, чаты, отзывы, каталог,', 'конструктор, клиенты'] }] });
+box(S.x + 40, S.y + 220, 340, { kw: 'attributes', name: 'настройки защиты', sections: [{ lines: ['sessionDays : Integer = 30', 'loginTries : Integer = 5'] }] });
+
+// Telegram
+const T = { x: 1730, y: 460, w: 180, h: 120 };
+el('rect', { x: T.x, y: T.y, width: T.w, height: T.h, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(T.x + T.w / 2, T.y + 26, '«part»', { cls: 'kw', anchor: 'middle' });
+text(T.x + T.w / 2, T.y + 48, 'telegram :', { cls: 'nm', anchor: 'middle' });
+text(T.x + T.w / 2, T.y + 68, 'TelegramService', { cls: 'nm', anchor: 'middle' });
+port(T.x, T.y + 60, 'bot : ~TelegramPort', { dx: 12, dy: 44 });
+
+// связи
+link(`M${A.x + A.w + 8},${A.y + 455} H${S.x - 8}`);
+text((A.x + A.w + S.x) / 2, A.y + 440, 'shopLink : ShopLink', { cls: 'lbl', anchor: 'middle' });
+text((A.x + A.w + S.x) / 2, A.y + 475, '«interface»', { cls: 'small', anchor: 'middle' });
+link(`M${S.x + S.w + 8},${S.y + 390} H${T.x - 8}`);
+text((S.x + S.w + T.x) / 2, S.y + 380, '«connect»', { cls: 'lbl', anchor: 'middle' });
+
+// определения портов и интерфейса
+const pd = box(1240, 740, 320, { kw: 'port def', name: 'ShopApiPort', def: true, sections: [
+  { title: 'directed features', lines: ['out item request : ApiRequest', 'in item response : ApiResponse'] }] });
+const idf = box(1590, 740, 320, { kw: 'interface def', name: 'ShopLink', def: true, sections: [
+  { title: 'ends', lines: ['end client : ShopApiPort', 'end server : ~ShopApiPort'] }] });
+const cd = box(1240, 900, 670, { kw: 'constraint def', name: 'EnoughPaper', def: true, sections: [
+  { title: 'constraint', lines: ['sheets >= 2 and sheets * 5 >= stems   // лист на пять стеблей, не меньше двух'] }] });
+</script></body></html>

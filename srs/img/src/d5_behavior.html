@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x980"><script>
+init(1960, 980, 'package Behavior — действия конструктора и состояния заказа');
+
+// ---------- action def BuildBouquetFlow ----------
+el('rect', { x: 24, y: 50, width: 900, height: 900, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(474, 74, '«action def»', { cls: 'kw', anchor: 'middle' });
+text(474, 96, 'BuildBouquetFlow', { cls: 'nm', anchor: 'middle' });
+text(44, 124, 'attributes: kinds : Integer', { cls: 'small' });
+
+function act(x, y, name, type) {
+  return box(x, y, 300, { kw: 'action', name: `${name} : ${type}`, minH: 56 });
+}
+startNode(300, 160);
+const a1 = act(150, 200, 'chooseFlowers', 'ChooseFlowers');
+link(`M300,171 V${a1.y}`, { head: 'fill' });
+decideNode(300, 340, 'decide severalKinds');
+link(`M300,${a1.b} V316`, { head: 'fill' });
+const a2 = act(520, 420, 'arrange', 'ArrangeFlowers');
+link(`M330,340 H670 V${a2.y}`, { head: 'fill' });
+text(500, 330, '[kinds >= 2]', { cls: 'guard', anchor: 'middle' });
+const a3 = act(150, 520, 'choosePack', 'ChoosePack');
+link(`M300,364 V${a3.y}`, { head: 'fill' });
+text(310, 450, '[else]', { cls: 'guard' });
+link(`M670,${a2.b} V560 H${a3.r}`, { head: 'fill' });
+const a4 = act(150, 640, 'chooseColor', 'ChooseColor');
+link(`M300,${a3.b} V${a4.y}`, { head: 'fill' });
+const a5 = act(150, 760, 'addToCart', 'AddToCart');
+link(`M300,${a4.b} V${a5.y}`, { head: 'fill' });
+doneNode(300, 900);
+link(`M300,${a5.b} V886`, { head: 'fill' });
+text(470, 650, 'first start; then chooseFlowers; then decide …', { cls: 'small' });
+text(470, 672, 'if kinds >= 2 then arrange; else choosePack;', { cls: 'small' });
+text(470, 694, 'шаг «расположение» есть только при 2+ видах цветов', { cls: 'small' });
+text(470, 716, '(REQ-FUNC-006)', { cls: 'small' });
+
+// ---------- state def OrderLifecycle ----------
+el('rect', { x: 960, y: 50, width: 976, height: 420, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(1448, 74, '«state def»', { cls: 'kw', anchor: 'middle' });
+text(1448, 96, 'OrderLifecycle', { cls: 'nm', anchor: 'middle' });
+function st(x, y, name, w = 190) { return box(x, y, w, { kw: 'state', name, minH: 56 }); }
+startNode(1000, 200);
+const s1 = st(1050, 172, 'accepted');
+link(`M1011,200 H${s1.x}`, { head: 'fill' });
+const s2 = st(1330, 172, 'assembled');
+link(`M${s1.r},200 H${s2.x}`, { head: 'fill' });
+
+text((s1.r + s2.x) / 2, 188, 'accept BouquetAssembled', { cls: 'guard', anchor: 'middle' });
+const s3 = st(1610, 172, 'delivering');
+link(`M${s2.r},200 H${s3.x}`, { head: 'fill' });
+
+text((s2.r + s3.x) / 2, 188, 'accept CourierLeft', { cls: 'guard', anchor: 'middle' });
+const s4 = st(1610, 340, 'handed');
+link(`M${s3.cx},${s3.b} V${s4.y}`, { head: 'fill' });
+text(s3.cx + 10, 300, 'accept BouquetHanded', { cls: 'guard' });
+text(1000, 380, 'Статус меняет флорист в панели сервера;', { cls: 'small' });
+text(1000, 402, 'приложение узнаёт его опросом API (REQ-FUNC-010),', { cls: 'small' });
+text(1000, 424, 'покупатель со входом — ещё и в Telegram.', { cls: 'small' });
+
+// ---------- state def Navigation ----------
+el('rect', { x: 960, y: 500, width: 976, height: 450, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(1448, 524, '«state def»', { cls: 'kw', anchor: 'middle' });
+text(1448, 546, 'Navigation', { cls: 'nm', anchor: 'middle' });
+startNode(1000, 640);
+const n1 = box(1050, 600, 260, { kw: 'state', name: 'tabs', sections: [{ lines: ['5 вкладок карусели'] }] });
+link(`M1011,640 H${n1.x}`, { head: 'fill' });
+const n2 = st(1460, 590, 'productCard', 200);
+const n3 = st(1460, 720, 'checkout', 200);
+const n4 = st(1460, 850, 'tracking', 200);
+link(`M${n1.r},620 H${n2.x}`, { head: 'fill' });
+text(1385, 612, 'accept ProductOpened', { cls: 'guard', anchor: 'middle' });
+link(`M${n2.x},640 H${n1.r}`, { head: 'fill' });
+text(1385, 660, 'accept BackPressed', { cls: 'guard', anchor: 'middle' });
+link(`M${n1.cx},${n1.b} V748 H${n3.x}`, { head: 'fill' });
+text(1185, 740, 'accept OrderConfirmed', { cls: 'guard' });
+link(`M${n3.cx},${n3.b} V${n4.y}`, { head: 'fill' });
+text(n3.cx + 10, 815, 'accept OrderConfirmed', { cls: 'guard' });
+link(`M${n4.r},878 H1700 V620 H${n2.r}`, { dash: false });
+link(`M${n3.r},748 H1700`);
+link(`M1700,620 H1720 V560 H1180 V${n1.y}`, { head: 'fill' });
+text(1730, 750, 'accept BackPressed', { cls: 'guard' });
+</script></body></html>

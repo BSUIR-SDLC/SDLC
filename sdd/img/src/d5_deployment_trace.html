@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x960"><script>
+init(1960, 960, 'VIEW-05: Развёртывание на физических узлах и трассировка требований (SysML v2)');
+
+// ========== Верхняя часть: Deployment Topology ==========
+el('rect', { x: 24, y: 48, width: 1912, height: 288, rx: 12, fill: '#fafafa', stroke: '#333', 'stroke-width': 1.6 });
+text(42, 72, 'package Deployment — физические узлы и размещение («allocate»)', { cls: 'sec' });
+
+const nPhone = box(56, 94, 490, { kw: 'part', name: 'phone : AndroidDevice', sections: [
+  { title: 'attributes', lines: ['os = "Android 8.0+" (API 26+)', 'arch = "arm64-v8a", screen = 5..7"'] },
+  { title: 'allocated parts', lines: ['«allocate» FlowerBox.apk (Qt 6.11 Quick)', 'Local cache: QSettings / UserData'] }
+] });
+
+const nPc = box(726, 94, 510, { kw: 'part', name: 'pc : ShopPC (ПК магазина)', sections: [
+  { title: 'attributes', lines: ['os = "Windows 10/11 x64"', 'tcpPort = 8080, udpPort = 45454'] },
+  { title: 'allocated parts', lines: ['«allocate» FlowerBoxServer.exe (Qt 6)', 'AtomicFileStore: data.json + .bak + img/'] }
+] });
+
+const nCloud = box(1416, 94, 488, { kw: 'part', name: 'cloud : ExternalCloud', sections: [
+  { title: 'attributes', lines: ['endpoint = "https://api.telegram.org"', 'protocol = "HTTPS TLS 1.2+ long-poll"'] },
+  { title: 'allocated parts', lines: ['«allocate» TelegramCloud (Bot API)', 'Коды входа + уведомления о статусах'] }
+] });
+
+link(`M${nPhone.r},204 H${nPc.x}`, { head: 'open', tail: 'open' });
+text((nPhone.r + nPc.x) / 2, 188, 'Wi-Fi LAN', { cls: 'lbl', anchor: 'middle' });
+text((nPhone.r + nPc.x) / 2, 224, 'HTTP :8080', { cls: 'small', anchor: 'middle' });
+text((nPhone.r + nPc.x) / 2, 242, 'UDP :45454', { cls: 'small', anchor: 'middle' });
+
+link(`M${nPc.r},204 H${nCloud.x}`, { head: 'open', tail: 'open' });
+text((nPc.r + nCloud.x) / 2, 188, 'Internet', { cls: 'lbl', anchor: 'middle' });
+text((nPc.r + nCloud.x) / 2, 224, 'HTTPS :443', { cls: 'small', anchor: 'middle' });
+
+// ========== Нижняя часть: Трассировка SYS-01..10 -> модули -> тесты ==========
+el('rect', { x: 24, y: 360, width: 1912, height: 576, rx: 12, fill: '#fff', stroke: '#333', 'stroke-width': 1.6 });
+text(42, 384, 'Трассировка системных требований (приоритет 10..50) -> модули («satisfy») -> автотесты («verify»)', { cls: 'sec' });
+
+const reqs = [
+  ['SYS-01 (P10)', 'Core domain: pricing, packaging, layout'],
+  ['SYS-02 (P10)', 'HTTP/1.1 :8080, UDP :45454, Atomic JSON'],
+  ['SYS-03 (P10)', 'Auth, PBKDF2/SHA-256, lockout, server price'],
+  ['SYS-04 (P15)', 'Home, Catalog, Product card, Live Carousel'],
+  ['SYS-06 (P15)', 'Cart totals, promo, Checkout & validation'],
+  ['SYS-05 (P20)', '4-step BouquetBuilder + top-down mosaic'],
+  ['SYS-08 (P20)', 'Florist Panel: CRUD, photo bg, statuses'],
+  ['SYS-07 (P25)', 'Order tracking, Important dates, Favorites'],
+  ['SYS-09 (P30)', 'TelegramBot codes/notify, Chat, Reviews'],
+  ['SYS-10 (P35)', 'Offline cache & Qt Test automation']
+];
+
+const mods = [
+  'client.core (ADR-0005)',
+  'server.http & store (ADR-0002, 0003)',
+  'server.engine (ADR-0004)',
+  'client.qml (ADR-0001)',
+  'client.models (CartModel, Validator)',
+  'client.models (BouquetBuilder)',
+  'server.panel (Panel.qml)',
+  'client.net & UserData',
+  'server.bot (TelegramBot)',
+  'tests/tst_* (Qt Test)'
+];
+
+const rBoxes = [];
+const mBoxes = [];
+for (let i = 0; i < 10; i++) {
+  const col = i < 5 ? 0 : 1;
+  const row = i % 5;
+  const rx = col === 0 ? 48 : 996;
+  const mx = col === 0 ? 548 : 1496;
+  const y = 406 + row * 100;
+  const rb = box(rx, y, 390, { kw: 'requirement', name: `<'${reqs[i][0]}'>`, sections: [{ lines: [reqs[i][1]] }], minH: 82 });
+  const mb = box(mx, y + 6, 390, { kw: 'part', name: mods[i], minH: 68 });
+  link(`M${mb.x},${mb.cy} H${rb.r}`, { dash: true, head: 'open', label: '«satisfy»', lx: (mb.x + rb.r) / 2, ly: mb.cy - 8 });
+  rBoxes.push(rb);
+  mBoxes.push(mb);
+}
+</script></body></html>

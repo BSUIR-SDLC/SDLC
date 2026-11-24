@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="2060x900"><script>
+init(2060, 900, 'package Requirements — бизнес-цели и выведенные из них функциональные требования');
+
+// определение вида требования
+const def = box(850, 50, 360, { kw: 'requirement def', name: 'BusinessGoal', def: true, sections: [
+  { title: 'doc', lines: ['Цель владельца магазина с измеримым', 'критерием успеха'] },
+  { title: 'subject', lines: ['shop : ShopOwner'] },
+  { title: 'attributes', lines: ['measured : Real', 'target : Real'] } ] });
+
+// цели и функции под каждой целью
+const goals = [
+  { id: 'BG-1', n: 'mobileOrders', doc: ['≥ 60 % заказов через', 'приложение за 6 месяцев'], t: 'target = 0.60', c: 'measured >= target',
+    f: [['REQ-FUNC-003', 'catalogFilters'], ['REQ-FUNC-009', 'checkoutOrder'], ['REQ-FUNC-001', 'signIn']] },
+  { id: 'BG-2', n: 'higherCheck', doc: ['Средний чек в приложении', 'на 15 % выше телефонного'], t: 'target = 1.15', c: 'measured >= target',
+    f: [['REQ-FUNC-005', 'builderFlowers'], ['REQ-FUNC-007', 'builderPackaging'], ['REQ-FUNC-004', 'productCard']] },
+  { id: 'BG-3', n: 'repeatOrders', doc: ['≥ 30 % пользователей с датами', 'заказывают по напоминанию'], t: 'target = 0.30', c: 'measured >= target',
+    f: [['REQ-FUNC-011', 'dateReminders']] },
+  { id: 'BG-4', n: 'fewerCalls', doc: ['≤ 10 % заказов требуют', 'звонка оператора'], t: 'target = 0.10', c: 'measured <= target',
+    f: [['REQ-FUNC-010', 'orderTracking'], ['REQ-FUNC-017', 'inputValidation']] },
+];
+const FW = 186, FG = 12;
+let fx = 26;
+goals.forEach(g => {
+  const groupW = g.f.length * (FW + FG) - FG;
+  const gw = Math.max(groupW, 300);
+  const gx = fx;
+  const gb = box(gx, 360, gw, { kw: 'requirement', name: `<'${g.id}'> ${g.n} : BusinessGoal`, sections: [
+    { title: 'doc', lines: g.doc },
+    { title: 'attributes', lines: [':>> ' + g.t] },
+    { title: 'require constraints', lines: ['{ ' + g.c + ' }'] } ] });
+  typedByUp(gb, def);
+  g.f.forEach((f, i) => {
+    const b = box(fx + (Math.max(groupW, gw) - groupW) / 2 + i * (FW + FG), 720, FW, { kw: 'requirement', name: `<'${f[0]}'>`, sections: [{ lines: [f[1] + ' :', 'FunctionalRequirement'] }] });
+    link(`M${b.cx},${b.y} V${gb.b}`, { dash: true, head: 'open' });
+    text(b.cx + 6, (b.y + gb.b) / 2 + 4, '«dependency»', { cls: 'lbl' });
+  });
+  fx += Math.max(groupW, gw) + 44;
+});
+
+// «определено как»: от цели вверх к определению
+function typedByUp(u, d) {
+  link(`M${u.cx},${u.y} V${(u.y + d.b) / 2} H${d.cx} V${d.b}`, { dash: true, head: 'tri' });
+}
+text(26, 880, 'Пунктир с полым треугольником — «определено как» (feature typing); пунктир со стрелкой «dependency» — функция выведена из бизнес-цели.', { cls: 'small' });
+</script></body></html>

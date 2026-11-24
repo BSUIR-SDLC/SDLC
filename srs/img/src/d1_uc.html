@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><script src="sysml.js"></script></head>
+<body data-size="1960x900"><script>
+init(1960, 900, 'package UseCases — варианты использования');
+const W = 248, G = 23, X0 = 22;
+const cols = [
+  { u: 'getReminder', d: 'GetReminder', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer'],
+    obj: ['Покупатель не забывает', 'о дате и сразу видит букеты'], inc: ['browse : BrowseCatalog'] },
+  { u: 'browseCatalog', d: 'BrowseCatalog', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer'],
+    obj: ['Покупатель находит', 'подходящий букет'] },
+  { u: 'buildBouquet', d: 'BuildBouquet', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer'],
+    obj: ['Покупатель собирает', 'свой букет и видит цену'] },
+  { u: 'placeOrder', d: 'PlaceOrder', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer', 'shop : ShopServer'],
+    obj: ['Заказ принят по цене,', 'которую видел покупатель'], inc: ['signIn : SignIn'] },
+  { u: 'signIn', d: 'SignIn', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer', 'shop : ShopServer'],
+    obj: ['Вход по паролю или', 'коду из Telegram'] },
+  { u: 'trackOrder', d: 'TrackOrder', subj: 'app : FlowerBoxApp', act: ['buyer : Buyer', 'shop : ShopServer'],
+    obj: ['Покупатель видит статус', 'заказа без звонка'] },
+  { u: 'manageShop', d: 'ManageShop', subj: 'server : ShopServer', act: ['florist : Florist'],
+    obj: ['Флорист ведёт каталог,', 'цены и заказы сам'] },
+];
+const usages = [], defsB = [];
+cols.forEach((c, i) => {
+  const x = X0 + i * (W + G);
+  usages.push(box(x, 70, W, { kw: 'use case', name: `${c.u} : ${c.d}` }));
+  const sections = [
+    { title: 'subject', lines: [c.subj] },
+    { title: 'actors', lines: c.act },
+    { title: 'objective', lines: c.obj },
+  ];
+  if (c.inc) sections.push({ title: 'include use cases', lines: c.inc });
+  defsB.push(box(x, 220, W, { kw: 'use case def', name: c.d, def: true, sections, minH: 300 }));
+});
+usages.forEach((u, i) => typedBy(u, defsB[i]));
+
+// include: включаемый сценарий — от раздела «include» к определению включаемого
+function include(from, to, line) {
+  const y = from.rows[line];
+  link(`M${from.r},${y} H${from.r + 12} V${to.b + 30} H${to.cx} V${to.b}`, { dash: true, head: 'open' });
+}
+include(defsB[0], defsB[1], 'browse : BrowseCatalog');
+include(defsB[3], defsB[4], 'signIn : SignIn');
+text(defsB[0].r + 70, defsB[1].b + 24, '«include»', { cls: 'lbl', anchor: 'middle' });
+text(defsB[3].r + 70, defsB[4].b + 24, '«include»', { cls: 'lbl', anchor: 'middle' });
+
+// типы субъектов и участников
+const yA = 570;
+box(X0 + 40, yA + 90, 260, { kw: 'part def', name: 'FlowerBoxApp', def: true,
+  sections: [{ title: 'doc', lines: ['Android-приложение покупателя'] }] });
+box(X0 + 420, yA + 90, 220, { kw: 'part def', name: 'Buyer', def: true, person: true,
+  sections: [{ title: 'doc', lines: ['Покупатель'] }] });
+box(X0 + 760, yA + 90, 300, { kw: 'part def', name: 'ShopServer', def: true,
+  sections: [{ title: 'doc', lines: ['Сервер и панель флориста'] }] });
+box(X0 + 1180, yA + 90, 220, { kw: 'part def', name: 'Florist', def: true, person: true,
+  sections: [{ title: 'doc', lines: ['Флорист магазина'] }] });
+box(X0 + 1520, yA + 90, 360, { kw: 'package', name: 'UseCases', def: true,
+  sections: [{ title: 'members', lines: ['7 use case def, 7 use case', 'import Stakeholders::*', 'import Structure::*'] }] });
+text(X0 + 40, yA + 60, 'Субъекты и участники сценариев (из пакетов Structure и Stakeholders):', { cls: 'title' });
+el('line', { x1: 22, y1: yA + 30, x2: 1938, y2: yA + 30, stroke: '#ccc', 'stroke-width': 1, 'stroke-dasharray': '4 4' });
+</script></body></html>
