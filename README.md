@@ -1,4 +1,4 @@
-# Лабораторная работа №5: Моделирование динамического поведения
+# Лабораторная работа №6: Моделирование статической структуры системы на языке UML
 
 * **Дисциплина:** Жизненный цикл разработки ПО (ЖЦРПО)
 * **Студент:** Толкач Д. Г.
@@ -29,4 +29,9 @@
 * **Обновлённое описание дизайна ПО (SDD):** `sdd/sdd-template.md` (версия 0.4 – проектные представления Use Case, Activity, State Machine, Sequence)
 * **Архитектурные решения (ADR):** `adr/adr-template.md` (статусы решений актуализированы, добавлен `ADR-004` с механизмами построения и связей)
 * **Глоссарий и дополнительные спецификации:** `docs/glossary.md`, `docs/supplementary-specifications.md`
-* **Диаграммы динамического поведения:** images/gitpulse-usecase.png, images/gitpulse-activity.png, images/gitpulse-statemachine.png, images/gitpulse-sequence.png
+* **Диаграммы динамического поведения:** `images/gitpulse-usecase.png`, `images/gitpulse-activity.png`, `images/gitpulse-statemachine.png`, `images/gitpulse-sequence.png`
+
+### Лабораторная работа №6 (Моделирование статической структуры системы на языке UML)
+* **Обновлённое описание дизайна ПО (SDD):** `sdd/sdd-template.md` (версия 0.5 – проектные представления компонентов `VIEW-009` и развёртывания `VIEW-010`, решение `DEC-005`)
+* **Архитектурные решения (ADR):** `adr/adr-template.md` (добавлен `ADR-005` с механизмами построения, интерфейсных связей и развёртывания компонентов)
+* **Диаграммы статической структуры:** `images/gitpulse-classes.png` (обновлена), `images/gitpulse-components.png`, `images/gitpulse-deployment.png`
