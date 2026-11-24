@@ -1,0 +1,39 @@
+@startuml gitpulse-usecase
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Разработчик /\nПользователь" as User
+actor "Git CLI\n(>= 2.40)" as GitCli
+actor "Файловая\nсистема ОС" as FileSystem
+
+rectangle "GitPulse" {
+  usecase "UC-01: Выбрать целевую\nдиректорию" as UC1
+  usecase "UC-02: Просканировать\nдиректорию" as UC2
+  usecase "UC-03: Просмотреть список\nрепозиториев и метрик" as UC3
+  usecase "UC-04: Выбрать репозитории\nдля очистки" as UC4
+  usecase "UC-05: Очистить сборочные\nартефакты" as UC5
+
+  usecase "UC-06: Проверить порог\nобъёма артефактов" as UC6
+  usecase "UC-07: Определить ветку и\nстатус (Clean / Dirty)" as UC7
+  usecase "UC-08: Подсчитать размер и\nзалогировать" as UC8
+  usecase "UC-09: Подтвердить удаление\nв диалоге" as UC9
+}
+
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+
+UC2 ..> UC6 : <<include>>
+UC2 ..> UC7 : <<include>>
+UC2 ..> UC8 : <<include>>
+
+UC5 ..> UC8 : <<include>>
+UC5 ..> UC9 : <<include>>
+
+UC7 -- GitCli
+UC5 -- FileSystem
+UC8 -- FileSystem
+@enduml

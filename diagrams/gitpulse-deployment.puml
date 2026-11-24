@@ -1,0 +1,58 @@
+@startuml
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam node {
+  BackgroundColor #FFFFFF
+  BorderColor #222222
+}
+skinparam artifact {
+  BackgroundColor #F8F9FA
+  BorderColor #222222
+}
+skinparam component {
+  BackgroundColor #F8F9FA
+  BorderColor #222222
+}
+skinparam folder {
+  BackgroundColor #F8F9FA
+  BorderColor #222222
+}
+
+node "Рабочая станция\n(Windows / Linux / macOS)" as Workstation {
+  node "Среда выполнения .NET 9" as Runtime {
+    artifact "GitPulse.zip\n(Portable / Self-contained)" as Dist {
+      artifact "GitPulse.exe" <<file>> as Exe
+
+      folder "Assemblies" {
+        artifact "GitPulse.UI.dll" <<library>> as UiDll
+        artifact "GitPulse.Core.dll" <<library>> as CoreDll
+        artifact "GitPulse.Infrastructure.dll" <<library>> as InfraDll
+      }
+
+      Exe --> UiDll
+      UiDll --> CoreDll
+      CoreDll --> InfraDll
+    }
+
+    component "GitPulse.UI" <<component>> as UiComp
+    component "GitPulse.Core" <<component>> as CoreComp
+    component "GitPulse.Infrastructure" <<component>> as InfraComp
+
+    UiDll ..> UiComp : <<manifest>>
+    CoreDll ..> CoreComp : <<manifest>>
+    InfraDll ..> InfraComp : <<manifest>>
+  }
+
+  node "Окружение ОС и внешние ресурсы" as OsEnv {
+    artifact "Git CLI (>= 2.40)" as GitCli
+    folder "Локальные каталоги\n(.git, bin/, obj/, node_modules/)" as LocalDirs
+    artifact "gitpulse.log" as LogFile
+  }
+
+  InfraDll --> GitCli : git status / branch
+  InfraDll --> LocalDirs : scan & clean\n(Clean only)
+  InfraDll --> LogFile : write log\n& errors
+}
+@enduml

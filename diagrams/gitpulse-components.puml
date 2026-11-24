@@ -1,0 +1,59 @@
+@startuml gitpulse-components
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam ranksep 60
+skinparam nodesep 45
+
+package "GitPulse.UI" <<component>> {
+  component ":MainWindow" as MainWindow
+  component ":MainViewModel" as MainViewModel
+  MainWindow -- MainViewModel : UI binding
+}
+
+interface "IScanningService" as IScanning
+interface "ICleanupService" as ICleanup
+
+MainViewModel --> IScanning
+MainViewModel --> ICleanup
+
+package "GitPulse.Core" <<component>> {
+  component ":DiskScannerService" as DiskScanner
+  component ":CleanupService" as Cleanup
+  component ":ThresholdChecker" as Threshold
+
+  IScanning ..> DiskScanner
+  ICleanup ..> Cleanup
+  DiskScanner --> Threshold : threshold 500 MB
+}
+
+interface "IGitCliExecutor" as IGitCli
+interface "IFileSystemProvider" as IFileSystem
+interface "ILogger" as ILogger
+
+DiskScanner --> IGitCli
+DiskScanner --> IFileSystem
+DiskScanner --> ILogger
+Cleanup --> IFileSystem
+Cleanup --> ILogger
+
+package "GitPulse.Infrastructure" <<component>> {
+  component ":GitCliExecutor" as GitCliComp
+  component ":OsFileSystemProvider" as FsComp
+  component ":FileLogger" as LogComp
+
+  IGitCli ..> GitCliComp
+  IFileSystem ..> FsComp
+  ILogger ..> LogComp
+}
+
+node "Внешнее окружение" as ExtEnv {
+  artifact "Git CLI (>= 2.40)" as GitCliExt
+  folder "Локальные каталоги\n(.git, bin/, obj/, node_modules/)" as FsExt
+  file "gitpulse.log" as LogExt
+}
+
+GitCliComp --> GitCliExt : git status / branch
+FsComp --> FsExt : scan & clean\n(Clean only)
+LogComp --> LogExt : write log\n& errors
+
+@enduml
