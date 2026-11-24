@@ -1,0 +1,66 @@
+@startuml deployment
+' Диаграмма развёртывания (рисунок Г.1 отчёта ЛР6)
+' SDD: представления 009-deployment, 010-resources; REQ-INST-001, REQ-BUILD-001, REQ-SEC-002; ADR-0001, ADR-0003, ADR-0008
+
+skinparam monochrome true
+title deployment FitSchedule 1.0 [учебный сервер, Docker Compose]
+
+node "Устройство посетителя\nсмартфон или ПК, 360–1920 px" <<device>> as client {
+  node "Браузер\nChrome / Safari / Firefox, 2 последние версии" <<executionEnvironment>> as browser {
+    artifact "spa-bundle\nindex.html, assets/*.js, *.css" as spabundle
+  }
+}
+
+node "Учебный сервер\n{vCPU = 2, RAM = 2 ГБ, ОС = Ubuntu 22.04 LTS}" <<device>> as server {
+  node "Docker Engine + Docker Compose" <<executionEnvironment>> as docker {
+    node "proxy : nginx:1.27" <<container>> as proxy {
+      artifact "nginx.conf\nTLS 1.2+, :443 → :8080" as nginxconf
+    }
+    node "app : eclipse-temurin:21-jre\n-Xmx768m" <<container>> as app {
+      artifact "fitschedule.jar" as jar {
+        artifact "BOOT-INF/classes\nмодули api … ops" as classes
+        artifact "BOOT-INF/lib\nSpring Boot, JDBC" as lib
+        artifact "static/\nсборка SPA" as static
+        artifact "db/migration\nV1__init.sql …" as migration
+      }
+      artifact "application.yml\nport = 8080\nhikari.max = 10\nlog.format = JSON" <<deployment spec>> as appyml
+    }
+    node "db : postgres:16\nshared_buffers = 256MB" <<container>> as db {
+      artifact "схема fitschedule\nтом pgdata" as schema
+    }
+    node "backup : cron + pg_dump\n03:00, хранится 7 копий" <<container>> as backup {
+      artifact "backup.sh\npg_dump → /backups" as backupsh
+    }
+  }
+  artifact "docker-compose.yml\nservices: proxy, app, db, backup" <<deployment spec>> as compose
+  artifact ".env\nDB_PASSWORD, APP_DOMAIN" <<deployment spec>> as env
+}
+
+node "GitHub\n(облачная платформа)" <<device>> as github {
+  node "GitHub Actions" <<executionEnvironment>> as actions
+  artifact "fitschedule:1.0\nобраз ghcr.io/flecc1" as image
+}
+
+component "spa" as spa
+component "FitScheduleApp" as fsapp
+
+client "0..*" -- "1" proxy : HTTPS :443
+proxy -- app : HTTP :8080
+app -- db : JDBC :5432
+backup -- db : TCP :5432
+server -- github : HTTPS\ndocker pull
+
+appyml ..> jar
+compose ..> docker : <<deploy>>
+env ..> docker
+image ..> app : <<deploy>>
+jar ..> fsapp : <<manifest>>
+spabundle ..> spa : <<manifest>>
+
+note right of fsapp
+  Образ собирает GitHub Actions
+  (REQ-BUILD-001); запуск —
+  docker compose up (REQ-INST-001).
+  Ресурсы ≈ 1,6 ГБ из 2 ГБ (SDD 010).
+end note
+@enduml

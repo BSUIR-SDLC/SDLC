@@ -1,0 +1,133 @@
+@startuml class-booking
+' Диаграмма проектных классов модуля booking (рисунок Б.2 отчёта ЛР6)
+' SDD: представления 002-modules, 006-booking-algorithm, 014-class-model; ADR-0001, ADR-0004, ADR-0006, ADR-0008
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+hide empty members
+title class BookingModule [модуль booking и его окружение — проектные классы]
+
+package domain <<Frame>> {
+}
+
+class BookingController <<RestController>> {
+  + book(trainingId : Long, user : CurrentUser) : ResponseEntity<BookingDto>
+  + cancel(bookingId : Long, user : CurrentUser) : BookingDto
+  + myBookings(status : BookingStatus [0..1], user : CurrentUser) : List<BookingDto>
+}
+
+class BookingDto <<record>> {
+  + id : Long
+  + trainingId : Long
+  + status : String
+  + startsAt : Instant
+  + freePlaces : int
+  + {static} from(b : Booking, t : Training) : BookingDto
+}
+
+interface BookingApi {
+  + book(visitorId : Long, trainingId : Long) : Booking
+  + cancel(bookingId : Long, actor : Actor) : Booking
+  + adminCancel(bookingId : Long, adminId : Long) : Booking
+  + findMine(visitorId : Long, status : BookingStatus) : List<Booking>
+}
+
+class BookingService <<Service>> {
+  - clock : Clock {readOnly}
+  + book(visitorId : Long, trainingId : Long) : Booking
+  + cancel(bookingId : Long, actor : Actor) : Booking
+  + adminCancel(bookingId : Long, adminId : Long) : Booking
+  + findMine(visitorId : Long, status : BookingStatus) : List<Booking>
+  - lockTraining(trainingId : Long) : Training
+  - reject(decision : BookingDecision) : void
+}
+
+class BookingPolicy {
+  - clock : Clock
+  + checkBooking(t : Training, conflicts : List<Booking>) : BookingDecision
+  + canCancel(b : Booking, t : Training, actor : Actor) : boolean
+  + overlaps(a : Scheduled, b : Scheduled) : boolean {query}
+}
+
+class BookingDecision {
+  - allowed : boolean
+  - conflict : Booking [0..1]
+  + {static} allow() : BookingDecision
+  + {static} reject(r : RejectReason) : BookingDecision
+  + isAllowed() : boolean
+}
+
+enum RejectReason {
+  UNAVAILABLE
+  NO_PLACES
+  CONFLICT
+  DEADLINE_PASSED
+}
+
+interface "JpaRepository<T, ID>" as JpaRepository {
+  + save(entity : T) : T
+  + findById(id : ID) : Optional<T>
+}
+
+interface TrainingRepository {
+  + findByIdForUpdate(id : Long) : Optional<Training> {@Lock(PESSIMISTIC_WRITE)}
+}
+
+interface BookingRepository {
+  + findConflicts(visitorId : Long, from : Instant, to : Instant) : List<Booking>
+  + findByVisitorIdAndStatus(visitorId : Long, s : BookingStatus) : List<Booking>
+}
+
+interface NotificationApi {
+  + notify(recipientId : Long, kind : NotificationKind, text : String) : void
+}
+
+interface WaitlistApi {
+  + join(visitorId : Long, trainingId : Long) : WaitlistEntry
+  + leave(visitorId : Long, trainingId : Long) : void
+  + promoteFirst(t : Training, now : Instant) : Optional<Booking>
+  + expireAll(t : Training) : void
+}
+
+class WaitlistService <<Service>> {
+  - entries : WaitlistRepository
+  + promoteFirst(t : Training, now : Instant) : Optional<Booking>
+}
+
+abstract class BookingException {
+  # reason : RejectReason
+  + toProblem() : ProblemDetail
+}
+class UnavailableException
+class NoPlacesException
+class ConflictException {
+  - conflict : Booking
+}
+class DeadlineException
+
+BookingController --> "bookingApi 1" BookingApi
+BookingController ..> BookingDto : <<create>>
+BookingApi <|.. BookingService : <<realize>>
+BookingService "1" *--> "policy 1" BookingPolicy
+BookingPolicy ..> BookingDecision : <<create>>
+BookingDecision --> "reason 0..1" RejectReason
+BookingService --> "trainings 1" TrainingRepository
+BookingService --> "bookings 1" BookingRepository
+JpaRepository <|-- TrainingRepository : <<bind>> <T → Training, ID → Long>
+JpaRepository <|-- BookingRepository : <<bind>> <T → Booking, ID → Long>
+BookingService --> "waitlist 1" WaitlistApi
+BookingService --> "notifications 1" NotificationApi
+WaitlistApi <|.. WaitlistService
+WaitlistService --> "notifications 1" NotificationApi
+BookingService ..> domain : <<use>>
+BookingService ..> BookingException : <<throw>>
+BookingException <|-- UnavailableException
+BookingException <|-- NoPlacesException
+BookingException <|-- ConflictException
+BookingException <|-- DeadlineException
+
+note bottom of BookingPolicy
+  BookingPolicy не зависит от Spring: время передаётся через Clock,
+  правила проверяются тестом BookingPolicyTest (SUP-S-01, ADR-0001).
+end note
+@enduml

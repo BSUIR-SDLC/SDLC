@@ -1,0 +1,148 @@
+@startuml class-domain
+' Диаграмма классов предметной области (рисунок Б.1 отчёта ЛР6)
+' SDD: представление 014-class-model; соответствует docs/sdd/models/data-model.sysml (003-data-model)
+' ADR-0003, ADR-0004, ADR-0006, ADR-0008
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+hide empty members
+title class FitScheduleDomain [пакет domain — сущности модели данных]
+
+interface Scheduled {
+  + getStartsAt() : Instant
+  + getEndsAt() : Instant
+  + overlaps(other : Scheduled) : boolean
+}
+
+class Hall {
+  - id : Long
+  - name : String
+}
+
+class Training {
+  - id : Long
+  - title : String
+  - kind : String
+  - startsAt : Instant
+  - endsAt : Instant
+  - capacity : int {capacity > 0}
+  - freePlaces : int {0 ≤ freePlaces ≤ capacity}
+  - cancelDeadlineHours : int
+  - status : TrainingStatus = SCHEDULED
+  - version : long
+  + hasFreePlaces() : boolean
+  + takePlace() : void
+  + releasePlace() : void
+  + freeCancelUntil() : Instant
+  + cancel() : void
+  + update(data : TrainingData) : void
+}
+
+class Booking {
+  - id : Long
+  - status : BookingStatus = CONFIRMED
+  - startsAt : Instant
+  - endsAt : Instant
+  - createdAt : Instant
+  - viaWaitlist : boolean = false
+  + cancel() : void
+  + cancelByClub() : void
+  + markAttended() : void
+  + isActive() : boolean
+}
+
+class TrainerSlot {
+  - id : Long
+  - startsAt : Instant
+  - endsAt : Instant
+  + isFree() : boolean
+  + book(visitor : AppUser) : void
+  + release() : void
+}
+
+class WaitlistEntry {
+  - id : Long
+  - position : int
+  - status : WaitlistStatus = WAITING
+  - createdAt : Instant
+  + promote() : void
+  + leave() : void
+  + expire() : void
+}
+
+class AppUser {
+  - id : Long
+  - email : String {unique}
+  - passwordHash : String
+  - name : String
+  - role : UserRole
+  - deletedAt : Instant [0..1]
+  + hasRole(role : UserRole) : boolean
+  + anonymize(now : Instant) : void
+}
+
+class Activity {
+  - id : Long
+  - date : LocalDate
+  - kind : String
+  - durationMin : int {1..600}
+}
+
+class Notification {
+  - id : Long
+  - kind : NotificationKind
+  - text : String
+  - createdAt : Instant
+  - readAt : Instant [0..1]
+  + markRead(now : Instant) : void
+  + isUnread() : boolean
+}
+
+enum UserRole { VISITOR
+TRAINER
+ADMIN }
+enum TrainingStatus { SCHEDULED
+CANCELLED }
+enum BookingStatus { CONFIRMED
+CANCELLED
+CANCELLED_BY_CLUB
+ATTENDED }
+enum WaitlistStatus { WAITING
+PROMOTED
+LEFT
+EXPIRED }
+enum NotificationKind { TRAINING_CANCELLED
+TRAINING_CHANGED
+REMINDER
+WAITLIST_PROMOTED }
+
+' реализация интерфейса
+Scheduled <|.. Training
+Scheduled <|.. Booking
+Scheduled <|.. TrainerSlot
+
+' агрегация и композиция
+Hall "1" o-- "0..*" Training : проводится в
+Training "1" *-- "queue 0..* {ordered}" WaitlistEntry : очередь
+AppUser "1" *--> "history 0..*" Activity : ведёт историю
+AppUser "1" *--> "recipient 0..*" Notification : получает
+
+' ассоциации
+Training "0..1" -- "0..*" Booking : запись на занятие
+Booking "0..1" -- "0..1" TrainerSlot : персональная запись
+Training "0..*" --> "trainer 1" AppUser : ведёт
+Booking "0..*" --> "visitor 1" AppUser : записан
+WaitlistEntry "0..*" --> "visitor 1" AppUser : стоит в очереди
+TrainerSlot "0..*" --> "trainer 1" AppUser
+TrainerSlot "0..1" --> "bookedBy 0..1" AppUser : бронирует
+Notification "0..*" --> "about 0..1" Booking : касается
+
+note top of Booking
+  {xor}: запись ссылается либо на Training,
+  либо на TrainerSlot (CHECK в БД)
+end note
+note left of Training
+  version — оптимистичная версия строки;
+  запись идёт под FOR UPDATE (ADR-0004)
+end note
+@enduml

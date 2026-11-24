@@ -2,13 +2,13 @@
 
 Для FitSchedule — web-приложения для управления расписанием фитнес-клуба и записью на тренировки
 
-Версия 0.3
+Версия 0.4
 
 Подготовил Лесковский Е. Е., гр. 450501
 
 БГУИР, факультет КСиС, кафедра ЭВМ
 
-09.11.2026
+21.11.2026
 
 ## Оглавление
 
@@ -34,6 +34,7 @@
 | Лесковский Е. Е. | 30.10.2026 | Первая редакция по SRS 0.1.1: модули, модель данных, запись и отмена, развёртывание, ADR-0001…0004 | 0.1 |
 | Лесковский Е. Е. | 03.11.2026 | По итогам согласования плана: опрос уведомлений вместо WebSocket (ADR-0005), лист ожидания REQ-FUNC-023 в модели данных, алгоритме и последовательности (ADR-0006), кабинет тренера исключён из 1.0, экспорт .ics возвращён | 0.2 |
 | Лесковский Е. Е. | 09.11.2026 | ЛР5: модель динамического поведения на UML (PlantUML) — прецеденты (012), активность (013), диаграммы последовательности в 005, диаграммы состояний в 007; глоссарий и дополнительные спецификации в `docs/uml`; ADR-0007 | 0.3 |
+| Лесковский Е. Е. | 21.11.2026 | ЛР6: модель статической структуры на UML — диаграммы классов (новое логическое представление 014), компонентов (002) и развёртывания (009); ADR-0008 | 0.4 |
 
 ---
 
@@ -78,6 +79,9 @@ SDD — руководство для команды разработки (Ис�
 
 | UML | Unified Modeling Language — язык визуального моделирования (OMG UML 2.5.1) |
 | PlantUML | текстовая нотация диаграмм UML, из которой генерируются PNG |
+| Артефакт | физический файл — результат сборки (`fitschedule.jar`, `spa-bundle`), который развёртывается на узле |
+| Манифестация | связь `«manifest»`: артефакт реализует компонент |
+| Порт | точка взаимодействия компонента (`http`, `db`, `mgmt`), через которую проходят его интерфейсы |
 
 Термины предметной области (слот, запись, вместимость, срок свободной отмены) — в SRS, раздел 1.3. Полный глоссарий
 проекта (предметная область, UML, технические термины) — [`../uml/glossary.md`](../uml/glossary.md).
@@ -88,13 +92,14 @@ SDD — руководство для команды разработки (Ис�
 |----------|---------------|--------------|--------|
 | SRS FitSchedule | 0.2, 03.11.2026 | `docs/srs/srs.md` | нормативная |
 | План реализации и переписка с Заказчиком | 1.0, 03.11.2026 | `docs/plan/iteration-plan.md`, `docs/plan/correspondence.md` | нормативная |
-| ADR-0001…0007 | 2026-10/11 | `docs/adr/` | нормативная |
+| ADR-0001…0008 | 2026-10/11 | `docs/adr/` | нормативная |
 | Шаблон SDD курса ЖЦРПО | 2026 | ветка `ProjectTemplate`, `sdd/sdd-template.md` | нормативная |
 | IEEE 1016-2009 Software Design Descriptions | 2009 | ieee.org | справочная |
 | ISO/IEC/IEEE 42010:2011 Architecture description | 2011 | iso.org | справочная |
 | OMG SysML v2.0 | 2025 | omg.org/spec/SysML | справочная |
 | Модели SysML v2 дизайна | 0.2 | `docs/sdd/models/*.sysml` | справочная |
 | Модель поведения UML: прецеденты, глоссарий, дополнительные спецификации | 1.0, 09.11.2026 | `docs/uml/` | нормативная |
+| Модель статической структуры UML: классы, компоненты, развёртывание | 1.0, 21.11.2026 | `docs/uml/diagrams/class-*.puml`, `components.puml`, `deployment.puml` | нормативная |
 | OMG Unified Modeling Language 2.5.1 | 2017 | omg.org/spec/UML, uml-diagrams.org | справочная |
 
 ### 1.5 Обзор документа {#15-document-overview}
@@ -104,7 +109,8 @@ SDD — руководство для команды разработки (Ис�
 записи — в `docs/adr`), раздел 5 — матрица трассировки «функция плана → модуль / представление → требование».
 Структурные диаграммы выполнены на SysML v2: тексты моделей — в `docs/sdd/models`, изображения — в `docs/sdd/img`.
 Диаграммы поведения выполнены на UML в нотации PlantUML (ADR-0007): тексты — в `docs/uml/diagrams`, изображения —
-в `docs/uml/img`.
+в `docs/uml/img`. Структурные диаграммы UML — классов, компонентов и развёртывания (ADR-0008) — дополняют модели SysML v2
+и хранятся там же.
 Изменения вносятся через pull request и отражаются в «Истории изменений».
 
 ---
@@ -127,7 +133,8 @@ SDD — руководство для команды разработки (Ис�
 ### 2.2 Выбранные точки зрения {#22-selected-viewpoints}
 
 Язык представлений — SysML v2 для структуры (текстовая нотация в `docs/sdd/models`, графическая — PNG) и UML 2.5
-(PlantUML, `docs/uml`) для поведения, дополнительно таблицы и псевдокод.
+(PlantUML, `docs/uml`) для поведения и детализации структуры (классы, компоненты, развёртывание), дополнительно
+таблицы и псевдокод.
 
 #### 2.2.1 Контекст {#221-context}
 
@@ -136,21 +143,24 @@ SDD — руководство для команды разработки (Ис�
 
 #### 2.2.2 Композиция {#222-composition}
 
-Используется: **002-modules** — модули монолита и клиентская часть (SysML v2 interconnection view).
+Используется: **002-modules** — модули монолита и клиентская часть (SysML v2 interconnection view и диаграмма
+компонентов UML).
 
 #### 2.2.3 Логическое представление {#223-logical}
 
-Не выделяется отдельно: основные типы совпадают с сущностями представления 003 и портами модулей 002.
-Классы уточняются в коде (доменные классы модулей `booking` и `waitlist`).
+Используется: **014-class-model** — диаграммы классов UML: сущности предметной области (уровень спецификации) и
+проектные классы модуля `booking` (уровень реализации).
 
 #### 2.2.4 Физическое представление {#224-physical}
 
-Объединено с развёртыванием в **009-deployment**: один сервер, отдельной аппаратной топологии нет.
+Объединено с развёртыванием в **009-deployment** (диаграмма развёртывания UML): один сервер, отдельной аппаратной
+топологии нет.
 
 #### 2.2.5 Структура {#225-structure}
 
 Покрывается **002-modules**: порты (`ScheduleApi`, `BookingApi`, `WaitlistApi`, `NotificationApi` и др.) и
-соединения между модулями.
+соединения между модулями; на диаграмме компонентов — предоставляемые и требуемые интерфейсы, порты подсистемы
+`http`, `db`, `mgmt` и делегирующие соединители.
 
 #### 2.2.6 Зависимости {#226-dependency}
 
@@ -189,7 +199,7 @@ SDD — руководство для команды разработки (Ис�
 
 #### 2.2.14 Развёртывание {#2214-deployment}
 
-Используется: **009-deployment** — контейнеры Docker Compose на учебном сервере.
+Используется: **009-deployment** — контейнеры Docker Compose на учебном сервере (SysML v2 и диаграмма развёртывания UML).
 
 #### 2.2.15 Ресурсы {#2215-resources}
 
@@ -235,7 +245,18 @@ SDD — руководство для команды разработки (Ис�
 
   Правила зависимостей: модуль обращается к другому только через его интерфейс (порт); `booking` вызывает
   `schedule` и `waitlist`, но не наоборот; `notification` ни от кого не зависит, его вызывают остальные модули.
-- **More Information:** ADR-0001, ADR-0002. Функции плана F-01…F-18 распределены по модулям в разделе 5.
+
+  Детализация на UML (ЛР6) — диаграмма компонентов:
+
+  ![Компоненты FitSchedule](../uml/img/components.png)
+  *Рисунок 12 — `cmp FitSchedule 1.0`: подсистема `FitScheduleApp` с портами `http` (REST API для `spa`), `db`
+  (JDBC к PostgreSQL) и `mgmt` (Actuator); предоставляемые интерфейсы модулей — «шары», требуемые — «гнёзда»
+  сборочных соединителей и зависимости `«use»`; порты связаны с компонентами `api`, `persistence`, `ops`
+  делегирующими соединителями. Исходный текст: [`../uml/diagrams/components.puml`](../uml/diagrams/components.puml)*
+
+  Инфраструктурный компонент `persistence` (Spring Data JPA, Flyway, HikariCP) не является модулем: он даёт
+  модулям интерфейс `DataAccess`, на котором построены их репозитории.
+- **More Information:** ADR-0001, ADR-0002, ADR-0008. Функции плана F-01…F-18 распределены по модулям в разделе 5.
 
 ### 003-data-model
 
@@ -303,13 +324,13 @@ SDD — руководство для команды разработки (Ис�
 
   ![Последовательность записи](../uml/img/sequence-booking.png)
   *Рисунок 5 — `sd Записаться на занятие` (лист 1 формата А3): блокировка через `:BookingRepository`, проверка
-  `:BookingPolicy`, фрагмент `alt` (OK / отказ), создание объекта `:Booking`, `ref` на UC-06, ограничение {≤ 2 с},
-  уничтожение линий жизни в конце взаимодействия. Исходный текст:
+  `:BookingPolicy`, успешная запись с созданием объекта `:Booking` (сообщения 15–22) и отказ с ответом 409
+  (сообщения 23–25), уничтожение линий жизни в конце взаимодействия. Исходный текст:
   [`../uml/diagrams/sequence-booking.puml`](../uml/diagrams/sequence-booking.puml)*
 
   ![Последовательность отмены](../uml/img/sequence-cancel.png)
-  *Рисунок 6 — `sd Отменить запись` (лист 2 формата А3): `BEGIN … COMMIT/ROLLBACK`, фрагменты
-  `alt`/`opt`/`loop`/`break`, асинхронное уведомление `:NotificationService`, уничтожение линий жизни. Исходный текст:
+  *Рисунок 6 — `sd Отменить запись` (лист 2 формата А3): `BEGIN … COMMIT/ROLLBACK`, отказ после срока (сообщения
+  7–11), продвижение очереди и асинхронное уведомление `:NotificationService`, уничтожение линий жизни. Исходный текст:
   [`../uml/diagrams/sequence-cancel.puml`](../uml/diagrams/sequence-cancel.puml)*
 - **More Information:** REQ-FUNC-007…011, REQ-FUNC-023, REQ-REL-001, REQ-PERF-002; ADR-0004, ADR-0006, ADR-0007;
   прецеденты UC-05…UC-09.
@@ -415,7 +436,15 @@ SDD — руководство для команды разработки (Ис�
   вместе со статическими файлами SPA), `db` (postgres:16, том `pgdata`), `backup` (cron + `pg_dump`). Секреты — в
   `.env` (пример — `.env.example`, REQ-INST-001). Образ собирается GitHub Actions и публикуется в ghcr.io
   (REQ-BUILD-001). Окружения: локальное (`docker compose up`) и учебный сервер.
-- **More Information:** REQ-INST-001, REQ-BUILD-001, REQ-SEC-002; ADR-0001, ADR-0003.
+
+  ![Развёртывание UML](../uml/img/deployment.png)
+  *Рисунок 13 — `deployment FitSchedule 1.0`: устройства (`«device»`) посетителя, учебного сервера и GitHub, среды
+  выполнения (браузер, Docker Engine), контейнеры `proxy`, `app`, `db`, `backup` как вложенные узлы; артефакт
+  `fitschedule.jar` (вложенные `BOOT-INF/classes`, `BOOT-INF/lib`, `static/`, `db/migration`) манифестирует компонент
+  `FitScheduleApp`, `spa-bundle` — компонент `spa`; спецификации развёртывания `application.yml`,
+  `docker-compose.yml`, `.env`; каналы связи подписаны протоколом и портом. Исходный текст:
+  [`../uml/diagrams/deployment.puml`](../uml/diagrams/deployment.puml)*
+- **More Information:** REQ-INST-001, REQ-BUILD-001, REQ-SEC-002; ADR-0001, ADR-0003, ADR-0008.
 
 ### 010-resources
 
@@ -485,10 +514,38 @@ SDD — руководство для команды разработки (Ис�
   *Рисунок 11 — отмена записи с продвижением листа ожидания; слева посетитель, в центре администратор, справа
   система. Исходный текст: [`../uml/diagrams/activity-cancel.puml`](../uml/diagrams/activity-cancel.puml)*
 
-  Узлы решения диаграмм соответствуют альтернативным потокам прецедентов UC-05, UC-08, UC-09 и ветвям `alt`
+  Узлы решения диаграмм соответствуют альтернативным потокам прецедентов UC-05, UC-08, UC-09 и ветвям сообщений
   диаграмм последовательности (005); после фиксации транзакции журналирование и ответ клиенту выполняются
   параллельно (`fork`/`join`).
 - **More Information:** REQ-FUNC-004, 007…011, 013, 023; псевдокод — представление 006; ADR-0004, ADR-0006, ADR-0007.
+
+### 014-class-model
+
+- **ID:** 014-class-model
+- **Title:** Модель классов
+- **Viewpoint:** Logical
+- **Representation:** ![Классы предметной области](../uml/img/class-domain.png)
+  *Рисунок 14 — `class FitScheduleDomain`: 9 классов сущностей пакета `domain` (по `item def` представления 003),
+  5 перечислений статусов и ролей, интерфейс `Scheduled`, который реализуют `Training`, `Booking`, `TrainerSlot`
+  (проверка пересечений REQ-FUNC-009). Исходный текст: [`../uml/diagrams/class-domain.puml`](../uml/diagrams/class-domain.puml)*
+
+  | Связь | Пример | Почему такой вид |
+  |-------|--------|------------------|
+  | Реализация | `Training`, `Booking`, `TrainerSlot` ⟶ `Scheduled` | общий контракт «интервал времени» для `BookingPolicy.overlaps()` |
+  | Композиция | `Training` ◆ `WaitlistEntry` {ordered}; `AppUser` ◆ `Activity`, `Notification` | часть не существует без целого, удаляется вместе с ним |
+  | Агрегация | `Hall` ◇ `Training` | зал существует независимо от занятий |
+  | Ассоциация | `Booking` → `visitor 1` `AppUser`; `Booking` 0..* — 0..1 `Training` {xor} `TrainerSlot` | внешний ключ, кратность по `NOT NULL` / `NULL` |
+
+  ![Классы модуля booking](../uml/img/class-booking.png)
+  *Рисунок 15 — `class BookingModule`: контроллер, интерфейс `BookingApi` и реализующий его `BookingService`,
+  правила `BookingPolicy` (композиция) и результат `BookingDecision`, репозитории — наследники `JpaRepository<T, ID>`
+  со связыванием `«bind»`, интерфейсы соседних модулей `WaitlistApi`, `NotificationApi`, иерархия исключений
+  `BookingException` → ответы 409. Исходный текст: [`../uml/diagrams/class-booking.puml`](../uml/diagrams/class-booking.puml)*
+
+  Классы модуля соответствуют линиям жизни диаграмм последовательности (005), операции — их сообщениям, операции
+  сущностей — событиям переходов диаграмм состояний (007). Механизмы построения и связи — ADR-0008.
+- **More Information:** 003-data-model, 005-booking-flow, 006-booking-algorithm, 007-booking-states;
+  REQ-FUNC-007…011, 023, REQ-REL-001, REQ-MAINT-002; ADR-0001, ADR-0004, ADR-0006, ADR-0008.
 
 ---
 
@@ -545,6 +602,13 @@ SDD — руководство для команды разработки (Ис�
 - **Outcome:** «PlantUML», потому что даёт полную нотацию UML в текстовом виде и бесплатен; механизмы построения и связи диаграмм описаны в ADR.
 - **More Information:** [`../adr/0007-uml-plantuml-behavior-models.md`](../adr/0007-uml-plantuml-behavior-models.md); 005, 007, 012, 013.
 
+- **ID:** 0008-uml-static-structure-models
+- **Title:** Статическая структура описывается диаграммами UML классов, компонентов и развёртывания
+- **Context:** до начала реализации (I1) нужно зафиксировать классы модулей и показать компоненты и развёртывание в нотации UML; структура уже описана на SysML v2.
+- **Options:** три вида диаграмм UML в PlantUML; только SysML v2; генерация диаграммы классов из кода.
+- **Outcome:** «UML в PlantUML», потому что даёт порты, интерфейсы «шар–гнездо», артефакты и манифестации и позволяет спроектировать классы до кода; механизмы построения и связи с SysML v2 и диаграммами ЛР5 описаны в ADR.
+- **More Information:** [`../adr/0008-uml-static-structure-models.md`](../adr/0008-uml-static-structure-models.md); 002, 009, 014.
+
 ---
 
 ## 5. Приложения {#5-appendixes}
@@ -553,13 +617,13 @@ SDD — руководство для команды разработки (Ис�
 
 | Функция | Priority | Итерация | Модули / представления | Требования SRS |
 |---------|----------|----------|------------------------|----------------|
-| F-01 Project skeleton & CI | 10 | I1 | 009, 011 | REQ-INST-001, REQ-BUILD-001, REQ-MAINT-001 |
+| F-01 Project skeleton & CI | 10 | I1 | 009, 011, 014 | REQ-INST-001, REQ-BUILD-001, REQ-MAINT-001 |
 | F-02 Accounts & roles | 10 | I1 | `security`; 004 | REQ-FUNC-001…003, REQ-SEC-001/002, REQ-COMP-003 |
 | F-03 Group schedule | 10 | I2 | `schedule`, `spa`; 004 | REQ-FUNC-004, REQ-INT-001/004 |
 | F-04 Schedule management | 10 | I2 | `schedule`; 003, 007 | REQ-FUNC-005/006, REQ-REL-003, REQ-SEC-004 |
 | F-10 Schedule filters | 30 | I2 | `spa`, `api`; 004 | REQ-INT-003/005, REQ-PERF-001 |
 | F-15 REST API & OpenAPI | 20 | I2 | `api`; 004 | REQ-INT-006 |
-| F-05 Group class booking | 10 | I3 | `booking`; 005, 006, 008 | REQ-FUNC-007…009, REQ-INT-002, REQ-REL-001, REQ-PERF-002 |
+| F-05 Group class booking | 10 | I3 | `booking`; 005, 006, 008, 014 | REQ-FUNC-007…009, REQ-INT-002, REQ-REL-001, REQ-PERF-002 |
 | F-06 My bookings & cancellation | 10 | I3 | `booking`; 004, 007 | REQ-FUNC-010/011 |
 | F-16 Operations & logging | 30 | I3 | `ops`; 009, 010 | REQ-OBS-001, REQ-SEC-005, REQ-REL-002, REQ-PERF-003 |
 | F-07 Cancellation deadlines | 20 | I4 | `schedule`, `booking`; 006 | REQ-FUNC-012/013 |
@@ -593,3 +657,12 @@ SDD — руководство для команды разработки (Ис�
 | [../uml/diagrams/activity-booking.puml](../uml/diagrams/activity-booking.puml), [activity-cancel.puml](../uml/diagrams/activity-cancel.puml) | рисунки 10, 11 — активность |
 | [../uml/diagrams/state-booking.puml](../uml/diagrams/state-booking.puml), [state-training.puml](../uml/diagrams/state-training.puml) | рисунки 7, 8 — состояния |
 | [../uml/diagrams/sequence-booking.puml](../uml/diagrams/sequence-booking.puml), [sequence-cancel.puml](../uml/diagrams/sequence-cancel.puml) | рисунки 5, 6 — последовательность |
+
+**Приложение Г. Модель статической структуры UML (PlantUML)**
+
+| Файл | Содержание |
+|------|------------|
+| [../uml/diagrams/components.puml](../uml/diagrams/components.puml) | рисунок 12 — компоненты |
+| [../uml/diagrams/deployment.puml](../uml/diagrams/deployment.puml) | рисунок 13 — развёртывание |
+| [../uml/diagrams/class-domain.puml](../uml/diagrams/class-domain.puml) | рисунок 14 — классы предметной области |
+| [../uml/diagrams/class-booking.puml](../uml/diagrams/class-booking.puml) | рисунок 15 — классы модуля `booking` |

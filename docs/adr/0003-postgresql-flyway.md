@@ -64,4 +64,8 @@ capacity)` и частичный уникальный индекс `booking`.
 
 ## Дополнительная информация
 
+На диаграмме развёртывания UML (`docs/uml/img/deployment.png`) PostgreSQL 16 — контейнер `db` с артефактом
+«схема fitschedule» на томе `pgdata`, миграции Flyway — артефакт `db/migration` внутри `fitschedule.jar`; ограничения
+`CHECK` таблиц перенесены в ограничения атрибутов диаграммы классов `class-domain` (ADR-0008).
+
 SDD: представление 003-data-model. Резервная копия — `pg_dump` (представление 009).
