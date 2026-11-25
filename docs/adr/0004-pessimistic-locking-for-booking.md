@@ -71,3 +71,9 @@ informed: преподаватель Куприянова Д. В.
 ## Дополнительная информация
 
 SDD: представления 005, 006, 008. Слоты тренеров защищены уникальным `trainer_slot.booked_by` (REQ-FUNC-016).
+
+Модель поведения (ЛР5, ADR-0007): блокировка строки занятия показана сообщением `SELECT … FOR UPDATE` на
+диаграммах последовательности [`../uml/img/sequence-booking.png`](../uml/img/sequence-booking.png) и
+[`../uml/img/sequence-cancel.png`](../uml/img/sequence-cancel.png) и действием «Заблокировать строку занятия» на
+диаграммах активности `activity-booking` и `activity-cancel` (комментарий связывает блокировку с REQ-PERF-002).
+Порядок «блокировка → проверка UC-07 → INSERT → COMMIT» один и тот же на всех диаграммах.
