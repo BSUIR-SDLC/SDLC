@@ -4,7 +4,6 @@
 
 skinparam monochrome true
 skinparam classAttributeIconSize 0
-hide empty members
 title class BookingModule [модуль booking и его окружение — проектные классы]
 
 package domain <<Frame>> {

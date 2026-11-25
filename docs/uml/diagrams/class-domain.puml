@@ -5,7 +5,6 @@
 
 skinparam monochrome true
 skinparam classAttributeIconSize 0
-hide empty members
 title class FitScheduleDomain [пакет domain — сущности модели данных]
 
 interface Scheduled {
