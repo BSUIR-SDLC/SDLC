@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="478" viewBox="0 0 760 478">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L7,4 L1,7" fill="none" stroke="#34383c" stroke-width="1.2"/></marker></defs>
+<rect width="760" height="478" fill="white"/>
+<rect x="166" y="22" width="557" height="391" rx="0" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<text x="445" y="49" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#151515" text-anchor="middle">Полка</text>
+<circle cx="76" cy="171" r="9" fill="white" stroke="#34383c" stroke-width="1.2"/>
+<path d="M76,180 v25 m-15,-14 h30 M62,224 l14,-19 l14,19" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<text x="76" y="243" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Читатель</text>
+<path d="M98,199 C194,199 222,102 283,102" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<ellipse cx="461" cy="102" rx="178" ry="24" fill="#f0f3f8" stroke="#34383c" stroke-width="1.1"/>
+<text x="461" y="107" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#151515" text-anchor="middle">UC1  Добавить книгу</text>
+<path d="M98,199 C194,199 222,167 283,167" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<ellipse cx="461" cy="167" rx="178" ry="24" fill="#f0f3f8" stroke="#34383c" stroke-width="1.1"/>
+<text x="461" y="172" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#151515" text-anchor="middle">UC2  Отметить страницу</text>
+<path d="M98,199 C194,199 222,232 283,232" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<ellipse cx="461" cy="232" rx="178" ry="24" fill="#f0f3f8" stroke="#34383c" stroke-width="1.1"/>
+<text x="461" y="237" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#151515" text-anchor="middle">UC3  Задать норму месяца</text>
+<path d="M98,199 C194,199 222,297 283,297" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<ellipse cx="461" cy="297" rx="178" ry="24" fill="#f0f3f8" stroke="#34383c" stroke-width="1.1"/>
+<text x="461" y="302" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#151515" text-anchor="middle">UC4  Сохранить копию</text>
+<path d="M98,199 C194,199 222,362 283,362" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<ellipse cx="461" cy="362" rx="178" ry="24" fill="#f0f3f8" stroke="#34383c" stroke-width="1.1"/>
+<text x="461" y="367" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#151515" text-anchor="middle">UC5  Загрузить копию</text>
+<path d="M259,427 h438 l12,12 v26 h-450 Z M697,427 v12 h12" fill="#fff8d9" stroke="#34383c" stroke-width=".9"/>
+<text x="270" y="447" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">UC2 включает автоматическую фиксацию даты завершения.</text>
+</svg>

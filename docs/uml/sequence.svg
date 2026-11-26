@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="642" viewBox="0 0 1140 642">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L7,4 L1,7" fill="none" stroke="#34383c" stroke-width="1.2"/></marker></defs>
+<rect width="1140" height="642" fill="white"/>
+<circle cx="73" cy="26" r="9" fill="white" stroke="#34383c" stroke-width="1.2"/>
+<path d="M73,35 v25 m-15,-14 h30 M59,79 l14,-19 l14,19" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<text x="73" y="98" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Читатель</text>
+<path d="M73,102 V573" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<circle cx="73" cy="573" r="9" fill="white" stroke="#34383c" stroke-width="1.2"/>
+<path d="M73,582 v25 m-15,-14 h30 M59,626 l14,-19 l14,19" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<text x="73" y="645" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle"></text>
+<rect x="232" y="34" width="184" height="39" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="324" y="59" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Обработчик отметки</text>
+<path d="M324,73 V540" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<rect x="503" y="34" width="184" height="39" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="595" y="59" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">LocalStore</text>
+<path d="M595,73 V573" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<rect x="503" y="574" width="184" height="39" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="595" y="599" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">LocalStore</text>
+<rect x="788" y="34" width="184" height="39" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="880" y="59" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Карточка и норма</text>
+<path d="M880,73 V573" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<rect x="788" y="574" width="184" height="39" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="880" y="599" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Карточка и норма</text>
+<rect x="319" y="128" width="10" height="402" rx="0" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<path d="M73,128 H319" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="81" y="121" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">1. Отметить страницу</text>
+<rect x="29" y="151" width="1082" height="355" rx="0" fill="none" stroke="#34383c" stroke-width="1.15"/>
+<path d="M29,176 H88 L102,161 V151" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<text x="49" y="170" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#151515" text-anchor="start">alt</text>
+<text x="123" y="171" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">[p — целое число от 0 до N]</text>
+<rect x="917" y="194" width="170" height="37" rx="4" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<text x="1002" y="218" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#151515" text-anchor="middle">Черновик полки</text>
+<path d="M329,213 H917" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5" marker-end="url(#a)"/>
+<text x="337" y="206" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">2. «create» Копировать полку</text>
+<path d="M1002,231 V453" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<rect x="997" y="265" width="10" height="46" rx="0" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<path d="M329,265 H997" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="337" y="258" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">3. Изменить позицию, статус, дату и историю</text>
+<path d="M997,311 H329" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5" marker-end="url(#a)"/>
+<text x="337" y="304" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">4. Вернуть обновлённый снимок</text>
+<rect x="590" y="342" width="10" height="43" rx="0" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<path d="M329,342 H590" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="337" y="335" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">5. Записать снимок</text>
+<path d="M590,385 H329" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5" marker-end="url(#a)"/>
+<text x="337" y="378" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">6. Снимок сохранён</text>
+<rect x="875" y="413" width="10" height="36" rx="0" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<path d="M329,413 H875" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="337" y="406" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">7. Обновить карточку и сумму месяца</text>
+<path d="M875,449 H329" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5" marker-end="url(#a)"/>
+<text x="337" y="442" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">8. Экран обновлён</text>
+<path d="M994,445 L1010,461 M1010,445 L994,461" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<path d="M29,463 H1111" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5"/>
+<text x="223" y="484" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">[иначе]</text>
+<path d="M319,497 H73" fill="none" stroke="#34383c" stroke-width="1.35" stroke-dasharray="5 5" marker-end="url(#a)"/>
+<text x="81" y="490" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">9. Показать ошибку</text>
+<path d="M316,532 L332,548 M332,532 L316,548" fill="none" stroke="#34383c" stroke-width="1.35"/>
+</svg>

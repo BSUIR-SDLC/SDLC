@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="835" height="470" viewBox="0 0 835 470">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M1,1 L7,4 L1,7" fill="none" stroke="#34383c" stroke-width="1.2"/></marker></defs>
+<rect width="835" height="470" fill="white"/>
+<rect x="20" y="22" width="795" height="362" rx="13" fill="#f0f3f8" stroke="#34383c" stroke-width="1.15"/>
+<path d="M20,61 H815" fill="none" stroke="#34383c" stroke-width="1.35"/>
+<text x="417" y="48" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#151515" text-anchor="middle">Книга</text>
+<circle cx="94" cy="114" r="8" fill="#34383c" stroke="#34383c" stroke-width="1.2"/>
+<path d="M102,114 H260" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="170" y="100" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">создание</text>
+<rect x="260" y="91" width="244" height="47" rx="8" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<text x="382" y="120" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Запланирована</text>
+<rect x="260" y="192" width="244" height="47" rx="8" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<text x="382" y="221" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Читается</text>
+<rect x="260" y="293" width="244" height="47" rx="8" fill="white" stroke="#34383c" stroke-width="1.15"/>
+<text x="382" y="322" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#151515" text-anchor="middle">Прочитана</text>
+<polygon points="699,216 711,204 723,216 711,228" fill="white" stroke="#34383c" stroke-width="1.1"/>
+<path d="M504,101 H711 V204" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<path d="M504,201 H686 L701,210" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<path d="M504,332 H711 V228" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="590" y="92" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">отметить(p)</text>
+<text x="590" y="192" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">отметить(p)</text>
+<text x="590" y="323" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">отметить(p)</text>
+<path d="M706,211 L661,157 H380 V138" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="568" y="149" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">[p = 0]</text>
+<path d="M699,216 L662,249 H380 V239" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="577" y="241" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">[0 &lt; p &lt; N]</text>
+<path d="M706,221 L662,286 H380 V293" fill="none" stroke="#34383c" stroke-width="1.35" marker-end="url(#a)"/>
+<text x="562" y="279" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="middle">[p = N]</text>
+<path d="M124,399 h586 l12,12 v45 h-598 Z M710,399 v12 h12" fill="#fff8d9" stroke="#34383c" stroke-width=".9"/>
+<text x="135" y="419" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">N — объём книги. При p = N записывается дата завершения.</text>
+<text x="135" y="439" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#151515" text-anchor="start">При возврате на страницу меньше N дата очищается.</text>
+</svg>

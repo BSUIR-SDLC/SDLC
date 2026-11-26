@@ -1,0 +1,88 @@
+@startuml use-cases
+left to right direction
+actor Читатель as R
+rectangle Полка {
+  usecase "UC1 Добавить книгу" as A
+  usecase "UC2 Отметить страницу" as B
+  usecase "UC3 Задать норму месяца" as C
+  usecase "UC4 Сохранить копию" as D
+  usecase "UC5 Загрузить копию" as E
+}
+R --> A
+R --> B
+R --> C
+R --> D
+R --> E
+note bottom of B
+  При отметке последней страницы
+  автоматически сохраняется дата завершения.
+end note
+@enduml
+
+@startuml activity
+|Читатель|
+start
+repeat
+  :Ввести страницу;
+  :Подтвердить отметку;
+  |Система|
+  :Проверить номер страницы;
+backward:Увидеть ошибку ввода;
+repeat while (Целое p от 0 до N?) is (нет) not (да)
+:Вычислить статус, дату и прирост;
+:Сохранить снимок полки;
+:Обновить карточку и сумму месяца;
+|Читатель|
+:Увидеть новый итог;
+stop
+@enduml
+
+@startuml state
+state "Книга" as Book {
+state "Запланирована" as P
+state "Читается" as R
+state "Прочитана" as F
+state C <<choice>>
+[*] --> P : создание
+P --> C : отметить(p)
+R --> C : отметить(p)
+F --> C : отметить(p)
+C --> P : [p = 0]
+C --> R : [0 < p < N]
+C --> F : [p = N]
+}
+note bottom of Book
+  При достижении последней страницы записывается дата.
+  При возврате на страницу меньше N дата очищается.
+end note
+@enduml
+
+@startuml sequence
+actor Читатель as U
+participant "Обработчик отметки" as H
+participant LocalStore as S
+participant "Карточка и норма" as V
+U -> H : 1. Отметить страницу
+activate H
+alt p — целое число от 0 до N
+create participant "Черновик полки" as M
+H --> M : 2. «create» Копировать полку
+H -> M : 3. Изменить позицию, статус, дату и историю
+activate M
+M --> H : 4. Вернуть обновлённый снимок
+deactivate M
+H -> S : 5. Записать снимок
+activate S
+S --> H : 6. Снимок сохранён
+deactivate S
+H -> V : 7. Обновить карточку и сумму месяца
+activate V
+V --> H : 8. Экран обновлён
+deactivate V
+destroy M
+else иначе
+H --> U : 9. Показать ошибку
+end
+deactivate H
+destroy H
+@enduml
