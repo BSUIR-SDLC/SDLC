@@ -1,0 +1,36 @@
+@startuml state-host
+' ST-02. Состояния хоста на 3D-сцене (прецеденты UC-02, UC-09, UC-11)
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontName Arial
+hide empty description
+title ST-02. state machine Хост
+
+state "Ожидает подключения" as Waiting
+state "Норма" as Normal
+state "Предупреждение" as Warning
+state "Инцидент" as Incident
+state "Агент молчит" as Silent
+
+Normal : entry / окрасить в зелёный
+Warning : entry / окрасить в жёлтый
+Incident : entry / окрасить в красный
+Incident : do / пульсировать
+Silent : entry / окрасить в серый
+
+[*] --> Waiting : хост добавлен в данные
+Waiting --> Normal : первый heartbeat
+Normal --> Warning : incident_new\n[важность = средняя]
+Normal --> Incident : incident_new\n[важность >= высокая]
+Warning --> Incident : incident_new\n[важность >= высокая]
+Incident --> Warning : инцидент закрыт\n[открыты только средние]
+Warning --> Normal : инцидент закрыт\n[открытых нет]
+Incident --> Normal : инцидент закрыт\n[открытых нет]
+Normal --> Silent : нет heartbeat 90 с
+Warning --> Silent : нет heartbeat 90 с
+Incident --> Silent : нет heartbeat 90 с
+Silent --> Normal : heartbeat получен\n[открытых нет]
+Silent --> Incident : heartbeat получен\n[есть высокий]
+Silent --> Warning : heartbeat получен\n[открыты только средние]
+Normal --> [*] : хост удалён из данных
+@enduml

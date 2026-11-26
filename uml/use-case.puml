@@ -1,0 +1,88 @@
+@startuml use-case
+' Диаграмма вариантов использования 3D Security Monitoring Center, версия 1.0
+' Описание актёров и потоков событий: use-cases.md
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+}
+skinparam actorStyle awesome
+
+actor "//Пользователь//" as User
+actor "Наблюдатель" as Observer
+actor "Оператор\nбезопасности" as Operator
+actor "Администратор" as Admin
+actor "Аудитор" as Auditor
+actor "Контролируемый\nхост" as Host <<система>>
+actor "Таймер" as Timer <<время>>
+
+Observer -up-|> User
+Auditor -up-|> User
+Operator -up-|> Observer
+Admin -up-|> Operator
+
+rectangle "3D Security Monitoring Center" {
+  usecase "UC-01\nВойти в систему" as UC01
+  usecase "UC-02\nПросматривать 3D-карту объекта\n--\nextension points\nвыбор хоста" as UC02
+  usecase "UC-03\nПросмотреть карточку хоста" as UC03
+  usecase "UC-04\nПерейти к хосту инцидента" as UC04
+  usecase "UC-05\nИзменить статус инцидента" as UC05
+  usecase "UC-06\nДобавить комментарий\nк инциденту" as UC06
+  usecase "UC-07\nПросмотреть журнал аудита\n--\nextension points\nпроверка журнала" as UC07
+  usecase "UC-08\nПровести учебную тревогу" as UC08
+  usecase "UC-09\nОбнаружить нарушение\nна хосте" as UC09
+  usecase "UC-10\nЗаписать действие\nв журнал аудита" as UC10
+  usecase "UC-11\nОбнаружить молчащий агент" as UC11
+  usecase "UC-12\nПроверить целостность\nжурнала" as UC12
+}
+
+User --> UC01
+Observer --> UC02
+Observer --> UC04
+Operator --> UC05
+Operator --> UC06
+Admin --> UC08
+Admin --> UC07
+Auditor --> UC07
+Host --> UC09
+Timer --> UC11
+
+UC03 .> UC02 : <<extend>>
+UC12 .> UC07 : <<extend>>
+UC05 .> UC10 : <<include>>
+UC06 .> UC10 : <<include>>
+UC08 .> UC10 : <<include>>
+
+note right of User
+  Абстрактный актёр: общий родитель
+  четырёх ролей, которые входят
+  в систему по логину и паролю
+end note
+note top of Observer
+  Следит за 3D-картой и списком
+  инцидентов, ничего не меняет
+end note
+note top of Operator
+  Разбирает инциденты: меняет
+  статусы, пишет комментарии
+end note
+note bottom of Admin
+  Проводит учебные тревоги
+  и читает журнал аудита
+end note
+note bottom of Auditor
+  Только читает журнал действий
+  и проверяет его целостность
+end note
+note bottom of Host
+  Компьютер с ОС Windows, на котором
+  происходят события безопасности
+end note
+note bottom of Timer
+  Раз в 10 с запускает проверку
+  сигналов работы агентов
+end note
+@enduml
