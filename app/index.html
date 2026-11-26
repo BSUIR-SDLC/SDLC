@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Полка — дневник чтения</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f2ea;color:#25392d;font:16px/1.55 system-ui}main{max-width:940px;margin:auto;padding:30px 20px}h1,h2,h3{font-family:Georgia,serif;line-height:1.15}h1{font-size:3rem;margin:10px 0 25px}section,article{padding:16px 0;border-top:1px solid #bbc3b6}form,.tools{display:flex;gap:12px;align-items:end;flex-wrap:wrap}label{display:grid;gap:3px}input,button{font:inherit;padding:6px 10px;border:1px solid #7b897b;border-radius:4px;max-width:100%}input[type=number]{width:10em}button{background:#284d39;color:white;cursor:pointer}progress{accent-color:#407457}#message{color:#842d1d;min-height:1.5em}h3{margin-bottom:.25em}
+</style><main><h1>Полка</h1><section><h2>Норма месяца</h2><p id="summary"></p><form id="goal"><label>Страниц в месяц<input name="pages" type="number" min="1" required></label><button>Задать норму</button></form></section>
+<section><h2>Мои книги</h2><div id="shelf"></div></section>
+<section><h2>Добавить книгу</h2><form id="book"><label>Название<input name="title" required></label><label>Автор<input name="author" required></label><label>Объём, страниц<input name="total" type="number" min="1" required></label><button>Сохранить</button></form></section>
+<section><h2>Копия полки</h2><div class="tools"><button id="save">Сохранить копию</button><button id="open">Загрузить копию</button><input id="file" type="file" accept=".json,application/json" hidden></div></section><p id="message" role="status"></p></main><script src="polka.js"></script><script src="interface.js"></script></html>
