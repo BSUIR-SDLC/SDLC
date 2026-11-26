@@ -1,0 +1,71 @@
+@startuml sequence-incident-status
+' SD-02. Смена статуса инцидента (прецедент UC-05)
+!pragma teoz true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+title sd Смена статуса инцидента (UC-05)
+
+actor "Оператор" as Op
+participant ":IncidentPanel" as Panel <<UMG>>
+participant ":USmcClient" as Client <<console>>
+boundary ":ClientApi" as Api <<server>>
+control ":IncidentService" as Svc
+database "PostgreSQL" as DB
+participant "другие консоли\n:USmcClient" as Others <<console>>
+
+[-> Panel : incident_new(id)
+activate Panel
+Panel -> Panel : показать в списке
+deactivate Panel
+
+Op -> Panel : нажать «В работе»
+activate Panel
+{start} Panel -> Client : SetIncidentStatus(id, in_progress)
+activate Client
+Client ->> Api : set_incident_status (WSS, JSON)
+deactivate Client
+activate Api
+Api -> Api : проверить права сеанса
+Api -> Svc : changeStatus(user, id, in_progress)
+activate Svc
+
+create participant ":Transaction" as Tx
+Svc -> Tx : <<create>>
+activate Tx
+Tx -> DB : SELECT status FOR UPDATE
+activate DB
+DB --> Tx : new
+deactivate DB
+
+alt переход допустим
+  Tx -> DB : UPDATE incidents SET status
+  activate DB
+  DB --> Tx : ok
+  deactivate DB
+  ref over Tx, DB : Записать действие в журнал аудита (UC-10)
+  Tx -> DB : COMMIT
+  Tx --> Svc : ok
+  destroy Tx
+  Svc --> Api : incident, host_state
+  deactivate Svc
+  Api ->> Client : ok
+  Api ->> Others : incident_update, host_state
+  deactivate Api
+  activate Client
+  {end} Client -> Panel : OnIncidentUpdated
+  deactivate Client
+  Panel --> Op : статус «В работе»
+else переход недопустим
+  Tx -> DB : ROLLBACK
+  Tx --> Svc : ошибка перехода
+  Svc --> Api : error
+  Api ->> Client : error(«Переход статуса недопустим»)
+  activate Client
+  Client -> Panel : показать сообщение
+  deactivate Client
+end
+deactivate Panel
+
+{start} <-> {end} : {не больше 1 с}
+@enduml

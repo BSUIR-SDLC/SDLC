@@ -1,0 +1,39 @@
+@startuml state-incident
+' ST-01. Состояния инцидента (прецеденты UC-05, UC-09, UC-11)
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontName Arial
+hide empty description
+title ST-01. state machine Инцидент
+
+[*] --> Open : правило сработало /\nсоздать инцидент
+
+state "Открыт" as Open {
+  state "Новый" as New
+  state "В работе" as InProgress
+  New : entry / разослать incident_new
+  New : do / показывать в списке открытых
+  InProgress : entry / записать время взятия в работу
+  [*] --> New
+  New --> InProgress : set_status(в работе)\n[роль = оператор или администратор]
+  InProgress --> InProgress : add_comment /\nсохранить комментарий
+  New --> New : add_comment /\nсохранить комментарий
+}
+
+state "Решён" as Resolved
+state "Ложное срабатывание" as FalsePositive
+Resolved : entry / записать время закрытия
+FalsePositive : entry / записать время закрытия
+
+InProgress --> Resolved : set_status(решён)
+Open --> FalsePositive : set_status(ложное срабатывание)
+Open --> Resolved : heartbeat получен\n[тип = «Агент молчит»] /\nсистемный комментарий
+Resolved --> [*]
+FalsePositive --> [*]
+
+note right of Open
+  Каждый переход выполняется в одной
+  транзакции с записью в журнал аудита
+  (UC-10) и рассылкой incident_update
+end note
+@enduml

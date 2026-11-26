@@ -1,0 +1,59 @@
+@startuml sequence-login
+' SD-01. Вход в систему (прецедент UC-01)
+!pragma teoz true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+title sd Вход в систему (UC-01)
+
+actor "Пользователь" as U
+participant ":LoginWidget" as W <<UMG>>
+participant ":USmcClient" as C <<console>>
+boundary ":ClientApi" as Api <<server>>
+control ":AuthService" as Auth
+database "PostgreSQL" as DB
+
+U -> W : ввести логин и пароль, «Войти»
+activate W
+W -> C : Login(login, password)
+activate C
+C -> Api : открыть WSS :8443 (TLS 1.3)
+activate Api
+Api --> C : соединение установлено
+C ->> Api : login
+deactivate C
+Api -> Auth : authenticate(login, password)
+activate Auth
+Auth -> DB : SELECT hash, locked_until, failed
+activate DB
+DB --> Auth : учётная запись
+deactivate DB
+
+alt учётная запись заблокирована
+  Auth --> Api : locked(until)
+  Api ->> C : error(locked, until)
+else пароль верный
+  Auth -> Auth : crypto_pwhash_str_verify (Argon2id)
+  Auth -> DB : UPDATE failed = 0
+  create participant ":Session" as S
+  Auth -> S : <<create>>
+  Auth --> Api : session, role
+  Api ->> C : login_ok(role)
+  ref over C, Api, DB : Загрузить план объекта и открытые инциденты (get_layout, get_open_incidents)
+else пароль неверный
+  Auth -> Auth : crypto_pwhash_str_verify (Argon2id)
+  Auth -> DB : UPDATE failed = failed + 1
+  opt failed = 5
+    Auth -> DB : UPDATE locked_until = now() + 15 мин
+  end
+  Auth --> Api : wrong_password
+  Api ->> C : error(wrong_password)
+end
+deactivate Auth
+deactivate Api
+activate C
+C -> W : результат входа
+deactivate C
+W --> U : главный экран или сообщение об ошибке
+deactivate W
+@enduml
