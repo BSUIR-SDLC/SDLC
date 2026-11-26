@@ -154,8 +154,8 @@ informed: Внук О. М. (Преподаватель дисциплины ЖЦ
 По результатам моделирования динамического поведения (Use Case, Activity, State Machine, Sequence) и согласования приоритетов с заказчиком необходимо зафиксировать единые механизмы взаимодействия между слоями `GitPulse.UI`, `GitPulse.Core` и `GitPulse.Infrastructure`, асинхронного выполнения, защиты от удаления несохранённых изменений, обработки ошибок и логирования в `gitpulse.log` без затягивания сроков поставки.
 
 ## Драйверы решения
-* Разделение ответственности между слоем представления (`MainWindow`, `MainViewModel`), прикладным слоем (`DiskScannerService`, `CleanupService`, `ThresholdChecker`) и инфраструктурным слоем (`GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`).
-* Единые интерфейсные контракты между слоями (`IScanningService` / `IDiskScanner`, `ICleanupService`, `IGitCliExecutor` / `IGitService`, `IFileSystemProvider`, `ILogger`) с поддержкой асинхронности и отмены через `CancellationToken`.
+* Разделение ответственности между слоем представления (`MainWindow`, `MainViewModel`), прикладным слоем (`DiskScannerService`, `CleanupService`, `CacheThresholdService`) и инфраструктурным слоем (`GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`).
+* Единые интерфейсные контракты между слоями (`IScanningService`, `ICleanupService`, `IGitCliExecutor`, `IFileSystemProvider`, `ILogger`) с поддержкой асинхронности и отмены через `CancellationToken`.
 * Безопасная очистка сборочных артефактов (порог 500 МБ, контроль статуса `Clean`/`Dirty`, модальное подтверждение перед удалением).
 * Фиксация ошибок доступа, сбоев `Git CLI (>= 2.40)` и результатов операций в `gitpulse.log` без падения всей операции.
 * Реалистичное планирование работ с учётом приоритетов (`PRIO-01`..`PRIO-05`), подключения Junior-разработчика к рутинным задачам/логированию и поэтапного развития сценариев контроля кэша.
@@ -168,7 +168,7 @@ informed: Внук О. М. (Преподаватель дисциплины ЖЦ
 Выбран вариант **«Слоистая архитектура с асинхронными сервисами, явными состояниями, подтверждением очистки и логированием в `gitpulse.log`»**, потому что он связывает пользовательские сценарии с компонентами и внешними системами (`Git CLI >= 2.40`, файловая система ОС) через чёткие контракты и безопасно обрабатывает сбои и отмену операций.
 
 ### Последствия
-* Хорошо, потому что `MainViewModel` координирует команды и состояние UI, `DiskScannerService`, `CleanupService` и `ThresholdChecker` инкапсулируют логику сканирования, очистки и проверки порога 500 МБ, а `GitCliExecutor`, `OsFileSystemProvider` и `FileLogger` изолируют работу с процессами, диском и журналом `gitpulse.log`.
+* Хорошо, потому что `MainViewModel` координирует команды и состояние UI, `DiskScannerService`, `CleanupService` и `CacheThresholdService` инкапсулируют логику сканирования, очистки и проверки порога 500 МБ, а `GitCliExecutor`, `OsFileSystemProvider` и `FileLogger` изолируют работу с процессами, диском и журналом `gitpulse.log`.
 * Хорошо, потому что передача `CancellationToken` и обработка исключений на уровне отдельного репозитория/каталога предотвращают зависание приложения и потерю остальных результатов.
 * Хорошо, потому что подключение Junior-разработчика к вспомогательным задачам и логированию снижает риск срыва дедлайна при развитии сценариев контроля кэша.
 * Плохо, потому что добавление модального подтверждения и ветвлений обработки ошибок увеличивает число сценариев для тестирования.
@@ -203,7 +203,7 @@ informed: Внук О. М. (Преподаватель дисциплины ЖЦ
 
 ## Драйверы решения
 * Чёткое разделение ответственности между слоями `GitPulse.UI`, `GitPulse.Core` и `GitPulse.Infrastructure` без циклических зависимостей.
-* Связывание компонентов через интерфейсные контракты (`IScanningService` / `IDiskScanner`, `ICleanupService`, `IGitCliExecutor` / `IGitService`, `IFileSystemProvider`, `ILogger`) с внедрением зависимостей (DI) для сервисов и адаптеров (`DiskScannerService`, `CleanupService`, `ThresholdChecker`, `GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`).
+* Связывание компонентов через интерфейсные контракты (`IScanningService`, `ICleanupService`, `IGitCliExecutor`, `IFileSystemProvider`, `ILogger`) с внедрением зависимостей (DI) для сервисов и адаптеров (`DiskScannerService`, `CleanupService`, `CacheThresholdService`, `GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`).
 * Защита пользовательских данных: блокировка выбора репозиториев со статусом `Dirty`, расчёт суммарного объёма артефактов (`bin`, `obj`, `node_modules`) относительно порога 500 МБ и обязательное модальное подтверждение перед удалением.
 * Устойчивость к ошибкам доступа, сбоям внешнего `Git CLI (>= 2.40)` и отмене операций по `CancellationToken` с фиксацией событий в `gitpulse.log`.
 * Кроссплатформенная поставка в виде архива `GitPulse.zip` (Portable / Self-contained) для Windows, Linux и macOS на базе `.NET 9` / Avalonia UI.
@@ -216,8 +216,8 @@ informed: Внук О. М. (Преподаватель дисциплины ЖЦ
 Выбран вариант **«Слоистая компонентная модель с интерфейсными контрактами, защитой очистки, логированием в `gitpulse.log` и манифестацией сборок»**, потому что он задаёт прозрачные точки интеграции между компонентами, изолирует системные вызовы и обеспечивает переносимость приложения.
 
 ### Последствия
-* Хорошо, потому что `GitPulse.UI` (`MainWindow`, `MainViewModel`) работает только с прикладными сервисами через `IScanningService` / `IDiskScanner` и `ICleanupService`, не зная деталей запуска `git` или обхода файловой системы.
-* Хорошо, потому что `GitPulse.Core` (`DiskScannerService`, `CleanupService`, `ThresholdChecker`) инкапсулирует бизнес-логику проверки статуса `Clean`/`Dirty` и порога 500 МБ, а `GitPulse.Infrastructure` (`GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`) реализует контракты `IGitCliExecutor` / `IGitService`, `IFileSystemProvider` и `ILogger` для работы с `Git CLI >= 2.40`, каталогами и `gitpulse.log`.
+* Хорошо, потому что `GitPulse.UI` (`MainWindow`, `MainViewModel`) работает только с прикладными сервисами через `IScanningService` и `ICleanupService`, не зная деталей запуска `git` или обхода файловой системы.
+* Хорошо, потому что `GitPulse.Core` (`DiskScannerService`, `CleanupService`, `CacheThresholdService`) инкапсулирует бизнес-логику проверки статуса `Clean`/`Dirty` и порога 500 МБ, а `GitPulse.Infrastructure` (`GitCliExecutor`, `OsFileSystemProvider`, `FileLogger`) реализует контракты `IGitCliExecutor`, `IFileSystemProvider` и `ILogger` для работы с `Git CLI >= 2.40`, каталогами и `gitpulse.log`.
 * Хорошо, потому что на диаграмме развёртывания сборки `GitPulse.UI.dll`, `GitPulse.Core.dll` и `GitPulse.Infrastructure.dll` явно соотнесены (`<<manifest>>`) с архитектурными компонентами внутри портативного пакета `GitPulse.zip`.
 * Плохо, потому что поддержание единых имён контрактов и моделей между диаграммами классов, компонентов, развёртывания и кодом требует аккуратной синхронизации при рефакторинге.
 

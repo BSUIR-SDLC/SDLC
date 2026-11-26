@@ -1,17 +1,20 @@
 @startuml gitpulse-sequence
+mainframe sd ScanAndCleanArtifacts
 title Диаграмма последовательности сканирования и очистки системы «GitPulse»
 autonumber
+skinparam shadowing false
 
 actor "Пользователь" as User
-participant "MainWindow" as View
-participant "MainViewModel" as VM
-participant "DiskScannerService" as Scanner
-participant "CleanupService" as Cleaner
-participant "GitCliExecutor" as GitCli
-participant "OsFileSystemProvider" as FS
-participant "FileLogger" as Logger
+participant ":MainWindow" as View
+participant ":MainViewModel" as VM
+participant ":DiskScannerService" as Scanner
+participant ":CleanupService" as Cleaner
+participant ":GitCliExecutor" as GitCli
+participant ":OsFileSystemProvider" as FS
+participant ":FileLogger" as Logger
 
 User -> View : Нажать "Scan Disk"
+activate View
 View -> VM : ScanDiskCommand.Execute()
 activate VM
 
@@ -39,21 +42,32 @@ Scanner --> VM : ScanResult и порог 500 МБ
 deactivate Scanner
 VM --> View : Обновить таблицу и порог
 deactivate VM
+deactivate View
 
-User -> View : Выбрать цели и нажать "Clean Artifacts"
+User -> View : Выбрать Clean-цели и нажать "Clean Artifacts"
+activate View
 View -> VM : CleanArtifactsCommand.Execute()
 activate VM
-VM -> View : Открыть диалог подтверждения
+VM --> View : Открыть диалог подтверждения
 
 alt Подтверждено пользователем
   User -> View : Подтвердить удаление
   View -> VM : Подтверждение получено
   VM -> Cleaner : CleanSelectedAsync(selectedRepos)
+  activate Cleaner
+
   Cleaner -> FS : Удалить каталоги артефактов
+  activate FS
   FS --> Cleaner : Результат (успех / ошибка)
+  deactivate FS
+
   Cleaner -> Logger : LogOperation(результат, объём)
+  activate Logger
   Logger --> Cleaner : Записано в gitpulse.log
+  deactivate Logger
+
   Cleaner --> VM : Освобождённый объём
+  deactivate Cleaner
   VM --> View : Обновить таблицу и метрики
 else Отменено пользователем
   User -> View : Отменить удаление
@@ -62,4 +76,5 @@ else Отменено пользователем
 end
 
 deactivate VM
+deactivate View
 @enduml

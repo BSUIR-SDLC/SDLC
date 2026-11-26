@@ -1,5 +1,6 @@
 @startuml gitpulse-statemachine
 title Диаграмма состояний жизненного цикла системы «GitPulse»
+skinparam shadowing false
 skinparam state {
   BackgroundColor #F8F9FA
   BorderColor #333333
@@ -20,6 +21,8 @@ state ConfirmingCleanup : Модальный диалог\nподтвержде�
 state Cleaning : Удаление артефактов\nи запись в gitpulse.log
 
 Idle --> Scanning : ScanDisk() [путь задан]
+Idle --> [*] : закрытие приложения
+
 Scanning --> Idle : отмена [CancellationToken]
 Scanning --> Error : ошибка доступа / сбой Git CLI
 Scanning --> Ready : сканирование завершено
@@ -29,6 +32,7 @@ Error --> Ready : продолжить с доступными данными
 
 Ready --> Scanning : ScanDisk() [повторный аудит]
 Ready --> ConfirmingCleanup : CleanArtifacts() [выбраны Clean-цели]
+Ready --> [*] : закрытие приложения
 
 ConfirmingCleanup --> Ready : отмена в диалоге
 ConfirmingCleanup --> Cleaning : подтвердить удаление

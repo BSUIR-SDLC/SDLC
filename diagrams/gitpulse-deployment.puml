@@ -1,6 +1,9 @@
-@startuml
+@startuml gitpulse-deployment
+title Диаграмма развёртывания десктопного приложения «GitPulse»
 top to bottom direction
 skinparam shadowing false
+skinparam ranksep 40
+skinparam nodesep 45
 skinparam defaultFontName Arial
 skinparam defaultFontSize 13
 skinparam node {
@@ -23,7 +26,7 @@ skinparam folder {
 node "Рабочая станция\n(Windows / Linux / macOS)" as Workstation {
   node "Среда выполнения .NET 9" as Runtime {
     artifact "GitPulse.zip\n(Portable / Self-contained)" as Dist {
-      artifact "GitPulse.exe" <<file>> as Exe
+      file "GitPulse / GitPulse.exe" as Exe
 
       folder "Assemblies" {
         artifact "GitPulse.UI.dll" <<library>> as UiDll
@@ -36,19 +39,22 @@ node "Рабочая станция\n(Windows / Linux / macOS)" as Workstation {
       CoreDll --> InfraDll
     }
 
-    component "GitPulse.UI" <<component>> as UiComp
-    component "GitPulse.Core" <<component>> as CoreComp
-    component "GitPulse.Infrastructure" <<component>> as InfraComp
+    component "GitPulse.UI" as UiComp
+    component "GitPulse.Core" as CoreComp
+    component "GitPulse.Infrastructure" as InfraComp
 
-    UiDll ..> UiComp : <<manifest>>
-    CoreDll ..> CoreComp : <<manifest>>
-    InfraDll ..> InfraComp : <<manifest>>
+    UiComp -[hidden]down-> CoreComp
+    CoreComp -[hidden]down-> InfraComp
+
+    UiDll .right.> UiComp : <<manifest>>
+    CoreDll .right.> CoreComp : <<manifest>>
+    InfraDll .right.> InfraComp : <<manifest>>
   }
 
   node "Окружение ОС и внешние ресурсы" as OsEnv {
     artifact "Git CLI (>= 2.40)" as GitCli
     folder "Локальные каталоги\n(.git, bin/, obj/, node_modules/)" as LocalDirs
-    artifact "gitpulse.log" as LogFile
+    file "gitpulse.log" as LogFile
   }
 
   InfraDll --> GitCli : git status / branch

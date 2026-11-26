@@ -1,8 +1,12 @@
 @startuml gitpulse-components
+title Диаграмма компонентов и интерфейсных связей системы «GitPulse»
 skinparam componentStyle uml2
 skinparam shadowing false
 skinparam ranksep 60
 skinparam nodesep 45
+skinparam component {
+  stereotypeFontSize 0
+}
 
 package "GitPulse.UI" <<component>> {
   component ":MainWindow" as MainWindow
@@ -13,16 +17,16 @@ package "GitPulse.UI" <<component>> {
 interface "IScanningService" as IScanning
 interface "ICleanupService" as ICleanup
 
-MainViewModel --> IScanning
-MainViewModel --> ICleanup
+MainViewModel --> IScanning : uses
+MainViewModel --> ICleanup : uses
 
 package "GitPulse.Core" <<component>> {
   component ":DiskScannerService" as DiskScanner
   component ":CleanupService" as Cleanup
-  component ":ThresholdChecker" as Threshold
+  component ":CacheThresholdService" as Threshold
 
-  IScanning ..> DiskScanner
-  ICleanup ..> Cleanup
+  IScanning ..> DiskScanner : realizes
+  ICleanup ..> Cleanup : realizes
   DiskScanner --> Threshold : threshold 500 MB
 }
 
@@ -30,20 +34,20 @@ interface "IGitCliExecutor" as IGitCli
 interface "IFileSystemProvider" as IFileSystem
 interface "ILogger" as ILogger
 
-DiskScanner --> IGitCli
-DiskScanner --> IFileSystem
-DiskScanner --> ILogger
-Cleanup --> IFileSystem
-Cleanup --> ILogger
+DiskScanner --> IGitCli : uses
+DiskScanner --> IFileSystem : uses
+DiskScanner --> ILogger : uses
+Cleanup --> IFileSystem : uses
+Cleanup --> ILogger : uses
 
 package "GitPulse.Infrastructure" <<component>> {
   component ":GitCliExecutor" as GitCliComp
   component ":OsFileSystemProvider" as FsComp
   component ":FileLogger" as LogComp
 
-  IGitCli ..> GitCliComp
-  IFileSystem ..> FsComp
-  ILogger ..> LogComp
+  IGitCli ..> GitCliComp : realizes
+  IFileSystem ..> FsComp : realizes
+  ILogger ..> LogComp : realizes
 }
 
 node "Внешнее окружение" as ExtEnv {

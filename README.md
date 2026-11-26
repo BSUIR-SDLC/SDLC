@@ -15,7 +15,7 @@
 
 ### Лабораторная работа №3 (Анализ и бизнес-требования)
 * **Спецификация требований (SRS):** `srs/srs-template.md`
-* **Архитектурная схема (SysMLv2):** `images/gitpulse-sysml-ui.png`
+* **Архитектурная схема (SysMLv2):** `images/gitpulse-ui.png`
 * **UI-мокап интерфейса (Excalidraw):** `images/gitpulse-gui-mockup.png`
 * **Процедура код-ревью:** Pull Request №36 (`feature/gitpulse-srs` → `main`)
 
@@ -32,6 +32,6 @@
 * **Диаграммы динамического поведения:** `images/gitpulse-usecase.png`, `images/gitpulse-activity.png`, `images/gitpulse-statemachine.png`, `images/gitpulse-sequence.png`
 
 ### Лабораторная работа №6 (Моделирование статической структуры системы на языке UML)
-* **Обновлённое описание дизайна ПО (SDD):** `sdd/sdd-template.md` (версия 0.5 – проектные представления компонентов `VIEW-009` и развёртывания `VIEW-010`, решение `DEC-005`)
+* **Обновлённое описание дизайна ПО (SDD):** `sdd/sdd-template.md` (версия 0.5 – проектные представления компонентов VIEW-009 и развёртывания VIEW-010, актуализированные архитектурные решения ADR-001..ADR-005)
 * **Архитектурные решения (ADR):** `adr/adr-template.md` (добавлен `ADR-005` с механизмами построения, интерфейсных связей и развёртывания компонентов)
 * **Диаграммы статической структуры:** `images/gitpulse-classes.png` (обновлена), `images/gitpulse-components.png`, `images/gitpulse-deployment.png`
