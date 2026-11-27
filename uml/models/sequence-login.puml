@@ -1,0 +1,53 @@
+@startuml sequence-login
+' Диаграмма последовательности: вход контролёра и выбор точки (UC-01, F02)
+' Связи: сообщения = основной поток UC-01; alt = альтернативные потоки А1 (неверный пароль),
+' А2 (блокировка, REQ-SEC-003); реализация — apps/api/src/modules/auth/authPolicy.ts
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ParticipantBackgroundColor #F4F8FC
+  ParticipantBorderColor #2F5D8A
+  LifeLineBorderColor #8AA4C0
+  ArrowColor #2F5D8A
+  GroupBorderColor #2F5D8A
+}
+autonumber "<b>00"
+
+title Вход контролёра и выбор точки прохода (UC-01)
+
+actor "Контролёр" as C
+participant "Сканер\n(PWA)" as S
+participant "AuthModule" as AU
+participant "SiteService" as SS
+database "PostgreSQL" as DB
+
+C -> S : логин, пароль
+activate S
+S -> AU : POST /api/v1/auth/login
+activate AU
+AU -> DB : SELECT user WHERE login = ?
+DB --> AU : user {hash, role, failedAttempts, lockedUntil}
+alt учётная запись заблокирована (А2)
+  AU --> S : 423 Locked {retryAfter}
+  S -> C : «Вход заблокирован до ЧЧ:ММ»
+else пароль неверен (А1)
+  AU -> DB : UPDATE failedAttempts + 1;\nпри 5-й попытке lockedUntil = now + 15 мин
+  AU --> S : 401 «Неверный логин или пароль»
+  S -> C : сообщение об ошибке
+else пароль верен
+  AU -> DB : UPDATE failedAttempts = 0;\nINSERT session (expires = now + 12 ч)
+  AU --> S : 200 OK, Set-Cookie: sid (HttpOnly; Secure)
+  deactivate AU
+  S -> SS : GET /api/v1/me/checkpoints
+  activate SS
+  SS -> DB : точки прохода контролёра (BR-10)
+  DB --> SS : список
+  SS --> S : [{id, name, zone, site}]
+  deactivate SS
+  S -> C : экран выбора точки и направления
+  C -> S : выбрать точку и «ВХОД / ВЫХОД»
+  S -> S : состояние scanning
+end
+deactivate S
+@enduml

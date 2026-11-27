@@ -1,0 +1,93 @@
+@startuml sequence-validate-pass
+' Диаграмма последовательности: проверка пропуска (UC-02 / UC-10, SDD 006)
+' Связи: линии жизни = компоненты SDD 002; сообщения = основной поток UC-02;
+' фрагменты alt/opt/par = альтернативные потоки А1–А3 и поток ошибки Е1 UC-02
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam sequence {
+  ParticipantBackgroundColor #F4F8FC
+  ParticipantBorderColor #2F5D8A
+  LifeLineBorderColor #8AA4C0
+  ArrowColor #2F5D8A
+  GroupBorderColor #2F5D8A
+}
+skinparam note {
+  BackgroundColor #FFFBE6
+  BorderColor #B59B2A
+}
+autonumber "<b>00"
+
+title Проверка пропуска (UC-02, UC-10)
+
+actor "Контролёр" as C
+participant "Сканер\n(PWA)" as S
+participant "HttpApi\n(Express)" as A
+participant "Validation\nService" as V
+participant "qr-token" as T
+database "PostgreSQL" as DB
+participant "Realtime\nGateway" as R
+participant "Панель\nадминистратора" as P
+
+C -> S : навести камеру на QR
+activate S
+S -> S : ZXing: распознать токен,\nповтор за 3 с игнорировать
+S -> A : POST /api/v1/validate\n{token, checkpointId, direction}
+activate A
+A -> A : сессия, роль, точка контролёра,\nлимит 10 запросов/с
+alt сессия недействительна
+  A --> S : 401 Unauthorized
+  S -> S : состояние login
+else лимит превышен
+  A --> S : 429 Too Many Requests
+else запрос допустим
+  A -> V : validate(token, checkpoint, direction, controller)
+  activate V
+  V -> T : verify(token, secret)
+  activate T
+  T --> V : {passId, version} | null
+  deactivate T
+  alt подпись неверна
+    V -> DB : INSERT access_event (DENY_BAD_SIGNATURE)
+  else подпись верна
+    V -> DB : BEGIN; SELECT site_counter FOR UPDATE
+    activate DB
+    V -> DB : SELECT pass, zones, presence
+    DB --> V : строки
+    V -> V : цепочка проверок BR-01
+    V -> DB : INSERT access_event
+    opt reason = OK
+      V -> DB : UPDATE presence, site_counter
+    end
+    V -> DB : COMMIT
+    deactivate DB
+  end
+  V --> A : {decision, reason, pass, occupancy}
+  par ответ сканеру
+    A --> S : 200 OK JSON
+  else публикация после COMMIT
+    V ->> R : publish(occupancy, event)
+    R ->> P : WSS {type: "occupancy"}, {type: "event"}
+  end
+  deactivate V
+end
+deactivate A
+
+alt ответ не получен за 5 с (Е1)
+  S -> C : «Нет связи с сервером», состояние offline
+else decision = ALLOW
+  S -> C : зелёная карточка, ФИО, срок
+  opt у владельца есть фото
+    S -> A : GET /api/v1/photos/{id}
+    A --> S : image/jpeg
+  end
+else decision = DENY
+  S -> C : красная карточка, причина, вибрация
+end
+deactivate S
+
+note over A, DB
+  шаги 03–(ответ) ≤ 500 мс p95 (REQ-PERF-001);
+  блокировка строки счётчика исключает гонки (ADR-0004)
+end note
+@enduml
