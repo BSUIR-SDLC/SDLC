@@ -1,11 +1,18 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <iomanip>
 #include <algorithm>
 #include <cctype>
 
-enum class TaskStatus { OPEN, IN_PROGRESS, SUBMITTED, PAYMENT_REQUESTED, COMPLETED };
+enum class TaskStatus {
+    OPEN,
+    IN_PROGRESS,
+    SUBMITTED,
+    PAYMENT_REQUESTED,
+    COMPLETED
+};
 
 std::string statusToString(TaskStatus status) {
     switch (status) {
@@ -16,11 +23,6 @@ std::string statusToString(TaskStatus status) {
         case TaskStatus::COMPLETED: return "Завершена [COMPLETED]";
         default: return "Неизвестно";
     }
-}
-
-std::string toLowerASCII(std::string str) {
-    std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return std::tolower(c); });
-    return str;
 }
 
 struct Task {
@@ -35,26 +37,55 @@ struct Task {
     std::string clientFeedback;
 };
 
-struct TransactionRecord {
+struct Transaction {
     int txId;
     int taskId;
-    std::string taskTitle;
     double amount;
+    std::string description;
+};
+
+class IPaymentValidator {
+public:
+    virtual ~IPaymentValidator() = default;
+    virtual bool canRequestPayment(const Task& task) const = 0;
+    virtual bool isValidExtension(const std::string& path) const = 0;
+};
+
+class DeliverableValidator : public IPaymentValidator {
+public:
+    bool canRequestPayment(const Task& task) const override {
+        return task.status == TaskStatus::SUBMITTED && !task.uploadedFilePath.empty();
+    }
+
+    bool isValidExtension(const std::string& path) const override {
+        std::vector<std::string> allowed = {".zip", ".rar", ".cpp", ".pdf", ".fig", ".sql"};
+        for (const auto& ext : allowed) {
+            if (path.size() >= ext.size() &&
+                path.compare(path.size() - ext.size(), ext.size(), ext) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 class FreelancerCabinet {
 private:
     std::vector<Task> tasks;
-    std::vector<TransactionRecord> ledger;
+    std::vector<Transaction> transactions;
     double freelancerBalance;
+    int nextTxId;
+    IPaymentValidator* validator;
 
-    bool isValidFileExtension(const std::string& path) const {
-        size_t dotPos = path.find_last_of('.');
-        return dotPos != std::string::npos && dotPos != path.length() - 1;
+    static std::string toLower(std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        return s;
     }
 
 public:
-    FreelancerCabinet() : freelancerBalance(0.0) {
+    explicit FreelancerCabinet(IPaymentValidator* val)
+        : freelancerBalance(0.0), nextTxId(1001), validator(val) {
         tasks.push_back({1, "Разработка парсера данных", "C++", 250.0, TaskStatus::OPEN, "", "", 0, ""});
         tasks.push_back({2, "Верстка лендинга", "HTML/CSS", 120.0, TaskStatus::OPEN, "", "", 0, ""});
         tasks.push_back({3, "Оптимизация SQL-запросов", "SQL", 180.0, TaskStatus::OPEN, "", "", 0, ""});
@@ -63,27 +94,28 @@ public:
     }
 
     void showAllTasks() const {
-        std::cout << "\n================ РЕЕСТР ПРОЕКТОВ БИРЖИ ================\n";
+        std::cout << "\n================ РЕЕСТР ДОСТУПНЫХ ПРОЕКТОВ ================\n";
         for (const auto& t : tasks) {
             std::cout << "[" << t.id << "] " << std::left << std::setw(30) << t.title
                       << " | Стек: " << std::setw(8) << t.requiredSkill
                       << " | $" << std::fixed << std::setprecision(2) << std::setw(7) << t.paymentAmount
                       << " | " << statusToString(t.status) << "\n";
-            if (!t.uploadedFilePath.empty()) std::cout << "      ├─ Файл: " << t.uploadedFilePath << "\n";
-            if (t.status == TaskStatus::COMPLETED && t.clientRating > 0)
+            if (t.status == TaskStatus::COMPLETED && t.clientRating > 0) {
                 std::cout << "      └─ Оценка: " << t.clientRating << "/5 ★ | Отзыв: \"" << t.clientFeedback << "\"\n";
+            }
         }
-        std::cout << "=======================================================\n";
+        std::cout << "===========================================================\n";
     }
 
     void filterBySkill(const std::string& skill) const {
-        std::string query = toLowerASCII(skill);
+        std::string query = toLower(skill);
+        if (query == "cpp") query = "c++";
         std::cout << "\n--- Результаты выборки по навыку: " << skill << " ---\n";
         bool found = false;
         for (const auto& t : tasks) {
-            if (toLowerASCII(t.requiredSkill).find(query) != std::string::npos) {
-                std::cout << "[" << t.id << "] " << t.title << " | " << t.requiredSkill
-                          << " | $" << std::fixed << std::setprecision(2) << t.paymentAmount
+            if (toLower(t.requiredSkill).find(query) != std::string::npos) {
+                std::cout << "[" << t.id << "] " << t.title
+                          << " | Бюджет: $" << t.paymentAmount
                           << " | " << statusToString(t.status) << "\n";
                 found = true;
             }
@@ -92,30 +124,35 @@ public:
     }
 
     void applyForTask(int taskId, const std::string& proposal) {
-        if (proposal.empty()) { std::cout << "[ОШИБКА]: Пустой текст отклика!\n"; return; }
         for (auto& t : tasks) {
             if (t.id == taskId) {
-                if (t.status != TaskStatus::OPEN) { std::cout << "[ОШИБКА]: Проект уже занят!\n"; return; }
+                if (t.status != TaskStatus::OPEN) {
+                    std::cout << "[ОШИБКА]: Подать отклик можно только на открытый проект!\n";
+                    return;
+                }
                 t.status = TaskStatus::IN_PROGRESS;
                 t.proposalText = proposal;
-                std::cout << "[УСПЕХ]: Отклик принят! Статус: IN_PROGRESS.\n";
+                std::cout << "[УСПЕХ]: Заявка зарегистрирована! Проект взят в работу.\n";
                 return;
             }
         }
-        std::cout << "[ОШИБКА]: Задача не найдена.\n";
+        std::cout << "[ОШИБКА]: Задача с ID " << taskId << " не найдена.\n";
     }
 
     void uploadResultFile(int taskId, const std::string& filePath) {
         for (auto& t : tasks) {
             if (t.id == taskId) {
-                if (t.status != TaskStatus::IN_PROGRESS) { std::cout << "[ОШИБКА]: Сначала откликнитесь на проект!\n"; return; }
-                if (filePath.empty() || !isValidFileExtension(filePath)) {
-                    std::cout << "[ОШИБКА ВАЛИДАЦИИ]: Укажите файл с расширением (например, archive.zip)!\n";
+                if (t.status != TaskStatus::IN_PROGRESS) {
+                    std::cout << "[ОШИБКА]: Прикрепление файла доступно только в статусе IN_PROGRESS!\n";
+                    return;
+                }
+                if (!validator->isValidExtension(filePath)) {
+                    std::cout << "[ОШИБКА ВАЛИДАЦИИ]: Недопустимый формат файла! Разрешены: .zip, .rar, .cpp, .pdf, .fig, .sql\n";
                     return;
                 }
                 t.uploadedFilePath = filePath;
                 t.status = TaskStatus::SUBMITTED;
-                std::cout << "[УСПЕХ]: Файл '" << filePath << "' загружен. Статус: SUBMITTED.\n";
+                std::cout << "[УСПЕХ]: Файл '" << filePath << "' прошёл проверку. Статус: SUBMITTED.\n";
                 return;
             }
         }
@@ -125,50 +162,121 @@ public:
     void requestPayment(int taskId) {
         for (auto& t : tasks) {
             if (t.id == taskId) {
-                if (t.status != TaskStatus::SUBMITTED) {
-                    std::cout << "[БЛОКИРОВКА]: Нельзя требовать оплату без сданного файла!\n";
+                if (!validator->canRequestPayment(t)) {
+                    std::cout << "[БЛОКИРОВКА БЕЗОПАСНОСТИ]: Требование оплаты отклонено! "
+                              << "Сначала прикрепите валидный файл выполненной работы.\n";
                     return;
                 }
                 t.status = TaskStatus::COMPLETED;
                 freelancerBalance += t.paymentAmount;
-                int txId = static_cast<int>(ledger.size()) + 1001;
-                ledger.push_back({txId, t.id, t.title, t.paymentAmount});
                 t.clientRating = 5;
-                t.clientFeedback = "Работа принята без замечаний, спасибо!";
-                std::cout << "\n>>> [КНОПКА «ТРЕБОВАТЬ ОПЛАТУ» НАЖАТА] <<<\n";
-                std::cout << ">>> Транзакция #" << txId << " подтверждена! Начислено: $" << t.paymentAmount << "\n";
-                std::cout << ">>> Заказчик оставил оценку: " << t.clientRating << "/5 ★\n";
+                t.clientFeedback = "Отличная работа, проект сдан в срок!";
+                transactions.push_back({nextTxId++, t.id, t.paymentAmount, "Оплата проекта: " + t.title});
+                std::cout << "\n>>> [КНОПКА ТРЕБОВАТЬ ОПЛАТУ НАЖАТА] <<<\n";
+                std::cout << ">>> Транзакция #" << (nextTxId - 1) << ": зачислено $" << t.paymentAmount << "\n";
+                std::cout << ">>> Заказчик выставил оценку: " << t.clientRating << "/5 ★\n";
                 return;
             }
         }
         std::cout << "[ОШИБКА]: Задача не найдена.\n";
     }
 
-    void showBalanceAndLedger() const {
-        std::cout << "\n================ ФИНАНСОВЫЙ КАБИНЕТ ================\n";
-        std::cout << "Баланс: $" << std::fixed << std::setprecision(2) << freelancerBalance << "\n";
-        for (const auto& tx : ledger)
-            std::cout << "  - TX #" << tx.txId << " | [" << tx.taskId << "] " << tx.taskTitle << " | +$" << tx.amount << "\n";
-        std::cout << "====================================================\n";
+    void printBalanceAndHistory() const {
+        std::cout << "\n============================================\n";
+        std::cout << " Текущий баланс фрилансера: $" << std::fixed << std::setprecision(2)
+                  << freelancerBalance << "\n";
+        std::cout << " История транзакций (" << transactions.size() << "):\n";
+        for (const auto& tx : transactions) {
+            std::cout << "  - TX #" << tx.txId << " | Задача #" << tx.taskId
+                      << " | +$" << tx.amount << " | " << tx.description << "\n";
+        }
+        std::cout << "============================================\n";
+    }
+
+    void exportReport(const std::string& filename) const {
+        std::ofstream out(filename);
+        if (!out.is_open()) {
+            std::cout << "[ОШИБКА]: Не удалось создать файл отчёта.\n";
+            return;
+        }
+        out << "ОТЧЁТ ПО ТРАНЗАКЦИЯМ — КАБИНЕТ ФРИЛАНСЕРА\n";
+        out << "Итоговый баланс: $" << std::fixed << std::setprecision(2) << freelancerBalance << "\n";
+        for (const auto& tx : transactions) {
+            out << "TX #" << tx.txId << " | Task #" << tx.taskId
+                << " | $" << tx.amount << " | " << tx.description << "\n";
+        }
+        out.close();
+        std::cout << "[УСПЕХ]: Отчёт успешно экспортирован в файл '" << filename << "'.\n";
     }
 };
 
 int main() {
     system("chcp 65001 > nul");
-    FreelancerCabinet app;
+    DeliverableValidator validator;
+    FreelancerCabinet app(&validator);
     int choice = 0;
+
     while (true) {
-        std::cout << "\n===== КАБИНЕТ ФРИЛАНСЕРА (v3.0 — Dynamic UML) =====\n"
-                  << "1. Все проекты\n2. Фильтр по навыку\n3. Подать отклик\n"
-                  << "4. Загрузить файл\n5. Требовать оплату\n6. Баланс и транзакции\n0. Выход\nВыбор: ";
-        if (!(std::cin >> choice)) { std::cin.clear(); std::cin.ignore(10000, '\n'); continue; }
+        std::cout << "\n===== СИСТЕМА «КАБИНЕТ ФРИЛАНСЕРА» (v4.0 — Static UML) =====\n";
+        std::cout << "1. Просмотреть все проекты\n";
+        std::cout << "2. Фильтровать проекты по навыку\n";
+        std::cout << "3. Подать заявку на проект (форма отклика)\n";
+        std::cout << "4. Загрузить файл-результат (с проверкой формата)\n";
+        std::cout << "5. Требовать оплату (кнопка с верификацией)\n";
+        std::cout << "6. Баланс и история транзакций\n";
+        std::cout << "7. Экспортировать отчёт по транзакциям в файл\n";
+        std::cout << "0. Выход\n";
+        std::cout << "Выберите действие: ";
+
+        if (!(std::cin >> choice)) {
+            std::cin.clear();
+            std::cin.ignore(10000, '\n');
+            continue;
+        }
         if (choice == 0) break;
-        if (choice == 1) app.showAllTasks();
-        else if (choice == 2) { std::string s; std::cout << "Навык: "; std::cin >> s; app.filterBySkill(s); }
-        else if (choice == 3) { int id; std::string p; std::cout << "ID: "; std::cin >> id; std::cin.ignore(); std::cout << "Отклик: "; std::getline(std::cin, p); app.applyForTask(id, p); }
-        else if (choice == 4) { int id; std::string f; std::cout << "ID: "; std::cin >> id; std::cin.ignore(); std::cout << "Файл: "; std::getline(std::cin, f); app.uploadResultFile(id, f); }
-        else if (choice == 5) { int id; std::cout << "ID: "; std::cin >> id; app.requestPayment(id); }
-        else if (choice == 6) app.showBalanceAndLedger();
+
+        switch (choice) {
+            case 1: app.showAllTasks(); break;
+            case 2: {
+                std::string s;
+                std::cout << "Введите стек технологий (C++, HTML/CSS, SQL, Figma): ";
+                std::cin >> s;
+                app.filterBySkill(s);
+                break;
+            }
+            case 3: {
+                int id;
+                std::string prop;
+                std::cout << "Введите ID проекта: ";
+                std::cin >> id;
+                std::cin.ignore();
+                std::cout << "Введите текст отклика: ";
+                std::getline(std::cin, prop);
+                app.applyForTask(id, prop);
+                break;
+            }
+            case 4: {
+                int id;
+                std::string path;
+                std::cout << "Введите ID проекта: ";
+                std::cin >> id;
+                std::cin.ignore();
+                std::cout << "Введите путь к файлу (.zip/.cpp/.pdf): ";
+                std::getline(std::cin, path);
+                app.uploadResultFile(id, path);
+                break;
+            }
+            case 5: {
+                int id;
+                std::cout << "Введите ID сданного проекта: ";
+                std::cin >> id;
+                app.requestPayment(id);
+                break;
+            }
+            case 6: app.printBalanceAndHistory(); break;
+            case 7: app.exportReport("report_transactions.txt"); break;
+            default: std::cout << "Неверный ввод.\n";
+        }
     }
     return 0;
 }
