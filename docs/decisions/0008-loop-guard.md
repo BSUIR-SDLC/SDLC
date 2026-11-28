@@ -67,3 +67,8 @@
 - Прецеденты: UC-14 «Отключить зацикленное правило» расширяет UC-10 в точке «более 20 срабатываний в минуту» (uml/use-cases.md).
 - Реализация: обработчик приёма читает заголовок X-Hop (receiveWebhook.ts, тест «заголовок X-Hop»); проверка LoopGuard – функция F21, итерация I3 плана v3.
 - Бизнес-правила: BR-06 – BR-08 (docs/supplementary-specification.md).
+
+Дополнено в лабораторной работе №6.
+
+- Реализован класс `LoopGuard` в `apps/api/src/modules/guard/loopGuard.ts` (проверки `MAX_HOPS = 3`, `cooldownSec` и скользящего окна `MAX_TRIGGERS_PER_MINUTE = 20` с переводом правила в `auto_disabled`); интегрирован с `MatchingEngine` (`apps/api/src/modules/engine/matchingEngine.ts`) и покрыт модульными тестами (`apps/api/test/matchingAndGuard.test.ts`).
+- На диаграмме классов `uml/models/class-services.puml` (`SDD 020-class-services`) показана агрегация `MatchingEngine o-- LoopGuard`, а на диаграммах `uml/models/component-system.puml` и `uml/models/deployment-artifacts.puml` компонент `:LoopGuard` предоставляет интерфейс `ILoopGuard` и манифестируется артефактом `loopGuard.ts`.

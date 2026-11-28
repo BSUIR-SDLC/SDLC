@@ -53,3 +53,11 @@
 - Хорошо: не нужно администрировать сервер
 - Плохо: дороже при постоянной работе
 - Плохо: зависимость от провайдера
+
+## Дополнительная информация
+
+Дополнено в лабораторной работе №6.
+
+- Подготовлены артефакты развёртывания: `deploy/docker-compose.yml` (сервисы `nginx`, `api`, `worker`, `db`, том `pgdata`), `deploy/Dockerfile` (единый образ Node.js 24 для `api` и `worker`), `deploy/nginx.conf` и начальная SQL-миграция `db/migrations/001_init.sql`.
+- На диаграмме развёртывания `uml/models/deployment-topology.puml` (SDD `022-deployment`) показаны узлы `«device»` (VPS Host, Client Workstation, External Simulator Host, Notification Gateway, GitHub Actions & GHCR), среды выполнения `«executionEnvironment»` (Docker Engine, контейнеры `nginx`, `api`, `worker`, `db`, Cron-бэкап), сетевые протоколы и размещение артефактов.
+- На диаграмме `uml/models/deployment-artifacts.puml` показана внутренняя структура образа `rulehook-server.tar` и связи `«manifest»` от файлов и библиотек к UML-компонентам.

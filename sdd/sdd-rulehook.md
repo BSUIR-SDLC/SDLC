@@ -1,6 +1,6 @@
 # Описание проектирования RuleHook (SDD)
 
-Версия 0.4 (0.1 – 12.11.2026, 0.2 – 13.11.2026, 0.3 – 18.11.2026).
+Версия 0.5 (0.1 – 12.11.2026, 0.2 – 13.11.2026, 0.3 – 18.11.2026, 0.4 – 23.11.2026, 0.5 – 28.11.2026).
 
 ## 1 Введение
 
@@ -44,28 +44,30 @@
 
 ![](img/002-composition.png)
 
-Ядро корректности – модули engine, guard, dispatcher и пакет rule-dsl (выделены цветом).
+Ядро корректности – модули engine, guard, dispatcher и пакет rule-dsl (выделены цветом). Детализированная UML-версия с портами и коннекторами – представление `021-components` (приложение Г).
 
 ### 003-structure – Структура
 
 ```
 rulehook/
 ├─ apps/
-│  ├─ server/           # api и worker (один образ)
-│  │  └─ src/ routes → services → repos, modules/{hooks,engine,dispatcher,guard,...}
-│  └─ console/          # веб-консоль (React, TypeScript)
+│  └─ api/              # модульный монолит (Node.js 24, TypeScript)
+│     └─ src/           # domain/, http/, infrastructure/, modules/{auth,dispatcher,engine,guard,rules,sources,targets,webhooks}
 ├─ packages/
-│  └─ rule-dsl/         # пути, операторы, схема правила (без Fastify и БД)
-├─ db/migrations/
-├─ deploy/              # docker-compose.yml, nginx.conf
-├─ srs/  sdd/  docs/  tools/
+│  ├─ rule-dsl/         # пути, операторы, схема правила (без HTTP и БД)
+│  └─ webhook-signature/# HMAC-SHA256 и ротация секретов
+├─ db/migrations/       # 001_init.sql (PostgreSQL 16)
+├─ deploy/              # docker-compose.yml, Dockerfile, nginx.conf
+├─ srs/  sdd/  uml/  docs/  tools/
 ```
+
+Детализированная UML-версия классов и портов – представления `019-class-domain` и `020-class-services` (приложение Г).
 
 ### 004-information – Информация
 
 ![](img/004-information.png)
 
-Ограничения целостности: уникальный индекс event (source_id, external_id); rule_version (rule_id, version) уникален; delivery.status ∈ {QUEUED, SENDING, RETRY_WAIT, DELIVERED, REJECTED, EXHAUSTED, DEAD, SKIPPED, REPLAY}; внешние ключи без каскадного удаления событий.
+Ограничения целостности: уникальный индекс event (source_id, external_id); rule_version (rule_id, version) уникален; delivery.status ∈ {QUEUED, SENDING, RETRY_WAIT, DELIVERED, REJECTED, EXHAUSTED, DEAD, SKIPPED, REPLAY}; внешние ключи без каскадного удаления событий. Доменная объектная модель UML – представление `019-class-domain` (приложение Г).
 
 ### 005-interface – Интерфейс
 
@@ -145,6 +147,8 @@ worker():                                # N воркеров параллель
 
 ![](img/009-deployment.png)
 
+Детализированная UML-версия узлов, сред выполнения и манифестации артефактов – представление `022-deployment` (приложение Г).
+
 ### 010-concurrency – Параллелизм
 
 | Ситуация | Решение |
@@ -192,6 +196,10 @@ worker():                                # N воркеров параллель
 | 0006 | Семантика доставки: at-least-once, Idempotency-Key, 5 попыток, затем недоставленные |
 | 0007 | Один VPS, Docker Compose |
 | 0008 | Защита от петель: счётчик переходов X-Hop, пауза повторного срабатывания, автоотключение правила |
+| 0009 | Модели поведения – UML в текстовой нотации PlantUML |
+| 0010 | Автомат доставки – таблица переходов, сверяемая с диаграммой |
+| 0011 | Модели статической структуры – UML в PlantUML (классы, компоненты, развёртывание) |
+| 0012 | Порты-интерфейсы, стратегии DSL и автоматическая сверка статических моделей UML с кодом |
 
 ## 5 Сводка плана
 
@@ -205,6 +213,7 @@ worker():                                # N воркеров параллель
 | 0.2 | 13.11.2026 | ADR-0005 (редактор правил: JSON-режим); F11 сокращена, F20 – релиз 3 |
 | 0.3 | 18.11.2026 | Представления 002, 004, 005, 007, 012: F21, F22; ADR-0008; план v3 |
 | 0.4 | 23.11.2026 | Модели поведения UML: представления 013 – 018; ADR-0009, ADR-0010; приложение В |
+| 0.5 | 28.11.2026 | Модели статической структуры UML: представления 019 – 022; ADR-0011, ADR-0012; приложение Г; код итераций I1–I2 |
 
 ## Приложение Б. Матрица трассировки
 
@@ -314,3 +323,54 @@ worker():                                # N воркеров параллель
 | UC-06 | 013 | targets/targetPolicy.ts (I1) | targetPolicy.test.ts |
 | UC-09, UC-08, UC-07 | 013, 016, 018 | dispatcher/deliveryMachine.ts (заготовка F06, I2) | deliveryMachine.test.ts |
 | UC-03, UC-10 – UC-14 | 013 – 017 | I2 – I4 по плану v3 | – |
+
+## Приложение Г. Модели статической структуры UML (версия 0.5, лабораторная работа №6)
+
+Добавлено в версии 0.5: точки зрения логической структуры, композиции/интерфейсов и развёртывания на языке UML (PlantUML), представления `019-class-domain` – `022-deployment`, решения `ADR-0011` и `ADR-0012`, таблица трассировки «представление – модели – код и артефакты – тесты». Представления SysML v2 `002-composition`, `003-structure`, `004-information` и `009-deployment` детализированы UML-представлениями `019` – `022`.
+
+### 2.2 Точки зрения (статическая структура)
+
+| Точка зрения | Стейкхолдеры | Вопросы | Язык |
+|---|---|---|---|
+| Логическое представление (Logical) | Разработчики, архитектор | Классы, интерфейсы, иерархии наследования, инкапсуляция и зависимости | UML class (PlantUML) |
+| Композиция и интерфейсы (Composition / Interface) | Архитектор, разработчики | Подсистемы, внутренние части, порты, предоставляемые и требуемые интерфейсы | UML component (PlantUML) |
+| Развёртывание (Deployment) | Эксплуатация, DevOps, разработчики | Узлы выполнения, сетевые каналы, контейнеры, файлы и `«manifest»` к компонентам | UML deployment (PlantUML) |
+
+### 3 Представления
+
+| ID | Точка зрения | Содержание | Связанные артефакты | Модель |
+|---|---|---|---|---|
+| 019-class-domain | Логическое представление | Иерархии `User`, `Target`, агрегат `RuleEntity`/`RuleVersion`, `WebhookEvent`, `DeliveryRecord`, Strategy `ComparisonOperator` | `domain/models.ts`, `packages/rule-dsl` | `class-domain.puml` |
+| 020-class-services | Логическое представление и зависимости | `AppRouter`, контроллеры, 8 сервисов и портов-интерфейсов, `InMemoryStore` | `apps/api/src/modules/**`, `http/`, `infrastructure/` | `class-services.puml` |
+| 021-components | Композиция и интерфейсы | 3 подсистемы (`nginx`, `RuleHookServer`, `PostgreSQL 16`), порты, ball-and-socket коннекторы, делегирование | `002-composition`, `apps/api`, `packages/*` | `component-system.puml` |
+| 022-deployment | Развёртывание | Узлы `«device»`/`«executionEnvironment»`, протоколы; образ `rulehook-server.tar` с папками и `«manifest»` | `009-deployment`, `deploy/*`, `db/migrations/001_init.sql` | `deployment-topology.puml`, `deployment-artifacts.puml` |
+
+#### 019-class-domain – Классы предметной области и ядра правил
+![](../uml/img/class-domain.png)
+
+Применены все основные отношения UML: обобщение (`Operator`, `Administrator --|> User`; `EmulatorTarget`, `NotifierTarget --|> Target`), реализация интерфейса (`EqOperator`, `NumericOperator`, `RegexOperator ..|> ComparisonOperator`), композиция (`RuleEntity *-- RuleVersion`, `RuleEntity *-- ActionDefinition`), агрегация (`RuleEvaluator o-- ComparisonOperator`), направленные ассоциации с кратностями и ролями, а также зависимость использования `«use»` и статическая операция `DeliveryRecord.backoffMs()`.
+
+#### 020-class-services – Классы сервисов, контроллеров и портов
+![](../uml/img/class-services.png)
+
+Сервисы прикладного слоя изолированы от деталей хранения и транспорта через пакет портов `«interface»` (`UserRepository`, `SourceRepository`, `TargetRepository`, `RuleRepository`, `DeliveryRepository`, `PasswordHasher`, `SignatureVerifier`, `HttpClient`). Это позволяет тестировать полный цикл обработки событий в памяти (`InMemoryStore`) и подключать PostgreSQL без изменения доменной логики (`ADR-0012`).
+
+#### 021-components – Компоненты системы
+![](../uml/img/component-system.png)
+
+Показана внутренняя структура подсистем `ReverseProxy (nginx)`, `RuleHookServer (Node.js 24)` и `PostgreSQL 16`: входные и выходные порты (`pHooksIn`, `pApiIn`, `pIngest`, `pRest`, `pDb`, `pCmd`, `pNotify`, `pSql`), делегирование к внутренним компонентам, сборочные соединители (ball-and-socket) для интерфейсов `ISignatureVerifier`, `IRuleEvaluator`, `IRuleValidator`, `IMatchingEngine`, `ILoopGuard`, `ISourceLookup`, `ITargetRegistry`, `IAuthService` и зависимости `«use»` к внешним системам и БД.
+
+#### 022-deployment – Развёртывание и манифестация артефактов
+![](../uml/img/deployment-topology.png)
+![](../uml/img/deployment-artifacts.png)
+
+Топология развёртывания отражает VPS-хост (`Docker Engine`, контейнеры `nginx`, `api`, `worker`, `db`, том `pgdata`, ежесуточный `pg_dump`) и внешние узлы (клиент, эмулятор, шлюз уведомлений, GitHub Actions & GHCR). Диаграмма артефактов раскрывает структуру собираемого OCI-образа `rulehook-server.tar` (`«folder» deploy`, `db/migrations`, `packages`, `apps/api/src`) и отношения проявления `«manifest»` от библиотек и модулей к компонентам `WebhookReceiver`, `MatchingEngine`, `LoopGuard` и `ActionDispatcher`.
+
+### Представления статической структуры – код – артефакты – тесты
+
+| Представление | Элементы модели | Реализация в коде / артефакты | Проверка (тесты) |
+|---|---|---|---|
+| 019-class-domain | `User`, `Target`, `RuleEntity`, `ComparisonOperator`, `RuleEvaluator` | `apps/api/src/domain/models.ts`, `packages/rule-dsl/src/index.ts` | `ruleDsl.test.ts`, `matchingAndGuard.test.ts`, `umlStructure.test.ts` |
+| 020-class-services | `AppRouter`, `*Service`, `MatchingEngine`, `LoopGuard`, `ActionDispatcher`, `InMemoryStore` | `apps/api/src/modules/**`, `http/router.ts`, `server.ts`, `infrastructure/inMemoryStore.ts` | `httpAndDispatcher.test.ts`, `matchingAndGuard.test.ts`, `umlStructure.test.ts` |
+| 021-components | `RuleHookServer`, внутренние компоненты, порты и ball-and-socket | `apps/api/src/server.ts`, модули и пакеты workspace | `httpAndDispatcher.test.ts` |
+| 022-deployment | `VPS Host`, `nginx`, `api`, `worker`, `db`, `rulehook-server.tar`, `«manifest»` | `deploy/docker-compose.yml`, `deploy/Dockerfile`, `deploy/nginx.conf`, `db/migrations/001_init.sql` | `umlStructure.test.ts` |

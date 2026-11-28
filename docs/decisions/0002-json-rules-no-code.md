@@ -63,3 +63,11 @@
 - Хорошо: зрелый язык политик
 - Плохо: избыточно для задачи
 - Плохо: отдельный язык и сервис
+
+## Дополнительная информация
+
+Дополнено в лабораторной работе №6.
+
+- Реализация вынесена в чистый пакет `packages/rule-dsl/src/index.ts`: функция `validateRuleDefinition` проверяет структуру правила и возвращает точный путь ошибки (`SUP-U-02`), функция `resolvePath` извлекает значения в нотации JSONPath-lite без исполнения кода, а `RuleEvaluator` вычисляет вложенные выражения `all` / `any` / `not` с трассой `explain`.
+- На диаграмме классов `uml/models/class-domain.puml` (SDD `019-class-domain`) 10 операторов сравнения оформлены по паттерну Strategy через интерфейс `ComparisonOperator` и классы `EqOperator`, `NumericOperator`, `RegexOperator` и др.
+- На диаграмме компонентов `uml/models/component-system.puml` пакет `:rule-dsl` предоставляет интерфейсы `IRuleEvaluator` (для `:MatchingEngine`) и `IRuleValidator` (для `:RuleService`), а на `uml/models/deployment-artifacts.puml` библиотека `«library» rule-dsl` манифестирует компонент `MatchingEngine`.

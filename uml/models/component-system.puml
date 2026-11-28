@@ -1,0 +1,91 @@
+@startuml component-system
+' Связи: SDD 002-composition, 021-components; ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0008, ADR-0011
+' Код: apps/api/src/**, packages/webhook-signature, packages/rule-dsl
+title Диаграмма компонентов системы RuleHook
+skinparam defaultFontName Arial
+skinparam shadowing false
+left to right direction
+
+component "<<external>>\nEmulator" as Emulator
+component "<<client>>\nAdminConsole" as Console
+
+component "<<subsystem>>\nReverseProxy (nginx)" as Proxy {
+  portin pHooksIn
+  portin pApiIn
+  portout pHooksOut
+  portout pApiOut
+}
+
+component "<<subsystem>>\nRuleHookServer (Node.js 24)" as Server {
+  portin pIngest
+  portin pRest
+  portout pNotify
+  portout pCmd
+  portout pDb
+
+  component ":WebhookReceiver\n(webhooks)" as Hooks
+  component ":AuthModule\n(auth)" as Auth
+  component ":EndpointRegistry\n(sources, targets)" as Endpoints
+  component ":RuleService\n(rules)" as Rules
+  component ":MatchingEngine\n(engine)" as Engine
+  component ":LoopGuard\n(guard)" as Guard
+  component ":ActionDispatcher\n(dispatcher, worker)" as Dispatcher
+  component ":webhook-signature\n(package)" as SigPkg
+  component ":rule-dsl\n(package)" as DslPkg
+
+  ' Делегация от портов подсистемы к внутренним компонентам
+  pIngest --> Hooks
+  pRest --> Auth
+  pRest --> Rules
+  pRest --> Endpoints
+
+  ' Соединители сборки (ball-and-socket: предоставляемый и требуемый интерфейсы)
+  SigPkg -0)- Hooks : ISignatureVerifier
+  DslPkg -0)- Engine : IRuleEvaluator
+  DslPkg -0)- Rules : IRuleValidator
+  Hooks -(0- Engine : IMatchingEngine
+  Guard -0)- Engine : ILoopGuard
+  Endpoints -0)- Hooks : ISourceLookup
+  Endpoints -0)- Dispatcher : ITargetRegistry
+  Auth -0)- Rules : IAuthService
+
+  ' Зависимости к портам выхода
+  Hooks ..> pDb : <<use>>
+  Rules ..> pDb : <<use>>
+  Engine ..> pDb : <<use>>
+  Dispatcher ..> pDb : <<use>>
+  Dispatcher --> pCmd
+  Dispatcher --> pNotify
+}
+
+component "<<external>>\nNotificationSystem" as Notifier
+component "<<external>>\nEmulatorTarget" as EmuOut
+
+package "<<subsystem>> PostgreSQL 16" as DB {
+  portin pSql
+  component ":StorageEngine\n(events, rules, queue, audit)" as PgCore
+  database "pgdata" as PgData
+  pSql --> PgCore
+  PgCore --> PgData
+}
+
+interface "IWebhookIngest" as IHookIn
+interface "IRestApi" as IApiIn
+interface "IStoragePort" as IDbPort
+
+Emulator -( IHookIn
+IHookIn -- pHooksIn
+pHooksOut --> pIngest
+
+Console -( IApiIn
+IApiIn -- pApiIn
+pApiOut --> pRest
+
+pNotify ..> Notifier : <<use>> HTTPS POST
+pCmd ..> EmuOut : <<use>> HTTPS POST
+pDb -( IDbPort
+IDbPort -- pSql
+
+Notifier -[hidden]down- EmuOut
+EmuOut -[hidden]down- DB
+@enduml

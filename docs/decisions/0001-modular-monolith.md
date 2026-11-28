@@ -56,3 +56,11 @@
 - Хорошо: нет серверов
 - Плохо: холодный старт мешает ответу ≤ 200 мс
 - Плохо: очередь доставки приходится строить отдельно
+
+## Дополнительная информация
+
+Дополнено в лабораторной работе №6.
+
+- Диаграмма компонентов `uml/models/component-system.puml` (SDD `021-components`) фиксирует внутренние компоненты модульного монолита `RuleHookServer`, их порты (`pIngest`, `pRest`, `pDb`, `pCmd`, `pNotify`) и соединители сборки (ball-and-socket) через публичные интерфейсы `ISignatureVerifier`, `IRuleEvaluator`, `IRuleValidator`, `IMatchingEngine`, `ILoopGuard`, `ISourceLookup`, `ITargetRegistry`, `IAuthService`.
+- Диаграмма классов `uml/models/class-services.puml` (SDD `020-class-services`) отражает разделение на слои контроллеров (`AppRouter`, `WebhookController`), прикладных сервисов, портов (`*Repository`, `HttpClient`, `PasswordHasher`, `SignatureVerifier`) и адаптера `InMemoryStore`.
+- Композиция модулей и общий HTTP-сервер реализованы в `apps/api/src/server.ts` и `apps/api/src/http/router.ts`; структура контейнера сборки показана на `uml/models/deployment-artifacts.puml`.

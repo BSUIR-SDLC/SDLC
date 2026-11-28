@@ -1,0 +1,190 @@
+@startuml class-services
+' Связи: SDD 002-composition, 020-class-services; ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0008, ADR-0010
+' Код: apps/api/src/modules/**, apps/api/src/infrastructure/inMemoryStore.ts, apps/api/src/http/router.ts, apps/api/src/server.ts
+title Диаграмма классов сервисов, контроллеров и портов (RuleHook)
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 20
+skinparam ranksep 45
+left to right direction
+
+package "http & controllers" {
+  class AppRouter {
+    - app: AppContainer
+    + <<create>> AppRouter(app: AppContainer)
+    + handle(req: IncomingMessage, res: ServerResponse): Promise<void>
+    - authorize(req: IncomingMessage, res: ServerResponse, perm: string): SessionClaims?
+  }
+
+  class WebhookController {
+    - deps: Deps
+    + <<create>> WebhookController(deps: Deps)
+    + ingest(sourceId: string, rawBody: Buffer, headers: Headers): Promise<Reply>
+  }
+}
+
+package "application services" {
+  class AuthService {
+    - users: UserRepository
+    - hasher: PasswordHasher
+    - tokens: TokenService
+    + <<create>> AuthService(users, hasher, tokens)
+    + login(login: string, pass: string, now: number): Promise<LoginResult>
+    + authorize(token: string?, perm: string, now: number): AuthResult
+  }
+
+  class TokenService {
+    - secret: string
+    + <<create>> TokenService(secret: string)
+    + issue(user: User, now: number): string
+    + verify(token: string, now: number): SessionClaims?
+  }
+
+  class SourceService {
+    - repo: SourceRepository
+    + <<create>> SourceService(repo: SourceRepository)
+    + createSource(dto: CreateSourceDto): Promise<SourceCreated>
+    + rotateSecret(id: string, now: number): Promise<RotatedSecret>
+  }
+
+  class TargetService {
+    - repo: TargetRepository
+    - allowedHosts: string[]
+    + <<create>> TargetService(repo: TargetRepository, hosts: string[])
+    + {static} isPrivateOrReservedHost(host: string): boolean
+    + createTarget(dto: CreateTargetDto): Promise<Target>
+    + deleteTarget(name: string): Promise<CancelResult>
+  }
+
+  class RuleService {
+    - rules: RuleRepository
+    - sources: SourceRepository
+    - targets: TargetRepository
+    - engine: MatchingEngine
+    + <<create>> RuleService(rules, sources, targets, engine)
+    + createRule(raw: unknown, author: string, now: number): Promise<SaveResult>
+    + importRules(items: unknown[], mode: string, author: string, now: number): Promise<ImportReport>
+    + dryRun(id: string, ev: WebhookEvent): Promise<DryRunResult>
+  }
+
+  class MatchingEngine {
+    - evaluator: RuleEvaluator
+    - guard: LoopGuard
+    + <<create>> MatchingEngine(guard: LoopGuard, evaluator: RuleEvaluator)
+    + selectRules(rules: RuleEntity[], src: string, type: string): RuleEntity[]
+    + matchAndEnqueue(tx: EngineTx, rules: RuleEntity[], ev: WebhookEvent, now: number): Promise<number>
+  }
+
+  class LoopGuard {
+    - triggerLog: Map<string, number[]>
+    + check(rule: RuleEntity, hop: number, now: number): GuardVerdict
+    - recordAndCheckRate(rule: RuleEntity, now: number): boolean
+  }
+
+  class DeliveryWorker {
+    - repo: DeliveryRepository
+    - dispatcher: ActionDispatcher
+    + <<create>> DeliveryWorker(repo: DeliveryRepository, disp: ActionDispatcher)
+    + tick(now: number): Promise<DeliveryRecord?>
+  }
+
+  class ActionDispatcher {
+    - repo: DeliveryRepository
+    - httpClient: HttpClient
+    + <<create>> ActionDispatcher(repo: DeliveryRepository, client: HttpClient)
+    + dispatch(delivery: DeliveryRecord, now: number): Promise<DeliveryRecord>
+  }
+
+  class DeliveryMachine <<module>> {
+    + {static} step(state: DeliveryState, ev: DeliveryEvent, ctx: Ctx): StepResult
+    + {static} classify(res: HttpResponse): DeliveryEvent
+    + {static} backoffMs(retries: number): number
+  }
+}
+
+package "ports (<<interface>>)" {
+  interface UserRepository <<interface>> {
+    + findByLogin(login: string): Promise<User?>
+    + saveLoginState(id: string, failed: number, locked: number?): Promise<void>
+  }
+  interface PasswordHasher <<interface>> {
+    + hash(password: string): string
+    + verify(password: string, hash: string): boolean
+  }
+  interface SourceRepository <<interface>> {
+    + getSource(id: string): Promise<StoredSource?>
+    + saveSource(source: StoredSource): Promise<void>
+  }
+  interface TargetRepository <<interface>> {
+    + getTargetByName(name: string): Promise<Target?>
+    + saveTarget(target: Target): Promise<void>
+    + cancelActiveDeliveriesForTarget(name: string): Promise<number>
+  }
+  interface RuleRepository <<interface>> {
+    + getRule(id: string): Promise<RuleEntity?>
+    + saveRule(rule: RuleEntity): Promise<void>
+  }
+  interface DeliveryRepository <<interface>> {
+    + pickNextDue(now: number): Promise<DeliveryRecord?>
+    + saveDelivery(delivery: DeliveryRecord): Promise<void>
+    + isGloballyPaused(): Promise<boolean>
+  }
+  interface HttpClient <<interface>> {
+    + post(url: string, hdrs: Headers, body: JsonObject, timeout: number): Promise<HttpResponse>
+  }
+  interface SignatureVerifier <<interface>> {
+    + verifySource(src: SourceSecrets, body: Buffer, hdr: string?, now: number): boolean
+  }
+}
+
+package "infrastructure" {
+  class ScryptPasswordHasher {
+    + hash(password: string): string
+    + verify(password: string, hash: string): boolean
+  }
+  class InMemoryStore {
+    - usersByLogin: Map<string, User>
+    - sources: Map<string, StoredSource>
+    - targets: Map<string, Target>
+    - rules: Map<string, RuleEntity>
+    - deliveries: Map<string, DeliveryRecord>
+    + createWebhookDeps(engine: MatchingEngine, now: Fn): Deps
+    + setGlobalPause(paused: boolean): Promise<number>
+  }
+  class HmacSignatureVerifier {
+    + verifySource(src: SourceSecrets, body: Buffer, hdr: string?, now: number): boolean
+  }
+}
+
+SignatureVerifier <|.. HmacSignatureVerifier
+PasswordHasher <|.. ScryptPasswordHasher
+UserRepository <|.. InMemoryStore
+SourceRepository <|.. InMemoryStore
+TargetRepository <|.. InMemoryStore
+RuleRepository <|.. InMemoryStore
+DeliveryRepository <|.. InMemoryStore
+
+AppRouter --> AuthService : - auth
+AppRouter --> SourceService : - sources
+AppRouter --> TargetService : - targets
+AppRouter --> RuleService : - rules
+AppRouter --> WebhookController : - webhooks
+
+AuthService --> UserRepository : - users
+AuthService --> PasswordHasher : - hasher
+AuthService *-- TokenService : - tokens
+SourceService --> SourceRepository : - repo
+TargetService --> TargetRepository : - repo
+RuleService --> RuleRepository : - rules
+RuleService --> MatchingEngine : - engine
+MatchingEngine o-- LoopGuard : - guard
+DeliveryWorker o-- ActionDispatcher : - dispatcher
+ActionDispatcher --> DeliveryRepository : - repo
+ActionDispatcher --> HttpClient : - httpClient
+
+WebhookController ..> SignatureVerifier : <<use>>
+WebhookController ..> MatchingEngine : <<use>>
+ActionDispatcher ..> DeliveryMachine : <<use>>
+@enduml

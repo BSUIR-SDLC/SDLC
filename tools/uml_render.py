@@ -8,7 +8,7 @@ python tools/uml_render.py --check  # ошибка, если для модели
 PLANTUML_SERVER (например http://localhost:8080) – тогда используется
 POST /png на сервер PlantUML.
 """
-import os, subprocess, sys, urllib.request
+import os, subprocess, sys, time, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,11 +20,28 @@ def render_jar(jar, files):
 
 def render_server(url, files):
     for f in files:
-        req = urllib.request.Request(url.rstrip('/') + '/png', data=f.read_bytes(), method='POST')
-        (IMG / (f.stem + '.png')).write_bytes(urllib.request.urlopen(req, timeout=60).read())
+        for attempt in range(4):
+            try:
+                req = urllib.request.Request(
+                    url.rstrip('/') + '/png',
+                    data=f.read_bytes(),
+                    method='POST',
+                    headers={
+                        'User-Agent': 'RuleHook-UML-Renderer/1.0',
+                        'Content-Type': 'text/plain; charset=utf-8',
+                    },
+                )
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    (IMG / (f.stem + '.png')).write_bytes(resp.read())
+                break
+            except Exception as err:
+                if attempt == 3:
+                    raise
+                time.sleep(1.5 * (attempt + 1))
 
 def main():
-    files = sorted(MODELS.glob('*.puml'))
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    files = sorted(MODELS / a if (MODELS / a).exists() else Path(a) for a in args) if args else sorted(MODELS.glob('*.puml'))
     if '--check' in sys.argv:
         stale = [f.name for f in files if not (IMG / (f.stem + '.png')).exists()]
         for f in files:

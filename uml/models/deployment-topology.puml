@@ -1,0 +1,63 @@
+@startuml deployment-topology
+' Связи: SDD 009-deployment, 022-deployment; ADR-0007, ADR-0011
+' Конфигурация: deploy/docker-compose.yml, deploy/Dockerfile, deploy/nginx.conf, db/migrations/001_init.sql
+title Диаграмма развёртывания инфраструктуры RuleHook (узлы и каналы связи)
+skinparam defaultFontName Arial
+skinparam shadowing false
+
+node "<<device>>\nClient Workstation" as Client {
+  node "<<executionEnvironment>>\nWeb Browser" as Browser {
+    artifact "<<artifact>>\nconsole-spa.js"
+  }
+}
+
+node "<<device>>\nExternal Simulator Host" as EmuHost {
+  node "<<executionEnvironment>>\nEvent Emulator" as EmuEnv
+}
+
+node "<<device>>\nNotification Gateway" as NotifierHost {
+  node "<<executionEnvironment>>\nTelegram / SMTP / Webhook" as NotifierEnv
+}
+
+node "<<device>>\nGitHub Actions & GHCR" as CI {
+  artifact "<<artifact>>\nrulehook-server:latest\n(OCI Image)" as Image
+}
+
+node "<<device>>\nVPS Host (Ubuntu 22.04, 2 vCPU, 4 GB RAM, 40 GB SSD)" as VPS {
+  node "<<executionEnvironment>>\nDocker Engine (docker-compose.yml)" as Docker {
+
+    node "<<executionEnvironment>>\nnginx:1.27-alpine\n(:80 / :443 TLS 1.2+)" as Nginx {
+      artifact "<<artifact>>\nnginx.conf"
+    }
+
+    node "<<executionEnvironment>>\nContainer: api\n(Node.js 24, ROLE=api, :3000)" as ApiNode {
+      artifact "<<artifact>>\nrulehook-api\n(server.ts, router.ts)"
+    }
+
+    node "<<executionEnvironment>>\nContainer: worker\n(Node.js 24, ROLE=worker)" as WorkerNode {
+      artifact "<<artifact>>\nrulehook-worker\n(actionDispatcher.ts)"
+    }
+
+    node "<<executionEnvironment>>\nContainer: db\n(PostgreSQL 16, :5432)" as DbNode {
+      artifact "<<artifact>>\n001_init.sql"
+      database "pgdata\n(persistent volume)" as PgVol
+    }
+
+    node "<<executionEnvironment>>\nCron / Backup" as BackupNode {
+      artifact "<<artifact>>\npg_dump.sh"
+    }
+  }
+}
+
+Client -- Nginx : HTTPS /api/v1
+EmuHost -- Nginx : HTTPS POST /hooks/{sourceId}
+Nginx -- ApiNode : HTTP :3000
+ApiNode -- DbNode : TCP :5432 (SQL / LISTEN)
+WorkerNode -- DbNode : TCP :5432 (SKIP LOCKED)
+BackupNode -- DbNode : pg_dump (ежесуточно)
+WorkerNode -- EmuHost : HTTPS POST (команды)
+WorkerNode -- NotifierHost : HTTPS POST (/notify)
+CI ..> VPS : SSH (docker compose pull && up -d)
+Image ..> ApiNode : <<deploy>>
+Image ..> WorkerNode : <<deploy>>
+@enduml

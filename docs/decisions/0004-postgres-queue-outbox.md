@@ -140,3 +140,13 @@
 
 # \* Бизнес-правило: BR-05 (docs/supplementary-specification.md).
 
+# 
+
+# Дополнено в лабораторной работе №6.
+
+# 
+
+# \* Схема БД: добавлена начальная миграция PostgreSQL 16 `db/migrations/001\_init.sql` (таблицы `events`, `rule\_matches`, `deliveries` с частичным индексом `idx\_deliveries\_due` для `FOR UPDATE SKIP LOCKED`, `dead\_letters`, `loop\_trips`, `replays`).
+
+# \* Реализация и модели: `DeliveryWorker` и `ActionDispatcher` в `apps/api/src/modules/dispatcher/actionDispatcher.ts` работают через порт `DeliveryRepository` (`uml/models/class-services.puml`), а на диаграмме компонентов (`uml/models/component-system.puml`) взаимодействие с PostgreSQL оформлено через порт `pDb` и требуемый интерфейс `IStoragePort`.
+

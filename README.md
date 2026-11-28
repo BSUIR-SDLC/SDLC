@@ -34,3 +34,17 @@
 
     PLANTUML_JAR=plantuml.jar python tools/uml_render.py
     python tools/uml_render.py --check
+
+## Лабораторная работа №6 – модели статической структуры UML и ядро итераций I1–I2
+
+| Каталог / файл | Содержимое |
+|---|---|
+| `uml/models/class-domain.puml`, `class-services.puml` | Диаграммы классов предметной области, DSL, сервисов и портов |
+| `uml/models/component-system.puml` | Диаграмма компонентов: подсистемы, порты, интерфейсы (ball-and-socket), делегирование |
+| `uml/models/deployment-topology.puml`, `deployment-artifacts.puml` | Диаграммы развёртывания (узлы/среды) и манифестации артефактов (`«manifest»`) |
+| `sdd/sdd-rulehook.md` | SDD 0.5: представления 019 – 022, решения, приложение Г |
+| `docs/decisions/0011, 0012` | Новые ADR и дополнения к ADR-0001, 0002, 0004, 0007, 0008, 0009 |
+| `packages/rule-dsl` | JSONPath-lite, 10 операторов сравнения (Strategy), `validateRuleDefinition`, `RuleEvaluator` |
+| `apps/api/src/{domain,http,infrastructure,modules}` | Иерархии `User`/`Target`, сервисы `Auth/Source/Target/Rule`, `MatchingEngine`, `LoopGuard`, `ActionDispatcher`, HTTP-сервер |
+| `db/migrations/001_init.sql`, `deploy/*` | SQL-миграция PostgreSQL 16, `Dockerfile`, `docker-compose.yml`, `nginx.conf` |
+| `apps/api/test/umlStructure.test.ts` | Автоматическая сверка диаграмм классов и артефактов развёртывания с кодом |
