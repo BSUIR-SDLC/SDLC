@@ -1,0 +1,188 @@
+@startuml class-domain
+' Связи: SDD 004-information, 019-class-domain; SRS REQ-FUNC-001, 004, 005, 006, 014; BR-01..BR-12
+' Код: packages/rule-dsl/src/index.ts, apps/api/src/domain/models.ts, apps/api/src/modules/dispatcher/deliveryMachine.ts
+title Диаграмма классов предметной области и ядра правил (RuleHook)
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 50
+skinparam ranksep 55
+
+package "domain (apps/api/src/domain)" {
+  abstract class User {
+    # id: string
+    # login: string
+    # passwordHash: string
+    # role: Role
+    # failedAttempts: number
+    # lockedUntil: number?
+    + <<create>> User(id: string, login: string, hash: string, role: Role)
+    + isLocked(now: number): boolean
+    + can(permission: string): boolean
+    + {abstract} getPermissions(): string[]
+  }
+
+  class Operator {
+    + <<create>> Operator(id: string, login: string, hash: string)
+    + getPermissions(): string[]
+  }
+
+  class Administrator {
+    + <<create>> Administrator(id: string, login: string, hash: string)
+    + getPermissions(): string[]
+  }
+
+  class Source {
+    - id: string
+    - name: string
+    - secret: string
+    - previousSecret: string?
+    - rotatedAt: number?
+    - enabled: boolean
+    + activeSecrets(now: number): string[]
+  }
+
+  class WebhookEvent {
+    - sourceId: string
+    - eventId: string
+    - type: string
+    - hop: number
+    - payload: JsonObject
+    - receivedAt: number
+  }
+
+  class RuleEntity {
+    - id: string
+    - sourceId: string
+    - eventType: string
+    - priority: number
+    - version: number
+    - state: RuleLifecycleState
+    - cooldownSec: number
+    - disabledReason: string?
+    + <<create>> RuleEntity(def: RuleDefinition, authorId: string, now: number)
+    + /isEnabled(): boolean
+    + update(def: RuleDefinition, authorId: string, now: number): number
+    + enable(): void
+    + disable(reason: string?): void
+    + autoDisable(reason: string): void
+    + archive(): void
+  }
+
+  class RuleVersion {
+    - ruleId: string
+    - version: number
+    - definition: RuleDefinition
+    - authorId: string
+    - createdAt: number
+  }
+
+  class RuleMatchRecord {
+    - id: string
+    - eventId: string
+    - ruleId: string
+    - ruleVersion: number
+    - explain: ExplainEntry[]
+  }
+
+  class DeliveryRecord {
+    - id: string
+    - matchId: string
+    - targetName: string
+    - status: DeliveryState
+    - retries: number
+    - nextAttemptAt: number
+    - lastStatusCode: number?
+    + {static} backoffMs(retries: number): number
+  }
+
+  abstract class Target {
+    + id: string
+    + name: string
+    + kind: TargetKind
+    + baseUrl: string
+    + timeoutMs: number
+    + enabled: boolean
+    + <<create>> Target(id: string, name: string, kind: TargetKind, baseUrl: string)
+    + validate(allowedHosts: string[]): ValidationResult
+    + buildRequest(path: string, body: JsonObject, ev: JsonObject, id: string, hop: number): OutgoingRequest
+    # {abstract} formatBody(renderedBody: JsonObject): JsonObject
+  }
+
+  class EmulatorTarget {
+    + <<create>> EmulatorTarget(id: string, name: string, baseUrl: string)
+    # formatBody(renderedBody: JsonObject): JsonObject
+  }
+
+  class NotifierTarget {
+    + <<create>> NotifierTarget(id: string, name: string, baseUrl: string)
+    # formatBody(renderedBody: JsonObject): JsonObject
+  }
+}
+
+package "rule-dsl (packages/rule-dsl)" {
+  interface ComparisonOperator <<interface>> {
+    + name: OperatorName
+    + evaluate(actual: unknown, expected: unknown): boolean
+  }
+
+  class EqOperator {
+    + name: OperatorName
+    + evaluate(actual: unknown, expected: unknown): boolean
+  }
+
+  class NumericOperator {
+    + name: OperatorName
+    - cmp: (a: number, b: number) => boolean
+    + <<create>> NumericOperator(name: OperatorName, cmp: Fn)
+    + evaluate(actual: unknown, expected: unknown): boolean
+  }
+
+  class RegexOperator {
+    + name: OperatorName
+    + evaluate(actual: unknown, expected: unknown): boolean
+  }
+
+  class RuleEvaluator {
+    - operators: Record<OperatorName, ComparisonOperator>
+    + <<create>> RuleEvaluator(operators: Record<OperatorName, ComparisonOperator>)
+    + evaluate(expr: ConditionExpr, event: unknown): MatchResult
+    - evalNode(node: ConditionExpr, event: unknown, explain: ExplainEntry[]): boolean
+  }
+
+  class ActionDefinition {
+    + target: string
+    + path: string
+    + body: JsonObject
+  }
+}
+
+User <|-- Operator
+User <|-- Administrator
+Target <|-- EmulatorTarget
+Target <|-- NotifierTarget
+
+ComparisonOperator <|.. EqOperator
+ComparisonOperator <|.. NumericOperator
+ComparisonOperator <|.. RegexOperator
+
+RuleEvaluator "1" o-- "10" ComparisonOperator : - operators
+RuleEntity "1" *-- "1..*" RuleVersion : - versions
+RuleEntity "1" *-- "1..*" ActionDefinition : - then
+
+User "1" --> "0..*" RuleVersion : - author
+Source "1" --> "0..*" WebhookEvent : - events
+Source "1" --> "0..*" RuleEntity : - rules
+RuleMatchRecord "0..*" --> "1" WebhookEvent : - event
+RuleMatchRecord "0..*" --> "1" RuleEntity : - rule
+RuleMatchRecord "1" --> "1..*" DeliveryRecord : - deliveries
+DeliveryRecord "0..*" --> "1" Target : - target
+
+RuleEvaluator ..> WebhookEvent : <<use>>
+DeliveryRecord ..> ActionDefinition : <<use>>
+
+' Выравнивание пакетов друг под другом для компактности на листе А4
+Operator -[hidden]down- Target
+EmulatorTarget -[hidden]down- RuleEvaluator
+@enduml

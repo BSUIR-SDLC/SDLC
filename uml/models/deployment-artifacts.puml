@@ -1,0 +1,56 @@
+@startuml deployment-artifacts
+' Связи: SDD 003-structure, 009-deployment, 022-deployment; ADR-0001, ADR-0007, ADR-0011
+' Код и артефакты: deploy/*, db/migrations/001_init.sql, apps/api/src/**, packages/**
+title Диаграмма артефактов и манифестации развёртывания RuleHook
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam nodesep 35
+skinparam ranksep 45
+
+artifact "<<artifact>>\nrulehook-server.tar (OCI Image)" as TarArtifact {
+  folder "<<folder>>\ndeploy" {
+    file "<<file>>\ndocker-compose.yml" as DcFile
+    file "<<file>>\nnginx.conf" as NginxFile
+  }
+  folder "<<folder>>\ndb/migrations" {
+    file "<<file>>\n001_init.sql" as SqlFile
+  }
+  folder "<<folder>>\npackages" {
+    artifact "<<library>>\nwebhook-signature" as SigLib
+    artifact "<<library>>\nrule-dsl" as DslLib
+  }
+  folder "<<folder>>\napps/api/src" {
+    artifact "<<artifact>>\nserver.ts" as ServerArt
+    artifact "<<artifact>>\nreceiveWebhook.ts" as HookArt
+    artifact "<<artifact>>\nmatchingEngine.ts" as EngineArt
+    artifact "<<artifact>>\nloopGuard.ts" as GuardArt
+    artifact "<<artifact>>\ndeliveryMachine.ts" as DispArt
+  }
+}
+
+component "<<component>>\nWebhookReceiver" as CWebhook
+component "<<component>>\nMatchingEngine" as CEngine
+component "<<component>>\nLoopGuard" as CGuard
+component "<<component>>\nActionDispatcher" as CDisp
+
+interface "IWebhookIngest" as IIngest
+interface "IMatchingEngine" as IMatch
+interface "ILoopGuard" as IGuard
+interface "IDeliveryQueue" as IQueue
+
+IIngest -down- CWebhook
+CWebhook -( IMatch
+IMatch -- CEngine
+CEngine -( IGuard
+IGuard -- CGuard
+CEngine -( IQueue
+IQueue -- CDisp
+
+HookArt ..> CWebhook : <<manifest>>
+SigLib ..> CWebhook : <<manifest>>
+ServerArt ..> CWebhook : <<manifest>>
+EngineArt ..> CEngine : <<manifest>>
+DslLib ..> CEngine : <<manifest>>
+GuardArt ..> CGuard : <<manifest>>
+DispArt ..> CDisp : <<manifest>>
+@enduml

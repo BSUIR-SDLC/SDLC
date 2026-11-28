@@ -1,0 +1,53 @@
+@startuml usecases
+' Связи: SRS 0.3 раздел 2.2 (UC-01 – UC-07), uml/use-cases.md, SDD 013-use-cases
+' Функции бэклога указаны в uml/use-cases.md (таблица «Прецедент – функции»)
+title Варианты использования RuleHook
+skinparam defaultFontName Arial
+left to right direction
+
+actor "Пользователь" as User
+actor "Оператор" as Operator
+actor "Администратор" as Admin
+actor "Эмулятор" as Emulator <<система>>
+actor "Система уведомлений" as Notifier <<система>>
+actor "Планировщик\n(время)" as Scheduler
+
+User <|-- Operator
+User <|-- Admin
+
+rectangle RuleHook {
+  usecase "UC-01 Войти в систему" as UC01
+  usecase "UC-02 Принять вебхук" as UC02
+  usecase "UC-03 Управлять правилами" as UC03
+  usecase "UC-04 Просмотреть журнал обработки" as UC04
+  usecase "UC-05 Управлять источниками" as UC05
+  usecase "UC-06 Управлять целями доставки" as UC06
+  usecase "UC-07 Приостановить обработку" as UC07
+  usecase "UC-08 Повторить недоставленные действия" as UC08
+  usecase "UC-09 Доставить действие" as UC09
+  usecase "UC-10 Сопоставить событие с правилами" as UC10
+  usecase "UC-11 Импортировать правила из файла" as UC11
+  usecase "UC-12 Выполнить пробный прогон правила" as UC12
+  usecase "UC-13 Удалить устаревшие данные" as UC13
+  usecase "UC-14 Отключить зацикленное правило" as UC14
+}
+
+User --> UC01
+Emulator --> UC02
+Operator --> UC03
+Operator --> UC04
+Operator --> UC08
+Admin --> UC05
+Admin --> UC06
+Admin --> UC07
+Scheduler --> UC09
+Scheduler --> UC13
+UC09 --> Emulator
+UC09 --> Notifier
+
+UC02 ..> UC10 : <<include>>
+UC12 ..> UC10 : <<include>>
+UC11 ..> UC03 : <<extend>>\n(загрузка из файла)
+UC12 ..> UC03 : <<extend>>\n(проверка перед сохранением)
+UC14 ..> UC10 : <<extend>>\n(> 20 срабатываний в минуту)
+@enduml

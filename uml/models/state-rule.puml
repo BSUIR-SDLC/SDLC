@@ -1,0 +1,32 @@
+@startuml state-rule
+' Связи: UC-03, UC-10, UC-11, UC-14; SDD 017-rule-lifecycle; BR-04, BR-07, BR-08
+' Решения: ADR-0002 (JSON Schema), ADR-0008 (защита от петель)
+title Жизненный цикл правила
+skinparam defaultFontName Arial
+hide empty description
+
+state "Выключено" as disabled
+state "Включено" as enabled {
+  enabled : UPDATE [схема верна] / version + 1
+  state "Готово к срабатыванию" as ready
+  state "Пауза повторного\nсрабатывания" as cooldown
+  cooldown : entry / таймер cooldownSec
+  cooldown : MATCHED / delivery SKIPPED (COOLDOWN)
+  [*] --> ready
+  ready --> cooldown : MATCHED [cooldownSec > 0] / поставить действия
+  cooldown --> ready : COOLDOWN_ELAPSED
+}
+state "Автоотключено" as autoDisabled
+autoDisabled : entry / причина в журнал, уведомление оператору
+state "В архиве" as archived
+
+[*] --> disabled : CREATE / IMPORT [схема верна] / version = 1
+disabled --> enabled : ENABLE
+enabled --> disabled : DISABLE
+disabled --> disabled : UPDATE [схема верна] / version + 1
+enabled --> autoDisabled : RATE_EXCEEDED [> 20 срабатываний за 60 с]
+autoDisabled --> enabled : ENABLE [оператор исправил правило]
+autoDisabled --> disabled : DISABLE
+disabled --> archived : DELETE
+archived --> [*] : RETENTION_EXPIRED
+@enduml

@@ -1,0 +1,39 @@
+@startuml sequence-login
+' Связи: UC-01; SDD 018-sequence; REQ-FUNC-001, REQ-SEC-003
+' Код: apps/api/src/modules/auth/authPolicy.ts (applyLoginAttempt, can)
+title Вход пользователя (UC-01)
+skinparam defaultFontName Arial
+autonumber
+
+actor "Оператор" as Op
+participant "Веб-консоль" as UI
+participant "AuthController\n(auth)" as AC
+participant "AuthPolicy" as AP
+database "PostgreSQL" as DB
+
+Op -> UI : логин и пароль
+activate UI
+UI -> AC : POST /auth/login
+activate AC
+AC -> DB : SELECT user, login_state
+DB --> AC : user, failedAttempts, lockedUntil
+AC -> AC : bcrypt.compare(пароль, hash)
+AC -> AP : applyLoginAttempt(state, ok, now)
+activate AP
+AP --> AC : result, newState
+deactivate AP
+AC -> DB : UPDATE login_state
+alt result = OK
+  AC -> DB : INSERT session (12 ч)
+  AC --> UI : 200, cookie сессии, роль
+  UI --> Op : экран «Правила»
+else result = BAD_CREDENTIALS
+  AC --> UI : 401 «Неверный логин или пароль»
+  UI --> Op : сообщение об ошибке
+else result = LOCKED
+  AC --> UI : 423 «Заблокировано на 15 мин»
+  UI --> Op : время до разблокировки
+end
+deactivate AC
+deactivate UI
+@enduml

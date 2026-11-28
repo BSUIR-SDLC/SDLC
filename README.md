@@ -1,145 +1,50 @@
-# Шаблоны проектной документации ПО / Software Documentation Templates
+# RuleHook – лабораторная работа №4 (вариант 9)
 
-> Учебный репозиторий шаблонов для курса «Жизненный цикл разработки ПО».  
-> **Разработан на кафедре ЭВМ, БГУИР в учебных целях в 2026 году.**  
-> Совместим с современными стандартами IEEE и ISO, подходит для Agile, Waterfall и гибридных методологий.
+Движок правил: backend принимает вебхуки от эмулятора, проверяет их по сохранённым JSON-правилам и при совпадении отправляет POST-запрос обратно на эмулятор или в систему уведомлений.
 
-## 🎯 Назначение
+- `srs/` – спецификация требований (SRS 0.3)
+- `sdd/` – описание проектирования, модели SysML v2 (`sdd/models`), диаграммы (`sdd/img`)
+- `docs/decisions/` – протоколы архитектурных решений ADR-0001 – 0008
+- `docs/plan/` – бэклог, планы v1, v2, v3a, v3b, v3, диаграммы Ганта, переписка с Заказчиком
+- `tools/` – скрипты построения диаграмм и планов
 
-Репозиторий содержит готовые к использованию Markdown-шаблоны трёх ключевых артефактов инженерии требований и проектирования:
+Команды (нужны Python 3, `pip install -r tools/requirements.txt` и Graphviz, `dot` в PATH):
 
-| Артефакт | Что описывает | Стандарт |
-|----------|---------------|----------|
-| **SRS** (Software Requirements Specification) | **ЧТО** система должна делать | IEEE 830, ISO/IEC/IEEE 29148:2018 |
-| **SDD** (Software Design Description) | **КАК** система будет построена | IEEE 1016, ISO/IEC/IEEE 42010:2011 |
-| **ADR** (Architecture Decision Record) | **ПОЧЕМУ** принято проектное решение | MADR 4.0 |
+    python tools/sdd_render.py          # диаграммы SDD из моделей SysML v2
+    python tools/plan_render.py         # бэклог, планы и диаграммы Ганта из docs/plan/plan.json
+    python tools/plan_render.py --check # сверка бэклога с требованиями SRS
+## Лабораторная работа №5 – модели поведения UML
 
-## 🚀 Быстрый старт
+| Каталог | Содержимое |
+|---|---|
+| docs/glossary.md | Глоссарий (51 термин) |
+| docs/supplementary-specification.md | Дополнительные спецификации FURPS+, бизнес-правила BR-01 – BR-12 |
+| uml/use-cases.md | Актёры и спецификации 14 прецедентов |
+| uml/models/*.puml | 7 моделей PlantUML |
+| uml/img/*.png | Изображения диаграмм |
+| docs/decisions/0009, 0010 | Новые ADR |
+| packages/webhook-signature, apps/api | Код итерации I1 и тесты |
 
-```bash
-# Клонировать репозиторий
-git clone https://github.com/BSUIR-SDLC/SDLC.git
-cd SDLC
+Запуск тестов (Node.js 24, без установки зависимостей):
 
-# Скопировать нужный шаблон в ваш проект
-cp srs/srs-template.md your-project/docs/srs.md
-cp sdd/sdd-template.md your-project/docs/sdd.md
-mkdir -p your-project/docs/decisions
-cp adr/adr-template.md your-project/docs/decisions/NNNN-title.md
-```
+    npm test
+    npm run test:coverage
 
-## 📖 Содержание шаблонов
+Построение диаграмм:
 
-### SRS — Спецификация требований
+    PLANTUML_JAR=plantuml.jar python tools/uml_render.py
+    python tools/uml_render.py --check
 
-| Файл | Описание |
-|------|----------|
-| `srs/srs-template.md` | Полный шаблон с подсказками (💬, ➥, 💡) |
-| `srs/srs-template-en.md` | Полный шаблон с подсказками на английском языке |
-| `srs/req-template.md` | Шаблон отдельного требования с подсказками (для модульной структуры) |
-| `srs/req-template-en.md` | Шаблон отдельного требования с подсказками на английском языке |
+## Лабораторная работа №6 – модели статической структуры UML и ядро итераций I1–I2
 
-**Структура SRS:**
-- Введение (назначение, область применения, глоссарий)
-- Обзор продукта (контекст, функции, пользователи)
-- Требования (интерфейсы, функции, QoS, compliance, AI/ML)
-- Верификация (матрица верификации)
-- Приложения
-
-### SDD — Описание дизайна
-
-| Файл | Описание |
-|------|----------|
-| `sdd/sdd-template.md` | Полный шаблон с подсказками |
-| `sdd/sdd-template-en.md` | Полный шаблон с подсказками на английском языке |
-| `sdd/view-template.md` | Шаблон отдельного представления (View) |
-| `sdd/view-template-en.md` | Шаблон отдельного представления (View) на английском языке |
-
-**Структура SDD (на основе ISO 42010):**
-- Введение
-- Обзор дизайна (задачи стейкхолдеров, точки зрения)
-- Проектные представления (Context, Composition, Logical, Physical, Structure, Dependency, Information, Interface, Interaction, Algorithm, State Dynamics, Concurrency, Patterns, Deployment, Resources)
-- Решения (совместимо с MADR)
-- Приложения
-
-### ADR — Записи архитектурных решений
-
-| Файл | Описание |
-|------|----------|
-| `adr/adr-template.md` | Полный MADR-шаблон |
-| `adr/adr-template-en.md` | Полный MADR-шаблон на английском языке |
-
-**Структура ADR:**
-- Контекст и постановка задачи
-- Драйверы решения
-- Рассмотренные варианты
-- Итог решения
-- Последствия (хорошо / плохо / нейтрально)
-- Подтверждение
-- Плюсы и минусы вариантов
-
-## 🔄 Связь артефактов (Traceability)
-
-```
-SRS (что делаем) ─────┐
-                      ├──→ ADR (почему так решили)
-SDD (как строим) ─────┘
-```
-
-Каждое требование в SRS имеет уникальный идентификатор `REQ-[AREA]-[NNN]`, на который ссылаются:
-- элементы дизайна в SDD (раздел 3, Design Views)
-- записи решений в ADR (раздел «Дополнительная информация»)
-
-## 📋 Рекомендуемая структура документации проекта
-
-```
-your-project/
-├── docs/
-│   ├── srs.md                    # Основной документ SRS
-│   ├── sdd.md                    # Основной документ SDD
-│   ├── requirements/             # Отдельные файлы требований
-│   │   ├── REQ-FUNC-001.md
-│   │   └── REQ-SEC-002.md
-│   ├── design/                   # Отдельные представления
-│   │   ├── context-view.md
-│   │   └── deployment-view.md
-│   └── decisions/                # Записи решений (ADR)
-│       ├── 0001-use-postgresql.md
-│       └── 0002-choose-react.md
-└── src/
-```
-
-## 📜 Стандарты
-
-Шаблоны основаны на следующих международных стандартах:
-- IEEE 830-1998 — исторический эталон SRS
-- ISO/IEC/IEEE 29148:2018 — современная инженерия требований
-- IEEE 1016-2009 — описание дизайна ПО
-- ISO/IEC/IEEE 42010:2011 — описание архитектуры (viewpoints & views)
-- MADR 4.0 — формат архитектурных решений
-
-Подробности — в `docs/standards.md`.
-
-## 🛠 Рабочие процессы
-
-### Монолитный документ
-Используйте `*-template.md` как единый документ. Экспортируйте в PDF через pandoc.
-
-### Версионируемый документ (Living Document)
-Храните шаблон в репозитории проекта, обновляйте по мере эволюции системы. Синхронизируйте версии SRS и SDD.
-
-### Модульная документация
-Ведите основной SRS/SDD + отдельные файлы требований и представлений. Ссылайтесь между ними по ID.
-
-## 📄 Лицензия
-
-Шаблоны переданы в общественное достояние под лицензией
-Creative Commons Zero v1.0 Universal (CC0 1.0).
-Свободно используйте, модифицируйте и распространяйте — в том числе в коммерческих целях.
-
-## 🔗 Связанные проекты
-
-- [MADR — Markdown ADR](https://adr.github.io/madr/)
-- [Markdown Software Requirements Specification (MSRS)](https://github.com/jam01/SRS-Template) - первоначальная версия шаблона
-- [IEEE Standards Association](https://standards.ieee.org/)
-- [ISO/IEC/IEEE 42010](https://www.iso.org/standard/74296.html)
+| Каталог / файл | Содержимое |
+|---|---|
+| `uml/models/class-domain.puml`, `class-services.puml` | Диаграммы классов предметной области, DSL, сервисов и портов |
+| `uml/models/component-system.puml` | Диаграмма компонентов: подсистемы, порты, интерфейсы (ball-and-socket), делегирование |
+| `uml/models/deployment-topology.puml`, `deployment-artifacts.puml` | Диаграммы развёртывания (узлы/среды) и манифестации артефактов (`«manifest»`) |
+| `sdd/sdd-rulehook.md` | SDD 0.5: представления 019 – 022, решения, приложение Г |
+| `docs/decisions/0011, 0012` | Новые ADR и дополнения к ADR-0001, 0002, 0004, 0007, 0008, 0009 |
+| `packages/rule-dsl` | JSONPath-lite, 10 операторов сравнения (Strategy), `validateRuleDefinition`, `RuleEvaluator` |
+| `apps/api/src/{domain,http,infrastructure,modules}` | Иерархии `User`/`Target`, сервисы `Auth/Source/Target/Rule`, `MatchingEngine`, `LoopGuard`, `ActionDispatcher`, HTTP-сервер |
+| `db/migrations/001_init.sql`, `deploy/*` | SQL-миграция PostgreSQL 16, `Dockerfile`, `docker-compose.yml`, `nginx.conf` |
+| `apps/api/test/umlStructure.test.ts` | Автоматическая сверка диаграмм классов и артефактов развёртывания с кодом |
